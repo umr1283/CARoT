@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Centralised and Automated RepOrting Tools <!--<img src="man/figures/carot_hex.png" align="right" width="120" />-->
+# Centralised and Automated RepOrting Tools <img src="man/figures/carot_hex.png" align="right" width="120" />
 
 [![Travis-CI Build
 Status](https://travis-ci.org/mcanouil/CARoT.svg?branch=master)](https://travis-ci.org/mcanouil/CARoT)
