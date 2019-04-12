@@ -17,13 +17,10 @@ URL: https://github.com/mcanouil/CARoT
 BugReports: https://github.com/mcanouil/CARoT/issues
 Depends: R (>= 3.5.0)
 Imports: 
-    ggplot2
+  knitr,
+    rmarkdown
 Suggests:
     covr,
-    utils,
-    sessioninfo,
-    knitr,
-    rmarkdown,
     testthat
 LazyData: true
 RoxygenNote: 6.1.1
