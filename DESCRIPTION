@@ -1,0 +1,33 @@
+Package: CARoT
+Title: Centralised and Automated RepOrting Tools
+Version: 0.0.0.9000
+Authors@R:  c(
+    person(given = "Mickaël", family = "Canouil", role = c("aut", "cre"), email = "mickael.canouil@cnrs.fr", 
+      comment = c(ORCID = "0000-0002-3396-4549")
+    ),
+    person(given = "Mathilde", family = "Boissel", role = "aut", email = "mathilde.boissel@cnrs.fr", 
+      comment = c(ORCID = "0000-0001-5719-8749")
+    ),
+    person(given = "Lijiao", family = "Ning", role = "aut", email = "lijiao.ning@cnrs.fr"
+    )
+  )
+Description: What the package does (one paragraph).
+Depends: R (>= 3.5.3)
+Imports: 
+    ggplot2
+Suggests:
+    covr,
+    utils,
+    sessioninfo,
+    knitr,
+    rmarkdown,
+    testthat
+License: GPL-3 | file LICENSE
+URL: https://github.com/mcanouil/CARoT
+BugReports: https://github.com/mcanouil/CARoT/issues
+Depends: R (>= 3.5.0)
+LazyData: true
+RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Encoding: UTF-8
