@@ -59,7 +59,7 @@ sticker <- function(subplot, s_x = 0.8, s_y = 0.75, s_width = 0.4, s_height = 0.
 
 
 sticker(
-  subplot = "./man/figures/carot.png",
+  subplot = "./man/figures/carot.tiff",
   s_x = 1,
   s_y = 1.19,
   s_width = 0.65,
