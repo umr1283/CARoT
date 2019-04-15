@@ -7,3 +7,5 @@
 * New `read_idats()` allows to efficiently import idats files mostly using `minfi` functions.
 
 ## Minor improvements and fixes
+
+* Update title. Removinb capital "O" in "RepOrting".
