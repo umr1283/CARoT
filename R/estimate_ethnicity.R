@@ -1,0 +1,535 @@
+#' estimate_ethnicity
+#'
+#' @param cohort_name A `character`.
+#' @param input_vcfs A `character`.
+#' @param input_type A `character`.
+#' @param output_directory A `character`.
+#' @param ref1kg_vcfs A `character`.
+#' @param ref1kg_population A `character`.
+#' @param ref1kg_maf A `numeric`.
+#' @param splitted_by_chr A `logical`.
+#' @param quality_tag A `character`.
+#' @param quality_threshold A `numeric`.
+#' @param n_cores An `integer`.
+#' @param bin_path A `list(character)`.
+#'
+#' @return A `data.frame`.
+estimate_ethnicity <- function(
+  cohort_name,
+  input_vcfs,
+  input_type,
+  output_directory,
+  ref1kg_vcfs,
+  ref1kg_population,
+  ref1kg_maf = 0.05,
+  splitted_by_chr = TRUE,
+  quality_tag = "INFO",
+  quality_threshold = 0.9,
+  n_cores = 6,
+  bin_path = list(
+    vcftools = "/usr/bin/vcftools",
+    bcftools = "/usr/bin/bcftools",
+    bgzip = "/usr/local/bin/bgzip",
+    tabix = "/usr/local/bin/tabix",
+    plink1.9 = "/usr/bin/plink1.9"
+  )
+) {
+  if (!input_type%in%c("array", "sequencing")) {
+    stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
+  }
+  if (!dir.exists(input_vcfs) & !file.exists(input_vcfs)) {
+    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory or a vcf file!')
+  }
+    if (!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs)) {
+    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory or a vcf file!')
+  }
+
+  if (dir.exists(input_vcfs)) {
+    list_input <- list.files(path = input_vcfs, full.names = TRUE)
+  } else {
+    list_input <- input_vcfs
+  }
+
+  if (dir.exists(ref1kg_vcfs)) {
+    list_ref <- list.files(path = ref1kg_vcfs, full.names = TRUE)
+  } else {
+    list_ref <- ref1kg_vcfs
+  }
+
+  ######################
+  ### Formating VCFs ###
+  ######################
+  message("[CARoT] Formating VCFs ...")
+  switch(
+    EXPR = input_type,
+    "array" = {
+      if (splitted_by_chr) {
+        format_array_chr(
+          cohort_name = cohort_name,
+          input_vcfs = list_input,
+          output_directory = output_directory,
+          ref1kg_vcfs = list_ref,
+          ref1kg_maf = ref1kg_maf,
+          quality_tag = quality_tag,
+          quality_threshold = quality_threshold,
+          n_cores = n_cores,
+          bin_path = bin_path
+        )
+      } else {
+        format_array_all(
+          cohort_name = cohort_name,
+          input_vcfs = list_input,
+          output_directory = output_directory,
+          ref1kg_vcfs = list_ref,
+          ref1kg_maf = ref1kg_maf,
+          quality_tag = quality_tag,
+          quality_threshold = quality_threshold,
+          bin_path = bin_path
+        )
+      }
+    },
+    "sequencing" = {
+      format_sequencing(
+        cohort_name = cohort_name,
+        input_vcfs = list_input,
+        output_directory = output_directory,
+        ref1kg_vcfs = list_ref,
+        ref1kg_maf = ref1kg_maf,
+        bin_path = bin_path
+      )
+    }
+  )
+
+
+  ######################
+  ### Performing PCA ###
+  ######################
+  compute_pca(
+    cohort_name = cohort_name,
+    input_plink = paste0(output_directory, "/all"),
+    output_directory = output_directory
+  )
+
+}
+
+
+#' format_vcf
+#'
+#' @inheritParams estimate_ethnicity
+#' @param ichr A chracter or `numeric`.
+#'
+#' @keywords internal
+format_vcf <- function(input_vcfs, ref1kg_vcfs, ref1kg_maf, ichr, quality_tag, quality_threshold, output_directory, bin_path) {
+  temp_directory <- tempdir()
+  invisible(sapply(
+    X = paste0(temp_directory, c("/study", "/ref", "/isec")),
+    FUN = dir.create,
+    recursive = TRUE, showWarnings = FALSE, mode = '0777'
+  ))
+  output_study <- paste0(temp_directory, "/study/fitlered_", basename(input_vcfs))
+  output_ref <- paste0(temp_directory, "/ref/fitlered_", basename(ref1kg_vcfs))
+  if (is.character(ichr)) {
+    output_merge <- paste0(output_directory, "/chr", ichr, "_merged.vcf.gz")
+  } else {
+    output_merge <- paste0(output_directory, sprintf("/chr%02d_merged.vcf.gz", ichr))
+  }
+
+  out_cmd <- system(
+    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    command = paste(
+      if (!is.null(quality_tag)) {
+        paste(bin_path[["vcftools"]],
+          "--gzvcf", input_vcfs,
+          "--get-INFO", quality_tag,
+          "--out", gsub("filtered_", "excluded_", output_study),
+          "&&",
+          'awk \'{if($5<', quality_threshold, ') print $1"\t"$2}\'',
+          paste0(gsub("filtered_", "excluded_", output_study), ".INFO"),
+          ">", paste0(gsub("filtered_", "excluded_", output_study), ".exclude"),
+          "&&"
+        )
+      },
+      bin_path[["vcftools"]],
+      "--gzvcf", input_vcfs,
+      if (!is.null(quality_tag)) {
+        paste0(
+          "--exclude-positions ", gsub("filtered_", "excluded_", output_study), ".exclude"
+        )
+      },
+      "--remove-indels",
+      "--remove-filtered-all",
+      "--max-missing-count 1",
+      "--recode",
+      "--recode-INFO-all",
+      "--stdout",
+      "|", bin_path[["bgzip"]], "-c >", output_study,
+      "&&",
+      bin_path[["tabix"]], "-p vcf", output_study,
+      "&&",
+      bin_path[["vcftools"]],
+      "--gzvcf", ref1kg_vcfs,
+      "--maf", ref1kg_maf,
+      "--recode",
+      "--stdout",
+      "|", bin_path[["bgzip"]], "-c >", output_ref,
+      "&&",
+      bin_path[["tabix"]], "-p vcf", output_ref,
+      "&&",
+      bin_path[["bcftools"]], "isec",
+      "--collapse none",
+      "--nfiles=2",
+      output_study,
+      output_ref,
+      "--output-type z",
+      "--prefix", paste0(temp_directory, "/isec"),
+      "&&",
+      bin_path[["bcftools"]], "merge --merge none",
+      paste0(temp_directory, "/isec/0000.vcf.gz"),
+      paste0(temp_directory, "/isec/0001.vcf.gz"),
+      "--output-type z",
+      "--output", output_merge,
+      "&&",
+      bin_path[["tabix"]], "-p vcf", output_merge
+    )
+  )
+  unlink(temp_directory)
+  invisible()
+}
+
+
+#' merge_vcf
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+merge_vcf <- function(input_vcfs, bin_path) {
+  if (length(input_vcfs)>1) {
+    output_temp <- paste(tempdir(), "/samples_merged.vcf.gz")
+    system(
+      ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+      command = paste(
+        bin_path[["bcftools"]], "merge --merge none",
+        paste(input_vcfs, collapse = " "),
+        "--output-type z",
+        "--output", output_temp,
+        "&&",
+        bin_path[["tabix"]], "-p vcf", output_temp
+      )
+    )
+  } else {
+    output_temp <- input_vcfs
+  }
+
+  output_temp
+}
+
+#' format_array_chr
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+format_array_chr <- function(
+  cohort_name,
+  input_vcfs,
+  output_directory,
+  ref1kg_vcfs,
+  ref1kg_maf = 0.05,
+  quality_tag = "INFO",
+  quality_threshold = 0.9,
+  n_cores = 6,
+  bin_path = list(
+    vcftools = "/usr/bin/vcftools",
+    bcftools = "/usr/bin/bcftools",
+    bgzip = "/usr/bin/bgzip",
+    tabix = "/usr/bin/tabix",
+    plink1.9 = "/usr/bin/plink1.9"
+  )
+) {
+  out <- parallel::mclapply(
+    X = 1:22,
+    mc.preschedule = FALSE,
+    mc.cores = min(parallel::detectCores(), n_cores),
+    mc_input_vcfs = input_vcfs,
+    mc_ref1kg_vcfs = ref1kg_vcfs,
+    mc_quality_tag = quality_tag,
+    mc_output_directory = output_directory,
+    FUN = function(ichr, mc_input_vcfs, mc_ref1kg_vcfs, mc_quality_tag, mc_output_directory) {
+      ipattern <- paste0("[^0-9]+chr", ichr, "[^0-9]+.*vcf.gz$")
+      iinput_vcfs <- grep(pattern = gsub("chr", "", ipattern), x = mc_input_vcfs, value = TRUE)
+      iref1kg_vcfs <- grep(pattern = ipattern, x = mc_ref1kg_vcfs, value = TRUE)
+
+      format_vcf(
+        input_vcfs = iinput_vcfs,
+        ref1kg_vcfs = iref1kg_vcfs,
+        ichr = ichr,
+        quality_tag = mc_quality_tag,
+        output_directory = mc_output_directory,
+        bin_path = bin_path
+      )
+  })
+
+
+  temp_file <- tempfile(fileext = ".merge")
+  cat(
+    list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
+    sep = "\n",
+    file = temp_file
+  )
+  system(
+    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    command = paste(
+      bin_path[["bcftools"]], "concat",
+      "--file-list", temp_file,
+      "--allow-overlaps",
+      "--output-type z",
+      "--output", paste0(output_directory, "/all.vcf.gz")
+    )
+  )
+  unlink(temp_file)
+
+
+  system(
+    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    command = paste(
+      bin_path[["plink1.9"]],
+      "--vcf", paste0(output_directory, "/all.vcf.gz"),
+      "--snps-only",
+      "--maf", ref1kg_maf,
+      "--hwe 0.0001",
+      "--geno 0.1",
+      "--make-bed",
+      "--out", paste0(output_directory, "/all")
+    )
+  )
+
+  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
+  unlink(list.files(path = output_directory, pattern = "all.vcf.gz", full.names = TRUE))
+
+  invisible()
+}
+
+
+#' format_array_all
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+format_array_all <- function(
+  cohort_name,
+  input_vcfs,
+  output_directory,
+  ref1kg_vcfs,
+  ref1kg_maf = 0.05,
+  quality_tag = "INFO",
+  quality_threshold = 0.9,
+  bin_path = list(
+    vcftools = "/usr/bin/vcftools",
+    bcftools = "/usr/bin/bcftools",
+    bgzip = "/usr/bin/bgzip",
+    tabix = "/usr/bin/tabix",
+    plink1.9 = "/usr/bin/plink1.9"
+  )
+) {
+  format_vcf(
+    input_vcfs = input_vcfs,
+    ref1kg_vcfs = ref1kg_vcfs,
+    ichr = "ALL",
+    quality_tag = quality_tag,
+    output_directory = output_directory,
+    bin_path = bin_path
+  )
+
+  system(
+    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    command = paste(
+      bin_path[["plink1.9"]],
+      "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
+      "--snps-only",
+      "--maf", ref1kg_maf,
+      "--hwe 0.0001",
+      "--geno 0.1",
+      "--make-bed",
+      "--out", paste0(output_directory, "/all")
+    )
+  )
+  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
+
+  invisible()
+}
+
+
+#' format_sequencing
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+format_sequencing <- function(
+  cohort_name,
+  input_vcfs,
+  output_directory,
+  ref1kg_vcfs,
+  ref1kg_maf = 0.05,
+  bin_path = list(
+    vcftools = "/usr/bin/vcftools",
+    bcftools = "/usr/bin/bcftools",
+    bgzip = "/usr/bin/bgzip",
+    tabix = "/usr/bin/tabix",
+    plink1.9 = "/usr/bin/plink1.9"
+  )
+) {
+  merged_vcfs <- merge_vcf(
+    input_vcfs = input_vcfs,
+    bin_path = bin_path
+  )
+
+  format_vcf(
+    input_vcfs = merged_vcfs,
+    ref1kg_vcfs = ref1kg_vcfs,
+    ichr = "ALL",
+    quality_tag = NULL,
+    output_directory = output_directory
+  )
+
+  system(
+    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    command = paste(
+      bin_path[["plink1.9"]],
+      "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
+      "--snps-only",
+      "--maf", ref1kg_maf,
+      "--hwe 0.0001",
+      "--geno 0.1",
+      "--make-bed",
+      "--out", paste0(output_directory, "/all")
+    )
+  )
+  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
+
+  invisible()
+}
+
+
+#' compute_pca
+#'
+#' @inheritParams estimate_ethnicity
+#' @param input_plink A `character`.
+#'
+#' @keywords internal
+compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_population) {
+  ######################
+  ### Performing PCA ###
+  ######################
+  message("[CARoT] Performing PCA ...")
+
+  res_pca <- flashpcaR::flashpca(input_plink, ndim = 10)
+
+  pca_gg <- as.data.frame(res_pca[["projection"]])
+  colnames(pca_gg) <- paste0("PC", sprintf("%02d", seq_len(ncol(pca_gg))))
+
+  pca_gg <- dplyr::as_tibble(pca_gg)
+  pca_gg[["sample"]] <- utils::read.table(paste0(input_plink, ".fam"))[[1]]
+  pca_gg <- dplyr::left_join(
+    x = pca_gg,
+    y = suppressWarnings(
+      readr::read_tsv(
+        file = ref1kg_population,
+        col_types = readr::cols_only(
+          sample = readr::col_character(),
+          pop = readr::col_character(),
+          super_pop = readr::col_character()
+        )
+      )
+    ),
+    by = "sample"
+  )
+  pca_gg[["cohort"]] <- factor(
+    x = ifelse(is.na(pca_gg[["pop"]]), cohort_name, "1,000 Genomes"),
+    levels = c(cohort_name, "1,000 Genomes")
+  )
+  pca_gg[["pop"]] <- ifelse(is.na(pca_gg[["pop"]]), "Unknown", pca_gg[["pop"]])
+  pca_gg[["super_pop"]] <- factor(
+    x = ifelse(is.na(pca_gg[["super_pop"]] ), cohort_name, pca_gg[["super_pop"]]),
+    levels = c(cohort_name, "AFR", "AMR", "EAS", "SAS", "EUR")
+  )
+  pca_gg <- dplyr::select(.data = pca_gg, "sample", dplyr::everything())
+
+  p_ethni <- ggplot2::ggplot(
+    data = pca_gg,
+    mapping = ggplot2::aes_string(x = "PC01", y = "PC02", colour = "super_pop")
+  ) +
+    ggplot2::theme_light(base_size = 12) +
+  	ggplot2::geom_hline(yintercept = 0, linetype = 1, size = 0.5, na.rm = TRUE) +
+  	ggplot2::geom_vline(xintercept = 0, linetype = 1, size = 0.5, na.rm = TRUE) +
+    ggforce::geom_mark_ellipse(mapping = ggplot2::aes_string(fill = "super_pop"), con.cap = 0) +
+    ggplot2::geom_point(mapping = ggplot2::aes_string(shape = "super_pop"), na.rm = TRUE) +
+  	ggplot2::scale_colour_viridis_d(na.translate = FALSE, drop = FALSE, end = 0.9) +
+    ggplot2::scale_fill_viridis_d(na.translate = FALSE, drop = FALSE, end = 0.9) +
+    ggplot2::scale_shape_manual(values = c(3, rep(1, 5))) +
+    ggplot2::labs(shape = NULL, colour = NULL, fill = NULL) +
+    ggforce::facet_zoom(
+      xlim = range(dplyr::filter(pca_gg, dplyr::sym("cohort")==cohort_name)[["PC01"]]),
+      ylim = range(dplyr::filter(pca_gg, dplyr::sym("cohort")==cohort_name)[["PC02"]]),
+      zoom.size = 0.5,
+      horizontal = FALSE
+    )
+
+  pca_gg_pred <- pca_gg %>%
+    dplyr::filter(dplyr::sym("cohort") == cohort_name) %>%
+    dplyr::mutate(
+      super_pop_centre = pca_gg %>%
+        dplyr::filter(dplyr::sym("cohort") != !!cohort_name) %>%
+        dplyr::select(- dplyr::sym("cohort")) %>%
+        dplyr::group_by(dplyr::sym("super_pop")) %>%
+        dplyr::summarise(
+          PC01 = mean(dplyr::sym("PC01")),
+          PC02 = mean(dplyr::sym("PC02"))
+        ) %>%
+        list()
+    ) %>%
+    dplyr::group_by(sample) %>%
+    dplyr::mutate(
+      super_pop_pred = purrr::map(
+        .x = dplyr::sym("PC01"),
+        .y = dplyr::sym("PC02"),
+        .centre = dplyr::sym("super_pop_centre"),
+        .f = function(.x, .y, .centre) {
+          dist_pop <- sqrt(
+            (.x - .centre[[1]][["PC01"]])^2 +
+              (.y - .centre[[1]][["PC02"]])^2
+          )
+          names(dist_pop) <- as.character(.centre[[1]][["super_pop"]])
+
+          out <- data.frame(
+            pop_pred = names(dist_pop[which.min(dist_pop)]),
+            dist = t(dist_pop)
+          )
+          colnames(out) <- gsub(".", "_", colnames(out), fixed = TRUE)
+          out
+        }
+      ),
+      super_pop_centre = NULL
+    ) %>%
+    tidyr::unnest()
+
+
+  #################
+  ### Exporting ###
+  #################
+  message("[CARoT] Exporting ...")
+  ggplot2::ggsave(
+    filename = paste0(output_directory, "/", cohort_name, "_ethnicty.pdf"),
+    plot = p_ethni,
+    width = 6.3,
+    height = 4.7*1.5,
+    units = "in"
+  )
+
+
+
+  invisible(
+    readr::write_csv(
+      x = pca_gg_pred,
+      path = paste0(output_directory, "/", cohort_name, "_ethnicty.csv")
+    )
+  )
+}
