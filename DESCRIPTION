@@ -1,7 +1,7 @@
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
 Version: 0.1.0.9000
-Authors@R:  c(
+Authors@R: c(
     person(given = "Mickaël", family = "Canouil", role = c("aut", "cre"), email = "mickael.canouil@cnrs.fr", 
       comment = c(ORCID = "0000-0002-3396-4549")
     ),
@@ -29,7 +29,14 @@ Imports:
     IlluminaHumanMethylationEPICmanifest,
     illuminaio,
     SummarizedExperiment,
-    methods
+    methods,
+    magrittr,
+    flashpcaR,
+    ggforce,
+    ggplot2,
+    purrr,
+    readr,
+    tidyr
 Suggests:
     covr,
     testthat
