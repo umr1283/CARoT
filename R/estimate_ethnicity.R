@@ -38,22 +38,29 @@ estimate_ethnicity <- function(
     stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
   }
   if (!dir.exists(input_vcfs) & !file.exists(input_vcfs)) {
-    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory or a vcf file!')
+    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
   }
-    if (!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs)) {
-    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory or a vcf file!')
+  if (!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs)) {
+    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
   }
 
   if (dir.exists(input_vcfs)) {
-    list_input <- list.files(path = input_vcfs, full.names = TRUE)
+    list_input <- list.files(path = input_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
   } else {
     list_input <- input_vcfs
   }
 
   if (dir.exists(ref1kg_vcfs)) {
-    list_ref <- list.files(path = ref1kg_vcfs, full.names = TRUE)
+    list_ref <- list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
   } else {
     list_ref <- ref1kg_vcfs
+  }
+
+  if (length(list_ref)==0) {
+    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
+  }
+  if (length(ref1kg_vcfs)==0) {
+    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
   }
 
   ######################
@@ -119,7 +126,16 @@ estimate_ethnicity <- function(
 #' @param ichr A chracter or `numeric`.
 #'
 #' @keywords internal
-format_vcf <- function(input_vcfs, ref1kg_vcfs, ref1kg_maf, ichr, quality_tag, quality_threshold, output_directory, bin_path) {
+format_vcf <- function(
+  input_vcfs,
+  ref1kg_vcfs,
+  ref1kg_maf,
+  ichr,
+  quality_tag,
+  quality_threshold,
+  output_directory,
+  bin_path
+) {
   temp_directory <- tempdir()
   invisible(sapply(
     X = paste0(temp_directory, c("/study", "/ref", "/isec")),
@@ -251,9 +267,19 @@ format_array_chr <- function(
     mc.cores = min(parallel::detectCores(), n_cores),
     mc_input_vcfs = input_vcfs,
     mc_ref1kg_vcfs = ref1kg_vcfs,
+    mc_ref1kg_maf = ref1kg_maf,
     mc_quality_tag = quality_tag,
+    mc_quality_threshold = quality_threshold,
     mc_output_directory = output_directory,
-    FUN = function(ichr, mc_input_vcfs, mc_ref1kg_vcfs, mc_quality_tag, mc_output_directory) {
+    FUN = function(
+      ichr,
+      mc_input_vcfs,
+      mc_ref1kg_vcfs,
+      mc_ref1kg_maf,
+      mc_quality_tag,
+      mc_quality_threshold,
+      mc_output_directory
+    ) {
       ipattern <- paste0("[^0-9]+chr", ichr, "[^0-9]+.*vcf.gz$")
       iinput_vcfs <- grep(pattern = gsub("chr", "", ipattern), x = mc_input_vcfs, value = TRUE)
       iref1kg_vcfs <- grep(pattern = ipattern, x = mc_ref1kg_vcfs, value = TRUE)
@@ -261,8 +287,10 @@ format_array_chr <- function(
       format_vcf(
         input_vcfs = iinput_vcfs,
         ref1kg_vcfs = iref1kg_vcfs,
+        ref1kg_maf = mc_ref1kg_maf,
         ichr = ichr,
         quality_tag = mc_quality_tag,
+        quality_threshold = mc_quality_threshold,
         output_directory = mc_output_directory,
         bin_path = bin_path
       )
@@ -333,8 +361,10 @@ format_array_all <- function(
   format_vcf(
     input_vcfs = input_vcfs,
     ref1kg_vcfs = ref1kg_vcfs,
+    ref1kg_maf = ref1kg_maf,
     ichr = "ALL",
     quality_tag = quality_tag,
+    quality_threshold = quality_threshold,
     output_directory = output_directory,
     bin_path = bin_path
   )
@@ -520,11 +550,9 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
     filename = paste0(output_directory, "/", cohort_name, "_ethnicty.pdf"),
     plot = p_ethni,
     width = 6.3,
-    height = 4.7*1.5,
+    height = 4.7 * 1.5,
     units = "in"
   )
-
-
 
   invisible(
     readr::write_csv(
