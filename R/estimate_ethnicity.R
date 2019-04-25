@@ -525,7 +525,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
     dplyr::mutate(
       super_pop_centre = pca_gg %>%
         dplyr::filter(dplyr::sym("cohort") != !!cohort_name) %>%
-        dplyr::select(- dplyr::sym("cohort")) %>%
+        dplyr::select(-"cohort") %>%
         dplyr::group_by(dplyr::sym("super_pop")) %>%
         dplyr::summarise(
           PC01 = mean(dplyr::sym("PC01")),
