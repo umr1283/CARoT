@@ -114,7 +114,8 @@ estimate_ethnicity <- function(
   compute_pca(
     cohort_name = cohort_name,
     input_plink = paste0(output_directory, "/all"),
-    output_directory = output_directory
+    output_directory = output_directory,
+    ref1kg_population = ref1kg_population
   )
 
 }
@@ -136,14 +137,14 @@ format_vcf <- function(
   output_directory,
   bin_path
 ) {
-  temp_directory <- tempdir()
+  temp_directory <- paste0(tempdir(), "/chr", ichr)
   invisible(sapply(
     X = paste0(temp_directory, c("/study", "/ref", "/isec")),
     FUN = dir.create,
     recursive = TRUE, showWarnings = FALSE, mode = '0777'
   ))
-  output_study <- paste0(temp_directory, "/study/fitlered_", basename(input_vcfs))
-  output_ref <- paste0(temp_directory, "/ref/fitlered_", basename(ref1kg_vcfs))
+  output_study <- paste0(temp_directory, "/study/filtered_", basename(input_vcfs))
+  output_ref <- paste0(temp_directory, "/ref/filtered_", basename(ref1kg_vcfs))
   if (is.character(ichr)) {
     output_merge <- paste0(output_directory, "/chr", ichr, "_merged.vcf.gz")
   } else {
@@ -208,7 +209,9 @@ format_vcf <- function(
       bin_path[["tabix"]], "-p vcf", output_merge
     )
   )
-  unlink(temp_directory)
+
+  unlink(x = temp_directory, recursive = TRUE)
+
   invisible()
 }
 
@@ -281,8 +284,8 @@ format_array_chr <- function(
       mc_output_directory
     ) {
       ipattern <- paste0("[^0-9]+chr", ichr, "[^0-9]+.*vcf.gz$")
-      iinput_vcfs <- grep(pattern = gsub("chr", "", ipattern), x = mc_input_vcfs, value = TRUE)
-      iref1kg_vcfs <- grep(pattern = ipattern, x = mc_ref1kg_vcfs, value = TRUE)
+      iinput_vcfs <- mc_input_vcfs[grep(pattern = gsub("chr", "", ipattern), x = basename(mc_input_vcfs))]
+      iref1kg_vcfs <- mc_ref1kg_vcfs[grep(pattern = ipattern, x = basename(mc_ref1kg_vcfs))]
 
       format_vcf(
         input_vcfs = iinput_vcfs,
@@ -313,7 +316,7 @@ format_array_chr <- function(
       "--output", paste0(output_directory, "/all.vcf.gz")
     )
   )
-  unlink(temp_file)
+  unlink(x = temp_file, recursive = TRUE)
 
 
   system(
@@ -330,8 +333,14 @@ format_array_chr <- function(
     )
   )
 
-  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
-  unlink(list.files(path = output_directory, pattern = "all.vcf.gz", full.names = TRUE))
+  unlink(
+    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+    recursive = TRUE
+  )
+  unlink(
+    x = list.files(path = output_directory, pattern = "all.vcf.gz", full.names = TRUE),
+    recursive = TRUE
+  )
 
   invisible()
 }
@@ -382,7 +391,11 @@ format_array_all <- function(
       "--out", paste0(output_directory, "/all")
     )
   )
-  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
+
+  unlink(
+    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+    recursive = TRUE
+  )
 
   invisible()
 }
@@ -433,7 +446,11 @@ format_sequencing <- function(
       "--out", paste0(output_directory, "/all")
     )
   )
-  unlink(list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE))
+
+  unlink(
+    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+    recursive = TRUE
+  )
 
   invisible()
 }
