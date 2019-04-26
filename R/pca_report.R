@@ -43,10 +43,10 @@ pca_report <- function(
 
   pca_dfxy <- pca_res %>%
     `[[`("projection") %>%
-    as.data.frame() %>%
-    `colnames<-`(paste0("PC", seq_len(ncol(.)))) %>%
-    dplyr::mutate(Sample_ID = as.character(colnames(data))) %>%
-    dplyr::left_join(x = design, y = ., by = id_var) %>%
+    as.data.frame()
+  colnames(pca_dfxy) <- paste0("PC", seq_len(ncol(pca_dfxy)))
+  pca_dfxy <- dplyr::mutate(.data = pca_dfxy, Sample_ID = as.character(colnames(data)))
+  pca_dfxy <- dplyr::left_join(x = design, y = pca_dfxy, by = id_var) %>%
     as.data.frame()
 
 
@@ -55,8 +55,8 @@ pca_report <- function(
     y = (pca_res$values / sum(pca_res$values)),
     x = sprintf("PC%02d", seq_along(pca_res$values))
   ) %>%
-    dplyr::mutate(cumsum = cumsum(y)) %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
+    dplyr::mutate(cumsum = cumsum(!!dplyr::sym("y"))) %>%
+    ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y")) +
     ggplot2::geom_bar(stat = "identity", width = 1, colour = "white", fill = "#3B528BFF") +
     ggplot2::scale_y_continuous(labels = scales::percent, expand = ggplot2::expand_scale(mult = c(0, 0.05))) +
     ggplot2::labs(y = "Inertia", x = "PCA Components")
@@ -67,7 +67,7 @@ pca_report <- function(
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA factorial planes {- .tabset}\n"))
     for (ivar in keep_technical) {
       cat(paste0("\n", paste(rep("#", title_level + 1), collapse = ""), " ", ivar, " {-}\n"))
-      p <- do.call("rbind", apply(t(combn(paste0("PC", seq_len(fig_n_comp)), 2)), 1, function(icoord) {
+      p <- do.call("rbind", apply(t(utils::combn(paste0("PC", seq_len(fig_n_comp)), 2)), 1, function(icoord) {
         tmp <- pca_dfxy[, c(ivar, icoord)]
         tmp[, ivar] <- as.factor(tmp[, ivar])
         colnames(tmp)[-seq_len(ncol(tmp) - 2)] <- c("X", "Y")
@@ -82,7 +82,7 @@ pca_report <- function(
         ggplot2::stat_ellipse(type = "norm") +
         ggplot2::scale_colour_viridis_d() +
         ggplot2::labs(x = NULL, y = NULL) +
-        ggplot2::facet_grid(rows = vars(Y.PC), cols = ggplot2::vars(X.PC), scales = "free") +
+        ggplot2::facet_grid(rows = !!ggplot2::sym("Y.PC"), cols = !!ggplot2::sym("X.PC"), scales = "free") +
         ggplot2::guides(colour = ifelse(length(unique(pca_dfxy[, ivar])) <= 12, "legend", "none"))
       print(p)
       cat("\n")
@@ -92,7 +92,7 @@ pca_report <- function(
     p <- pca_dfxy %>%
       (function(.data) {
         lapply(seq_len(fig_n_comp), function(i) {
-          form <- ggplot2::vars(paste0("PC", i, " ~ ", paste(keep_technical, collapse = " + ")))
+          form <- stats::as.formula(paste0("PC", i, " ~ ", paste(keep_technical, collapse = " + ")))
           stats::lm(form, data = .data) %>%
             stats::anova() %>%
             tibble::rownames_to_column(var = "term") %>%
@@ -100,12 +100,12 @@ pca_report <- function(
         }) %>%
           dplyr::bind_rows()
       }) %>%
-      dplyr::filter(term != "Residuals") %>%
-      dplyr::mutate(term = gsub("factor\\((.*)\\)", "\\1", term)) %>%
-      ggplot2::ggplot(mapping = ggplot2::aes(x = factor(PC), y = term, fill = `Pr(>F)`)) +
+      dplyr::filter(!!dplyr::sym("term") != "Residuals") %>%
+      dplyr::mutate(term = gsub("factor\\((.*)\\)", "\\1", !!dplyr::sym("term"))) %>%
+      ggplot2::ggplot(mapping = ggplot2::aes(x = factor(!!ggplot2::sym("PC")), y = !!ggplot2::sym("term"), fill = !!ggplot2::sym("Pr(>F)"))) +
       ggplot2::geom_tile(colour = "white") +
       ggplot2::geom_text(
-        mapping = ggplot2::aes(label = scales::scientific(`Pr(>F)`, digits = 2)),
+        mapping = ggplot2::aes(label = scales::scientific(!!ggplot2::sym("Pr(>F)"), digits = 2)),
         colour = "white",
         size = 3
       ) +
@@ -120,20 +120,21 @@ pca_report <- function(
 
 
   if (!is.null(outliers_component)) {
+    euclid_dist <- dplyr::sym("euclid_dist")
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA Outliers {-}\n"))
     pca_outliers <- pca_dfxy[, paste0("PC", outliers_component), drop = FALSE] %>%
       `^`(2) %>%
       rowSums() %>%
-      sqrt() %>%
-      tibble::tibble(EuclideanDistance = .) %>%
+      sqrt()
+    pca_outliers <- tibble::tibble("euclid_dist" = pca_outliers) %>%
       tibble::rownames_to_column(var = id_var) %>%
       dplyr::mutate(
-        BadSamplesLogical =
-          EuclideanDistance <=
-            (stats::median(EuclideanDistance) - outliers_threshold * stats::IQR(EuclideanDistance)) |
-          EuclideanDistance >=
-            (stats::median(EuclideanDistance) + outliers_threshold * stats::IQR(EuclideanDistance)),
-        BadSamples = factor(ifelse(BadSamplesLogical, "BAD", "GOOD"), levels = c("BAD", "GOOD"))
+        bad_samples_bool =
+          !!euclid_dist <=
+            (stats::median(!!euclid_dist) - outliers_threshold * stats::IQR(!!euclid_dist)) |
+          !!euclid_dist >=
+            (stats::median(!!euclid_dist) + outliers_threshold * stats::IQR(!!euclid_dist)),
+        bad_samples = factor(ifelse(!!dplyr::sym("bad_samples_bool"), "BAD", "GOOD"), levels = c("BAD", "GOOD"))
       ) %>%
       tibble::column_to_rownames(var = id_var)
 
@@ -144,7 +145,7 @@ pca_report <- function(
     ) %>%
       tibble::column_to_rownames(var = "Row.names")
 
-    ivar <- "BadSamples"
+    ivar <- "bad_samples"
 
     p <- dplyr::bind_rows(apply(t(utils::combn(paste0("PC", seq_len(fig_n_comp)), 2)), 1, function(icoord) {
       tmp <- pca_dfxy[, c(ivar, icoord)]
@@ -161,13 +162,13 @@ pca_report <- function(
       ggplot2::stat_ellipse(type = "norm") +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::facet_grid(rows = ggplot2::vars(Y.PC), cols = ggplot2::vars(X.PC), scales = "free")
+      ggplot2::facet_grid(rows = !!ggplot2::sym("Y.PC"), cols = !!ggplot2::sym("X.PC"), scales = "free")
     print(p)
     cat("\n")
 
     # pca_dfxy <- pca_dfxy %>%
     #   dplyr::select(-dplyr::starts_with("PC")) %>%
-    #   dplyr::filter(BadSamples == "BAD")
+    #   dplyr::filter(bad_samples == "BAD")
   }
 
   invisible(pca_dfxy)
