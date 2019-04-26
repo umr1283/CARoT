@@ -514,31 +514,31 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
     ggplot2::scale_shape_manual(values = c(3, rep(1, 5))) +
     ggplot2::labs(shape = NULL, colour = NULL, fill = NULL) +
     ggforce::facet_zoom(
-      xlim = range(dplyr::filter(pca_gg, dplyr::sym("cohort")==cohort_name)[["PC01"]]),
-      ylim = range(dplyr::filter(pca_gg, dplyr::sym("cohort")==cohort_name)[["PC02"]]),
+      xlim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC01"]]),
+      ylim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC02"]]),
       zoom.size = 0.5,
       horizontal = FALSE
     )
 
   pca_gg_pred <- pca_gg %>%
-    dplyr::filter(dplyr::sym("cohort") == cohort_name) %>%
+    dplyr::filter(!!dplyr::sym("cohort") == !!cohort_name) %>%
     dplyr::mutate(
       super_pop_centre = pca_gg %>%
-        dplyr::filter(dplyr::sym("cohort") != !!cohort_name) %>%
+        dplyr::filter(!!dplyr::sym("cohort") != !!cohort_name) %>%
         dplyr::select(-"cohort") %>%
-        dplyr::group_by(dplyr::sym("super_pop")) %>%
+        dplyr::group_by(!!dplyr::sym("super_pop")) %>%
         dplyr::summarise(
-          PC01 = mean(dplyr::sym("PC01")),
-          PC02 = mean(dplyr::sym("PC02"))
+          PC01 = mean(!!dplyr::sym("PC01")),
+          PC02 = mean(!!dplyr::sym("PC02"))
         ) %>%
         list()
     ) %>%
     dplyr::group_by(sample) %>%
     dplyr::mutate(
       super_pop_pred = purrr::map(
-        .x = dplyr::sym("PC01"),
-        .y = dplyr::sym("PC02"),
-        .centre = dplyr::sym("super_pop_centre"),
+        .x = !!dplyr::sym("PC01"),
+        .y = !!dplyr::sym("PC02"),
+        .centre = !!dplyr::sym("super_pop_centre"),
         .f = function(.x, .y, .centre) {
           dist_pop <- sqrt(
             (.x - .centre[[1]][["PC01"]])^2 +
@@ -556,7 +556,8 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
       ),
       super_pop_centre = NULL
     ) %>%
-    tidyr::unnest()
+    tidyr::unnest() %>%
+    dplyr::ungroup()
 
 
   #################
