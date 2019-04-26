@@ -36,7 +36,8 @@ Imports:
     ggplot2,
     purrr,
     readr,
-    tidyr
+    tidyr,
+    tibble
 Suggests:
     covr,
     testthat
