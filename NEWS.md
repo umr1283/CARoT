@@ -6,7 +6,9 @@
 
 * New `read_idats()` allows to efficiently import idats files mostly using `minfi` functions.
 * New `estimate_ethnicity()` allows to compute the genomic component for ethnicity based on VCF files.
+* New `pca_report()` allows to compute an analysis report using principal component analysis.  
+  The function can be used in Rmarkdown chunk with `results="asis"` to render the report.
 
 ## Minor improvements and fixes
 
-* Update title. Removinb capital "O" in "RepOrting".
+* Update title. Removing capital "O" in "RepOrting".
