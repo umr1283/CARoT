@@ -512,7 +512,15 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   	ggplot2::scale_colour_viridis_d(na.translate = FALSE, drop = FALSE, end = 0.9) +
     ggplot2::scale_fill_viridis_d(na.translate = FALSE, drop = FALSE, end = 0.9) +
     ggplot2::scale_shape_manual(values = c(3, rep(1, 5))) +
-    ggplot2::labs(shape = NULL, colour = NULL, fill = NULL) +
+    ggplot2::labs(
+      shape = NULL,
+      colour = NULL,
+      fill = NULL,
+      caption = paste(
+        "SNPs:",
+        scales::comma(R.utils::countLines(paste0(input_plink, ".bim")))
+      )
+    ) +
     ggforce::facet_zoom(
       xlim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC01"]]),
       ylim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC02"]]),
@@ -565,11 +573,12 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   #################
   message("[CARoT] Exporting ...")
   ggplot2::ggsave(
-    filename = paste0(output_directory, "/", cohort_name, "_ethnicty.pdf"),
+    filename = paste0(output_directory, "/", cohort_name, "_ethnicty.tiff"),
     plot = p_ethni,
     width = 6.3,
     height = 4.7 * 1.5,
-    units = "in"
+    units = "in",
+    dpi = 300
   )
 
   invisible(
