@@ -57,7 +57,7 @@ pca_report <- function(
   ) %>%
     dplyr::mutate(cumsum = cumsum(!!dplyr::sym("y"))) %>%
     ggplot2::ggplot(mapping = ggplot2::aes_string(x = "x", y = "y")) +
-    ggplot2::geom_bar(stat = "identity", width = 1, colour = "white", fill = "#3B528BFF") +
+    ggplot2::geom_bar(stat = "identity", width = 1, colour = "white", fill = "#3B528BFF", na.rm = TRUE) +
     ggplot2::scale_y_continuous(labels = scales::percent, expand = ggplot2::expand_scale(mult = c(0, 0.05))) +
     ggplot2::labs(y = "Inertia", x = "PCA Components")
   print(p)
@@ -76,13 +76,13 @@ pca_report <- function(
         tmp
       })) %>%
         ggplot2::ggplot(mapping = ggplot2::aes_string(x = "X", y = "Y", colour = ivar)) +
-        ggplot2::geom_hline(mapping = ggplot2::aes(yintercept = 0)) +
-        ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = 0)) +
-        ggplot2::geom_point(shape = 4, size = 2) +
-        ggplot2::stat_ellipse(type = "norm") +
+        ggplot2::geom_hline(mapping = ggplot2::aes(yintercept = 0), na.rm = TRUE) +
+        ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = 0), na.rm = TRUE) +
+        ggplot2::geom_point(shape = 4, size = 2, na.rm = TRUE) +
+        ggplot2::stat_ellipse(type = "norm", na.rm = TRUE) +
         ggplot2::scale_colour_viridis_d() +
         ggplot2::labs(x = NULL, y = NULL) +
-        ggplot2::facet_grid(rows = !!ggplot2::sym("Y.PC"), cols = !!ggplot2::sym("X.PC"), scales = "free") +
+        ggplot2::facet_grid(rows = ggplot2::sym("Y.PC"), cols = ggplot2::sym("X.PC"), scales = "free") +
         ggplot2::guides(colour = ifelse(length(unique(pca_dfxy[, ivar])) <= 12, "legend", "none"))
       print(p)
       cat("\n")
@@ -102,18 +102,25 @@ pca_report <- function(
       }) %>%
       dplyr::filter(!!dplyr::sym("term") != "Residuals") %>%
       dplyr::mutate(term = gsub("factor\\((.*)\\)", "\\1", !!dplyr::sym("term"))) %>%
-      ggplot2::ggplot(mapping = ggplot2::aes(x = factor(!!ggplot2::sym("PC")), y = !!ggplot2::sym("term"), fill = !!ggplot2::sym("Pr(>F)"))) +
-      ggplot2::geom_tile(colour = "white") +
-      ggplot2::geom_text(
-        mapping = ggplot2::aes(label = scales::scientific(!!ggplot2::sym("Pr(>F)"), digits = 2)),
-        colour = "white",
-        size = 3
+      ggplot2::ggplot(
+        mapping = ggplot2::aes(
+          x = factor(!!ggplot2::sym("PC")),
+          y = !!ggplot2::sym("term"),
+          fill = !!ggplot2::sym("Pr(>F)")
+        )
       ) +
-      ggplot2::scale_fill_viridis_c(name = "P-Value", na.value = "grey85", limits = c(0, 0.1)) +
-      ggplot2::theme(panel.grid = ggplot2::element_blank()) +
-      ggplot2::scale_x_discrete(expand = c(0, 0)) +
-      ggplot2::scale_y_discrete(expand = c(0, 0)) +
-      ggplot2::labs(x = "PCA Components", y = NULL)
+        ggplot2::geom_tile(colour = "white", na.rm = TRUE) +
+        ggplot2::geom_text(
+          mapping = ggplot2::aes(label = scales::scientific(!!ggplot2::sym("Pr(>F)"), digits = 2)),
+          colour = "white",
+          size = 3,
+          na.rm = TRUE
+        ) +
+        ggplot2::scale_fill_viridis_c(name = "P-Value", na.value = "grey85", limits = c(0, 0.1)) +
+        ggplot2::theme(panel.grid = ggplot2::element_blank()) +
+        ggplot2::scale_x_discrete(expand = c(0, 0)) +
+        ggplot2::scale_y_discrete(expand = c(0, 0)) +
+        ggplot2::labs(x = "PCA Components", y = NULL)
     print(p)
     cat("\n")
   }
@@ -156,13 +163,13 @@ pca_report <- function(
       tmp
     })) %>%
       ggplot2::ggplot(mapping = ggplot2::aes_string(x = "X", y = "Y", colour = ivar)) +
-      ggplot2::geom_hline(mapping = ggplot2::aes(yintercept = 0)) +
-      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = 0)) +
-      ggplot2::geom_point(shape = 4, size = 2) +
-      ggplot2::stat_ellipse(type = "norm") +
+      ggplot2::geom_hline(mapping = ggplot2::aes(yintercept = 0), na.rm = TRUE) +
+      ggplot2::geom_vline(mapping = ggplot2::aes(xintercept = 0), na.rm = TRUE) +
+      ggplot2::geom_point(shape = 4, size = 2, na.rm = TRUE) +
+      ggplot2::stat_ellipse(type = "norm", na.rm = TRUE) +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::facet_grid(rows = !!ggplot2::sym("Y.PC"), cols = !!ggplot2::sym("X.PC"), scales = "free")
+      ggplot2::facet_grid(rows = ggplot2::sym("Y.PC"), cols = ggplot2::sym("X.PC"), scales = "free")
     print(p)
     cat("\n")
 
