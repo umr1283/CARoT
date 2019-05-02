@@ -46,8 +46,7 @@ pca_report <- function(
     as.data.frame()
   colnames(pca_dfxy) <- paste0("PC", seq_len(ncol(pca_dfxy)))
   pca_dfxy <- dplyr::mutate(.data = pca_dfxy, Sample_ID = as.character(colnames(data)))
-  pca_dfxy <- dplyr::left_join(x = design, y = pca_dfxy, by = id_var) %>%
-    as.data.frame()
+  pca_dfxy <- as.data.frame(dplyr::left_join(x = design, y = pca_dfxy, by = id_var))
 
 
   cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA inertia contribution {-}\n"))
@@ -82,7 +81,11 @@ pca_report <- function(
         ggplot2::stat_ellipse(type = "norm", na.rm = TRUE) +
         ggplot2::scale_colour_viridis_d() +
         ggplot2::labs(x = NULL, y = NULL) +
-        ggplot2::facet_grid(rows = ggplot2::sym("Y.PC"), cols = ggplot2::sym("X.PC"), scales = "free") +
+        ggplot2::facet_grid(
+          rows = ggplot2::vars(!!ggplot2::sym("Y.PC")),
+          cols = ggplot2::vars(!!ggplot2::sym("X.PC")),
+          scales = "free"
+        ) +
         ggplot2::guides(colour = ifelse(length(unique(pca_dfxy[, ivar])) <= 12, "legend", "none"))
       print(p)
       cat("\n")
@@ -169,7 +172,11 @@ pca_report <- function(
       ggplot2::stat_ellipse(type = "norm", na.rm = TRUE) +
       ggplot2::scale_colour_viridis_d() +
       ggplot2::labs(x = NULL, y = NULL) +
-      ggplot2::facet_grid(rows = ggplot2::sym("Y.PC"), cols = ggplot2::sym("X.PC"), scales = "free")
+      ggplot2::facet_grid(
+        rows = ggplot2::vars(!!ggplot2::sym("Y.PC")),
+        cols = ggplot2::vars(!!ggplot2::sym("X.PC")),
+        scales = "free"
+      )
     print(p)
     cat("\n")
 
