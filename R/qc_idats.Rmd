@@ -1,0 +1,750 @@
+---
+title: '`r params[["title"]]`'
+author:
+- name: '`r params[["author_name"]]`'
+  affiliation: '`r params[["author_affiliation"]]`'
+  email: '`r params[["author_email"]]`'
+date: '`r format(Sys.time(), "%B %d, %Y")`'
+monofont: 'Source Code Pro'
+monofontoptions: 'Scale=0.7'
+params:
+  title: "EPIC Array Quality-Control"
+  author_name: "Firstname Lastname"
+  author_affiliation: "Institution"
+  author_email: "some@email.com"
+  output_directory: "/EPIC_QC"
+  show_code: FALSE
+  n_cores: 20
+  dpi: 120
+  gg_fontsize: 12
+  csv_file: "sample_sheet_clean.csv"
+  data_directory: "/idats"
+  array: "EPIC"
+  annotation: "ilm10b4.hg19"
+  filter_snps: TRUE
+  filter_non_cpg: TRUE
+  filter_xy: TRUE
+  filter_multihit: TRUE
+  filter_beads: TRUE
+  population: NULL
+  bead_cutoff: 0.05
+  threshold_detection_pvalues: 0.01
+  threshold_call_rate_samples: 0.99
+  threshold_call_rate_cpgs: 1
+  threshold_gender: -2 
+  colname_gender: NULL
+  norm_background: "oob"
+  norm_dye: "RELIC"
+  norm_quantile: "quantile1" 
+  cell_tissue: NULL
+  pca_vars: !r c("Sample_Plate", "Sentrix_ID")
+output:
+  bookdown::html_document2:
+    theme: simplex
+    toc: true
+    toc_depth: 2
+    toc_float: 
+      collapsed: false
+    fig_width: 6.3
+    fig_height: 4.7
+    number_sections: true
+    self_contained: true
+    mathjax: default
+    df_print: kable
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+options(stringsAsFactors = FALSE)
+
+output_directory <- params[["output_directory"]]
+
+dir.create(paste0(output_directory, "/KnitrFiles/"), recursive = TRUE, showWarnings = FALSE, mode = '0777')
+
+
+### Load packages and functions
+library(parallel)
+library(tidyverse)
+library(scales)
+library(grid)
+
+### Set knitr rmarkdown chunk options
+knitr::opts_chunk$set(
+  results = "asis",
+  size = "small",
+  include = TRUE,
+  echo = params[["show_code"]],
+  warning = params[["show_code"]],
+  message = params[["show_code"]],
+  dpi = params[["dpi"]],
+  tidy = FALSE,
+  crop = TRUE,
+  autodep = TRUE,
+  fig.align = "center",
+  fig.pos = "!H",
+  cache = FALSE,
+  cache.path = paste0(output_directory, "/KnitrFiles/"),
+  fig.path = paste0(output_directory, "/KnitrFiles/")
+)
+
+
+### Define n_cores
+n_cores <- params[["n_cores"]]
+
+
+### Define theme
+ggplot2::theme_set(ggplot2::theme_light(base_size = params[["gg_fontsize"]]))
+
+
+### Additional packages and functions
+source("/disks/PROJECT/Rpackages/CARoT/R/read_idats.R")
+source("/disks/PROJECT/Rpackages/CARoT/R/pca_report.R")
+source("/disks/PROJECT/Rscripts/ggheatmap.R")
+
+pretty_kable <- function(
+  data, 
+  font_size = 12, 
+  format_args = list(scientific = -1, digits = 3, big.mark = ","), 
+  col.names = NA,
+  full_width,
+  echo = TRUE,
+  ...
+) {
+  colnames(data) <- Hmisc::capitalize(colnames(data))
+  options(knitr.table.format = "html")
+  output <- knitr::kable(x = data, format.args = format_args, col.names = col.names, ...)
+  output <- kableExtra::kable_styling(
+    kable_input = output,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = ifelse(missing(full_width), FALSE, full_width),
+    position = "center",
+    font_size = font_size
+  )
+  
+  if (echo) print(output) else invisible(output)
+}
+
+
+col_se <- function (x, na.rm = TRUE) {
+  if (na.rm) {
+    n <- colSums(!is.na(x))
+  } else {
+    n <- nrow(x)
+  }
+  colVar <- colMeans(x*x, na.rm = na.rm) - (colMeans(x, na.rm = na.rm))^2
+  
+  sqrt(colVar/n)
+}
+
+col_sd <- function(x, na.rm = TRUE) {
+  if (na.rm) {
+    n <- colSums(!is.na(x))
+  } else {
+    n <- nrow(x)
+  }
+  colVar <- colMeans(x*x, na.rm = na.rm) - (colMeans(x, na.rm = na.rm))^2
+  sqrt(colVar * n/(n-1))
+}
+
+do_check_gender <- !is.null(params[["colname_gender"]])
+do_cell_composition <- !is.null(params[["cell_tissue"]])
+```
+
+# Methods
+
+1. Importing Data
+    * __File format__  
+        => IDAT files from Illumina
+    * __Import data__  
+        => (custom) `read_idats` based on [*minfi*](https://doi.org/doi:10.18129/B9.bioc.minfi)
+1. Filtering Probes
+    * `filter_snps`  
+        => keep probes in which the probed CpG falls near a SNP
+    * `filter_non_cpg`  
+        => remove non-cg probes
+    * `filter_xy`  
+        => keep probes from X and Y chromosomes
+
+1. Filtering Probes
+    * `filter_multihit`  
+        => remove probes which align to multiple locations
+    * `filter_beads`  
+        => remove probes with a beadcount less than 3
+    * __Call Rate__  
+        => remove probes with less than the specified call rate for detection p-values below $\alpha=0.01$ (default)
+1. Filtering Samples
+    * __Call Rate__  
+        => remove samples with less than the specified call rate for detection p-values below $\alpha=0.01$ (default)
+    * __Gender~[Phenotype]~ $\neq$ Gender~[Probes]~__  
+        => flag samples with gender discrepancy
+1. Normalisation
+    * __Probe design type bias__  
+        => using `rcp` method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)  
+        *`rcp` = "Regression on Correlated Probes"*  
+        *Normalise __type II__ probes (with __type I__ as reference) using linear regression coefficients based on type I and type II probe pairs within specified distance.*
+    * __Batch effect bias__  
+        => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)  
+        *Empirical Bayes framework is used to correct for batch effects using __batch/slide as covarariate__.*
+1. Additional Checks
+    * __Cell Composition__  
+        => using `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)  
+    * __Principal Component Analysis (PCA)__  
+        => using [FlashPCA](https://doi.org/10.1093/bioinformatics/btx299) for R on [GitHub](https://github.com/gabraham/flashpca/tree/master/flashpcaR)
+
+
+# Quality Control
+
+```{r sample_sheet}
+sample_sheet <- readr::read_csv(params[["csv_file"]])  %>% 
+  dplyr::mutate(
+    gender_clean = if (do_check_gender) {
+      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[get(params[["colname_gender"]])]
+    } else {
+      NULL
+    }
+  ) %>% 
+  dplyr::select(Sample_ID, dplyr::everything())
+
+readr::write_csv(x = sample_sheet, path = paste0(output_directory, "/sample_sheet.csv"))
+
+if (do_check_gender) {
+  pca_vars <- intersect(colnames(sample_sheet), unique(c(params[["pca_vars"]], "gender_clean")))
+} else {
+  pca_vars <- intersect(colnames(sample_sheet), params[["pca_vars"]])
+}
+```
+
+```{r read_idats}
+output <- utils::capture.output({
+  data_raw <- read_idats(
+    directory = params[["data_directory"]], 
+    csv_file = paste0(output_directory, "/sample_sheet.csv"), 
+    meth_value_type = "B",
+    filter_beads = params[["filter_beads"]], 
+    bead_cutoff = params[["bead_cutoff"]], 
+    filter_non_cpg = params[["filter_non_cpg"]],
+    filter_snps = params[["filter_snps"]], 
+    population = params[["population"]], 
+    filter_multihit = params[["filter_multihit"]],
+    filter_xy = params[["filter_xy"]], 
+    array_name = params[["array"]], 
+    annotation_version = params[["annotation"]],
+    n_cores = params[["n_cores"]]
+  )
+}, type = "message")
+output <- output[grep(pattern = "[MethPipe] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
+output <- output[!grepl(pattern = "^[=[]", x = output)]
+cat(output, sep = "\n\n")
+```
+
+## Call Rate
+
+```{r call_rate}
+data_detP <- data_raw$detP
+data_detP[is.na(data_detP)] <- 1
+data_detP_logical <- data_detP < params[["threshold_detection_pvalues"]]
+
+call_rate_samples <- colSums(data_detP_logical)/nrow(data_detP_logical)
+bad_samples <- setdiff(
+  colnames(data_detP),
+	names(which(call_rate_samples >= params[["threshold_call_rate_samples"]]))
+)
+good_samples <- setdiff(colnames(data_detP_logical), bad_samples)
+call_rate_cpg <- rowSums(data_detP_logical[, good_samples]) / ncol(data_detP_logical[, good_samples])
+bad_cpgs <- setdiff(
+  rownames(data_detP),
+	names(which(call_rate_cpg >= params[["threshold_call_rate_cpgs"]]))
+)
+
+minfi::pData(data_raw$mset) <- data_raw$mset %>% 
+  minfi::pData() %>% 
+	as.data.frame() %>% 
+	dplyr::mutate(
+	  Sample_ID = as.character(Sample_ID),
+		mean_detection_pvalue = colMeans(data_detP)[Sample_ID],
+		sd_detection_pvalue = col_sd(data_detP)[Sample_ID],
+		se_detection_pvalue = col_se(data_detP)[Sample_ID],
+		call_rate = (colSums(data_detP < params[["threshold_detection_pvalues"]]) / nrow(data_detP))[Sample_ID]
+	) %>% 
+  S4Vectors::DataFrame()
+
+
+data_call_rate_samples <- data_raw$mset %>% 
+  minfi::pData() %>% 
+  as.data.frame() %>% 
+	dplyr::select(Sample_ID, call_rate) %>% 
+	dplyr::arrange(call_rate) %>% 
+	dplyr::mutate(
+		x = seq_along(call_rate),
+		label = ifelse(call_rate<params[["threshold_call_rate_samples"]], Sample_ID, NA)
+	)
+tab_call_rate_samples <- lapply(call_rate_samples, `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
+	do.call("rbind", .) %>%
+	colSums() %>%
+	data.frame(
+		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
+		"Samples (N)" = .,
+		"Samples (%)" = signif((. / length(call_rate_samples)) * 100, digits = 3),
+		check.names = FALSE
+	)
+
+data_call_rate_cpgs <- data.frame(
+  call_rate = rowSums(data_detP<params[["threshold_detection_pvalues"]]) / ncol(data_detP)
+) %>% 
+  tibble::rownames_to_column("cpg_names") %>% 
+	dplyr::arrange(call_rate) %>% 
+	dplyr::mutate(x = seq_along(call_rate)) %>% 
+	dplyr::filter(call_rate!=1)
+tab_call_rate_cpg <- lapply(call_rate_cpg, `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
+	do.call("rbind", .) %>%
+	colSums() %>%
+	data.frame(
+		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
+		"CpG Sites (N)" = .,
+		"CpG Sites (%)" = signif((. / length(call_rate_cpg)) * 100, digits = 3),
+		check.names = FALSE
+	)
+
+call_rate_env <- list(
+	data_call_rate_samples = data_call_rate_samples,
+	tab_call_rate_samples = tab_call_rate_samples,
+	data_call_rate_cpgs = data_call_rate_cpgs,
+	tab_call_rate_cpg = tab_call_rate_cpg,
+	good_samples = good_samples,
+	bad_cpgs = bad_cpgs,
+	bad_samples = bad_samples
+)
+```
+
+* Detection p-values threshold have been set to: `` `r params[["threshold_detection_pvalues"]]` ``
+* Samples below `` `r params[["threshold_call_rate_samples"]]` `` are removed.
+* CpG sites below `` `r params[["threshold_call_rate_samples"]]` `` are removed.
+  
+
+### Call rate per samples
+
+```{r call_rate_samples_tab}
+pretty_kable(call_rate_env[["tab_call_rate_samples"]])
+```
+
+```{r call_rate_samples_fig}
+ggplot2::ggplot(
+  data = call_rate_env[["data_call_rate_samples"]],
+  mapping = ggplot2::aes(x = x, y = call_rate, label = label)
+) +
+  ggplot2::geom_point(
+    colour = scales::viridis_pal()(1), 
+    shape = 21,
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_hline(
+    mapping = ggplot2::aes(yintercept = params[["threshold_call_rate_samples"]]),
+    colour = "black", 
+    linetype = 2,
+    na.rm = TRUE
+  ) +
+  ggrepel::geom_label_repel(
+    nudge_x = 200, 
+    nudge_y = 0.01,
+    min.segment.length = ggplot2::unit(0, "lines"), 
+    size = 5, 
+    segment.colour = "black",
+    colour = "black",
+    na.rm = TRUE
+  ) +
+  ggplot2::labs(x = "Samples", y = "Call Rate") +
+  ggplot2::scale_y_continuous(label = scales::percent) +
+	ggplot2::scale_x_continuous(label = scales::comma)
+```
+
+### Call rate per CpGs
+
+```{r call_rate_cpgs_tab}
+pretty_kable(call_rate_env[["tab_call_rate_cpg"]])
+```
+
+```{r call_rate_cpgs_fig}
+ggplot2::ggplot(
+  data = call_rate_env[["data_call_rate_cpgs"]],
+  mapping = ggplot2::aes(x = x, y = call_rate)
+) +
+  ggplot2::geom_point(
+    colour = scales::viridis_pal()(1), 
+    shape = 21,
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_hline(
+    mapping = ggplot2::aes(yintercept = params[["threshold_call_rate_cpgs"]]),
+    colour = "black", 
+    linetype = 2,
+    na.rm = TRUE
+  ) +
+  ggplot2::labs(x = "CpGs", y = "Call Rate", caption = "Only CPGs with a call aate stricly below 100 % are shown") +
+  ggplot2::scale_y_continuous(label = scales::percent) +
+	ggplot2::scale_x_continuous(label = scales::comma)
+```
+
+```{r preprocess, results = "hide"}
+data_mset <- ENmix::preprocessENmix(
+  rgSet = data_raw[["rgSet"]], 
+  bgParaEst = params[["norm_background"]], 
+  dyeCorr = params[["norm_dye"]], 
+  QCinfo = NULL, 
+  exQCsample = FALSE,
+  exQCcpg = FALSE, 
+  exSample = call_rate_env[["bad_samples"]], 
+  exCpG = call_rate_env[["bad_cpgs"]], 
+  nCores = params[["n_cores"]]
+)
+
+data_mset <- ENmix::norm.quantile(mdat = data_mset, method = params[["norm_quantile"]])
+```
+
+## Cell composition
+
+```{r do_cell_composition}
+if (!do_cell_composition) {
+  cat("No cell tissue was provided.\n")
+}
+```
+
+```{r cell_composition, eval = do_cell_composition}
+cell_comp <- switch(
+  EXPR = params[["cell_tissue"]],
+  "Blood" = {
+    FlowSorted.Blood.EPIC::estimateCellCounts2(
+      rgSet = data_mset, 
+      compositeCellType = cell_tissue,
+      processMethod = "preprocessQuantile", 
+      probeSelect = cell_probes,
+      cellTypes = cell_types,
+      referencePlatform = paste0('IlluminaHumanMethylation', array),
+      referenceset = NULL, 
+      IDOLOptimizedCpGs = NULL, 
+      returnAll = FALSE,
+      meanPlot = TRUE, 
+      verbose = FALSE
+    )$counts
+  }, 
+  "Chord" = {
+    cat("No method defined yet")
+  },
+  {
+    estimate_k_cluster <- function(Rmat, max_k = 10, n_cores = 1) {
+      svdRmat <- RefFreeEWAS::svdSafe(Rmat)
+      tmp <- do.call("rbind", parallel::mclapply(
+        X = 0:max_k,
+        mc.preschedule = FALSE, 
+        mc.cores = n_cores,
+        mc_Rmat = Rmat,
+        mc_svdRmat = svdRmat,
+        FUN = function(Ktest, mc_Rmat, mc_svdRmat) {
+          N1 <- dim(mc_Rmat)[1]
+          N2 <- dim(mc_Rmat)[2]
+          if (Ktest == 0) {
+            tmpRminLU <- mc_Rmat
+          } else {
+            tmpRminLU <- mc_Rmat - mc_svdRmat$u[, 1:Ktest] %*% (mc_svdRmat$d[1:Ktest] * t(mc_svdRmat$v[, 1:Ktest]))
+          }
+          tmpSigSq <- rowSums(tmpRminLU * tmpRminLU) / N2
+    
+          c(
+            K = Ktest,
+            AIC =  2 * (N1 + Ktest * (N1 + N2)) + 
+              N1 * N2 +
+              N2 * sum(log(tmpSigSq)),
+            BIC = log(N2) * (N1 + Ktest * (N1 + N2)) + 
+              N1 * N2 + 
+              N2 * sum(log(tmpSigSq))
+          )
+      }))
+      
+      list(
+        icTable = tmp, 
+        best = tmp[c(AIC = which.min(tmp[, "AIC"]), BIC = which.min(tmp[, "BIC"])), "K"],
+        custom_best = tmp[c(
+          AIC = which.max(abs(diff(tmp[, "AIC"])[-1])) + 1, 
+          BIC = which.max(abs(diff(tmp[, "BIC"])[-1])) + 1
+        ), "K"]
+      )
+    }
+    beta_matrix <- minfi::getBeta(data_mset)
+    k_estimated <- min(estimate_k_cluster(
+      Rmat = beta_matrix, 
+      max_k = 25, 
+      n_cores = min(params[["n_cores"]], 25)
+    )$best)
+    mu0 <- RefFreeEWAS::RefFreeCellMixInitialize(
+      Y = minfi::getBeta(data_mset),
+      K = k_estimated,
+      Y.Distance = NULL, 
+      Y.Cluster = NULL, 
+      largeOK = TRUE,
+      dist.method = "euclidean"
+    )
+    
+    RefFreeCellMixObj <- RefFreeEWAS::RefFreeCellMix(
+      Y = beta_matrix, 
+      mu0 = mu0, 
+      K = NULL,
+      iters = 10, 
+      Yfinal = NULL, 
+      verbose = FALSE
+    )
+
+    out <- RefFreeCellMixObj[["Omega"]]
+    colnames(out) <- paste0("CellT_", 1:ncol(out))
+    out
+  }
+)
+
+minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
+  as.data.frame() %>%
+  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
+  dplyr::full_join(
+    y = cell_comp %>% 
+      as.data.frame() %>% 
+      tibble::rownames_to_column("Sample_ID"), 
+    by = "Sample_ID"
+  ) %>% 
+  S4Vectors::DataFrame()
+```
+
+```{r cell_composition_size}
+def_res <- params[["dpi"]]
+def_label_gene_y <- params[["gg_fontsize"]] / 8
+def_label_gene_x <- params[["gg_fontsize"]] / 2
+
+def_grid_h_middle <- 0.60
+def_height <- nrow(sample_sheet) * 
+  (def_label_gene_y * params[["gg_fontsize"]] / 0.75) / 
+  def_grid_h_middle /
+  def_res
+
+def_height <- ifelse(def_height>=16, 16, def_height)
+```
+
+```{r cell_composition_fig, fig.width = def_height, fig.height = def_height, eval = do_cell_composition}
+ggheatmap.show(
+  data = edit.hm.legend(
+    ggheatmap = ggheatmap(
+      data = minfi::pData(data_mset) %>% 
+        as.data.frame() %>% 
+        dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
+        tibble::column_to_rownames("Sample_ID") %>% 
+        as.matrix,
+      legend.title = "Cell Composition", 
+      label.h.size = def_label_gene_y,
+      label.v.size = def_label_gene_x, 
+      print = FALSE
+    ), 
+    size = params[["gg_fontsize"]] * 2, 
+    barwidth = params[["gg_fontsize"]] * 1, 
+    barheight = params[["gg_fontsize"]] * 0.25
+  ),
+  grid.h.ratio = c(0.15, def_grid_h_middle, 0.25),
+  grid.v.ratio = rev(c(0.15, def_grid_h_middle, 0.25)),
+  legend.position = c(
+    which.max(c(c(0.15, def_grid_h_middle, 0.25)[1], 0, c(0.15, def_grid_h_middle, 0.25)[3])), 
+    which.max(c(rev(c(0.15, def_grid_h_middle, 0.25))[1], 0, rev(c(0.15, def_grid_h_middle, 0.25))[3]))
+  )
+)
+```
+
+## Gender check
+
+```{r do_check_gender}
+if (!do_check_gender) {
+  cat("No phenotypes for gender was provided.\n")
+}
+```
+
+```{r gender_check, eval = do_check_gender}
+sex_predicted <- minfi::getSex(minfi::mapToGenome(data_mset), cutoff = params[["threshold_gender"]])
+gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
+threshold_gender <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
+
+minfi::pData(data_mset) <- data_mset %>% 
+  minfi::mapToGenome() %>% 
+  minfi::getSex(cutoff = threshold_gender) %>% 
+  as.data.frame() %>% 
+  dplyr::mutate(Sample_ID = minfi::pData(data_mset)[,"Sample_ID"]) %>% 
+  dplyr::rename(
+    qc_xmedian = xMed,
+    qc_ymedian = yMed,
+    qc_predicted_gender = predictedSex
+  ) %>% 
+  dplyr::full_join(
+    y = data_mset %>% 
+      minfi::pData() %>% 
+      as.data.frame() %>% 
+      dplyr::mutate(Sample_ID = as.character(Sample_ID)), 
+    by = c("Sample_ID")
+  ) %>% 
+  dplyr::mutate(
+    qc_predicted_gender = c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[qc_predicted_gender],
+    qc_observed_gender = gender_clean,
+    qc_gender_discrepancy = qc_observed_gender!=qc_predicted_gender
+  ) %>% 
+  S4Vectors::DataFrame()
+```
+
+```{r gender_check_threshold, eval = FALSE}
+ggplot2::ggplot(
+  data = minfi::pData(data_mset) %>%
+    as.data.frame() %>%
+    dplyr::mutate(diff = qc_ymedian - qc_xmedian),
+  mapping = ggplot2::aes(x = diff)
+) +
+  ggplot2::geom_density(position = "identity", na.rm = TRUE) +
+  ggplot2::geom_vline(xintercept = threshold_gender, linetype = 2, na.rm = TRUE) +
+  ggplot2::labs(
+    x = expression(atop(
+      paste("Y chromosome median total intensity ", (log[2])),
+      paste("- X chromosome median total intensity ", (log[2]))
+    )),
+    y = "Density"
+  ) +
+  ggplot2::scale_x_continuous(expand = ggplot2::expand_scale(mult = c(0, 0))) +
+  ggplot2::scale_y_continuous(expand = ggplot2::expand_scale(mult = c(0, 0.05)))
+```
+
+```{r gender_check_fig, eval = do_check_gender}
+plot_range <- range(as.data.frame(minfi::pData(data_mset)[c("qc_xmedian", "qc_ymedian")]))
+ggplot2::ggplot(
+  data = minfi::pData(data_mset) %>% 
+    as.data.frame() %>% 
+    dplyr::filter(!qc_gender_discrepancy), 
+  mapping = ggplot2::aes(
+    x = qc_xmedian, 
+    y = qc_ymedian, 
+    shape = factor(qc_predicted_gender), 
+    colour = factor(qc_observed_gender)
+  )
+) +
+  ggplot2::geom_abline(
+    data = data.frame(Threshold = paste("=", threshold_gender), Seuil = threshold_gender), 
+    mapping = ggplot2::aes(intercept = Seuil, slope = 1, linetype = Threshold),
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_point(size = 2, na.rm = TRUE) +
+  ggplot2::geom_point(
+    data = minfi::pData(data_mset) %>% 
+      as.data.frame() %>% 
+      dplyr::filter(qc_gender_discrepancy),
+    size = 4,
+    show.legend = FALSE,
+    na.rm = TRUE
+  ) +
+  ggrepel::geom_label_repel(
+    data = minfi::pData(data_mset) %>% 
+      as.data.frame() %>% 
+      dplyr::filter(qc_gender_discrepancy),
+    mapping = ggplot2::aes(x = qc_xmedian, y = qc_ymedian, label = Sample_ID),
+    segment.colour = "black",
+    colour = "black",
+    min.segment.length = ggplot2::unit(0, "lines"),
+    size = 4,
+    inherit.aes = FALSE,
+    show.legend = FALSE,
+    na.rm = TRUE
+  ) +
+  ggplot2::labs(
+    x = expression(atop("X chromosome", paste("Median total intensity ", (log[2])))), 
+    y = expression(atop("Y chromosome", paste("Median total intensity ", (log[2]))))
+  ) +
+  ggplot2::scale_colour_viridis_d(
+    name = "Gender (Observed)", 
+    breaks = c(1, 2), 
+    labels = c("Male", "Female"),
+    drop = FALSE,
+    begin = 0.2, 
+    end = 0.8
+  ) +
+  ggplot2::scale_shape_manual(
+    name = "Gender (Predicted)", 
+    breaks = c(1, 2), 
+    labels = c("Male", "Female"), 
+    values = c(22, 21),
+    drop = FALSE
+  )
+```
+
+```{r descrepancy_table, eval = do_check_gender}
+minfi::pData(data_mset) %>%
+  as.data.frame() %>% 
+  group_by(qc_predicted_gender, qc_observed_gender) %>% 
+  summarise(n = n()) %>% 
+  ungroup() %>% 
+  mutate(
+    qc_observed_gender = paste("Observed:", qc_observed_gender),
+    qc_predicted_gender = paste("Predicted:", qc_predicted_gender)
+  ) %>% 
+  spread(key = "qc_observed_gender", value = "n") %>% 
+  rename(qc_predicted_gender = "") %>% 
+  replace(list = is.na(.), values = 0) %>% 
+  pretty_kable(full_width = FALSE)
+```
+
+```{r descrepancy_samples_table, eval = do_check_gender}
+minfi::pData(data_mset) %>% 
+  as.data.frame() %>% 
+  dplyr::filter(qc_gender_discrepancy) %>% 
+  dplyr::select(Sample_Name, Sample_ID, qc_observed_gender, qc_predicted_gender) %>% 
+  pretty_kable(full_width = FALSE)
+```
+
+
+## Principal Component Analysis
+
+```{r normalisation, results = "hide"}
+norm_beta <- ENmix::rcp(mdat = data_mset)
+if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) { 
+  norm_beta <- ENmix::ComBat.mc(
+    dat = norm_beta, 
+    batch = factor(minfi::pData(data_mset)[["Sentrix_ID"]]), 
+    nCores = params[["n_cores"]], 
+    mod = NULL
+  )
+}
+data_mset@metadata <- list(cnbeta = norm_beta)
+```
+
+```{r export}
+readr::write_rds(x = data_mset, path = paste0(output_directory, "/", script_name, "_mset.rds"))
+```
+
+```{r pca}
+list_beta <- c(
+	"beta" = "Raw $beta$-values",
+	"cnbeta" = "ComBat normalised $beta$-values"
+)
+data_batch <- list(
+	"beta" =  minfi::getBeta(data_mset) %>% 
+	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
+	"cnbeta" = data_mset@metadata[["cnbeta"]] %>% 
+	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"])
+)
+
+for (ibeta in seq_along(list_beta)) {
+	cat("\n###", list_beta[ibeta], " {.tabset .tabset-fade .tabset-pills}\n\n")
+	pca_report(
+		data = data_batch[[names(list_beta)[ibeta]]], 
+		design = minfi::pData(data_mset), 
+		id_var = "Sample_ID",
+		technical_vars = pca_vars, 
+		n_comp = 10, 
+		fig_n_comp = 3,
+		title_level = 4
+	)
+	cat("\n")
+}
+```
+
+# R session information
+
+```{r session_info, results = "markup"}
+options("width" = 110)
+sessioninfo::session_info()
+```
