@@ -159,7 +159,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * __Import data__  
         => (custom) `read_idats` based on [*minfi*](https://doi.org/doi:10.18129/B9.bioc.minfi)
 1. Filtering Probes
-    * `filter_snps`  
+    * `filter_snps` (Zhou et al., 2016; doi:10.1093/nar/gkw967)  
         => keep probes in which the probed CpG falls near a SNP
     * `filter_non_cpg`  
         => remove non-cg probes
@@ -167,7 +167,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
         => keep probes from X and Y chromosomes
 
 1. Filtering Probes
-    * `filter_multihit`  
+    * `filter_multihit` (Nordlund et al., 2013; doi:10.1186/gb-2013-14-9-r105)  
         => remove probes which align to multiple locations
     * `filter_beads`  
         => remove probes with a beadcount less than 3
@@ -182,10 +182,10 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * __Probe design type bias__  
         => using `rcp` method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)  
         *`rcp` = "Regression on Correlated Probes"*  
-        *Normalise __type II__ probes (with __type I__ as reference) using linear regression coefficients based on type I and type II probe pairs within specified distance.*
+        *Normalise __type II__ probes (with __type I__ as reference) using linear regression coefficients based on type I and type II probe pairs within specified distance*
     * __Batch effect bias__  
         => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)  
-        *Empirical Bayes framework is used to correct for batch effects using __batch/slide as covarariate__.*
+        *Empirical Bayes framework is used to correct for batch effects using __batch/slide as covarariate__*
 1. Additional Checks
     * __Cell Composition__  
         => using `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)  
@@ -645,7 +645,7 @@ ggplot2::ggplot(
     segment.colour = "black",
     colour = "black",
     min.segment.length = ggplot2::unit(0, "lines"),
-    size = 4,
+    size = 2,
     inherit.aes = FALSE,
     show.legend = FALSE,
     na.rm = TRUE
