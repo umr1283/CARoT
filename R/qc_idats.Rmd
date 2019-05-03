@@ -345,10 +345,10 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    nudge_x = 200, 
-    nudge_y = 0.01,
+    # nudge_x = 200, 
+    # nudge_y = 0.01,
     min.segment.length = ggplot2::unit(0, "lines"), 
-    size = 5, 
+    size = 2, 
     segment.colour = "black",
     colour = "black",
     na.rm = TRUE
