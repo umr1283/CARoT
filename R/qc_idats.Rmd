@@ -721,6 +721,7 @@ if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) {
     mod = NULL
   )
 }
+colnames(norm_beta) <- minfi::pData(data_mset)[, "Sample_ID"]
 data_mset@metadata <- list(cnbeta = norm_beta)
 ```
 
