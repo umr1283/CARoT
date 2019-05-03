@@ -380,7 +380,7 @@ ggplot2::ggplot(
     linetype = 2,
     na.rm = TRUE
   ) +
-  ggplot2::labs(x = "CpGs", y = "Call Rate", caption = "Only CPGs with a call aate stricly below 100 % are shown") +
+  ggplot2::labs(x = "CpGs", y = "Call Rate", caption = "Only CpGs with a call rate strictly below 100 % are shown") +
   ggplot2::scale_y_continuous(label = scales::percent) +
 	ggplot2::scale_x_continuous(label = scales::comma)
 ```
@@ -712,7 +712,7 @@ data_mset@metadata <- list(cnbeta = norm_beta)
 ```
 
 ```{r export}
-readr::write_rds(x = data_mset, path = paste0(output_directory, "/", script_name, "_mset.rds"))
+readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
 
 ```{r pca}
