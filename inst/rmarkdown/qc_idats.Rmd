@@ -206,7 +206,7 @@ sample_sheet <- readr::read_csv(params[["csv_file"]])  %>%
   ) %>% 
   dplyr::select(Sample_ID, dplyr::everything())
 
-readr::write_csv(x = sample_sheet, path = paste0(output_directory, "/sample_sheet.csv"))
+readr::write_csv(x = sample_sheet, path = paste0(tempdir(), "/sample_sheet.csv"))
 
 if (do_check_gender) {
   pca_vars <- intersect(colnames(sample_sheet), unique(c(params[["pca_vars"]], "gender_clean")))
@@ -219,7 +219,7 @@ if (do_check_gender) {
 output <- utils::capture.output({
   data_raw <- read_idats(
     directory = params[["data_directory"]], 
-    csv_file = paste0(output_directory, "/sample_sheet.csv"), 
+    csv_file = paste0(tempdir(), "/sample_sheet.csv"), 
     meth_value_type = "B",
     filter_beads = params[["filter_beads"]], 
     bead_cutoff = params[["bead_cutoff"]], 

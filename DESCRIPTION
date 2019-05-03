@@ -37,7 +37,8 @@ Imports:
     purrr,
     readr,
     tidyr,
-    tibble
+    tibble,
+    R.utils
 Suggests:
     covr,
     testthat
