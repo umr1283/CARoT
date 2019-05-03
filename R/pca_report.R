@@ -1,3 +1,17 @@
+#' pca_report
+#'
+#' @param data A `vector` or `data.frame`.
+#' @param design A `data.frame`.
+#' @param id_var A `character`.
+#' @param technical_vars A `vector(character)`.
+#' @param n_comp A `numeric`.
+#' @param fig_n_comp A `numeric`.
+#' @param outliers_component A `logical`.
+#' @param outliers_threshold A `numeric`.
+#' @param title_level A `numeric`.
+#'
+#' @return A `data.frame`.
+#' @export
 pca_report <- function(
   data,
   design,
@@ -132,10 +146,8 @@ pca_report <- function(
   if (!is.null(outliers_component)) {
     euclid_dist <- dplyr::sym("euclid_dist")
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA Outliers {-}\n"))
-    pca_outliers <- pca_dfxy[, paste0("PC", outliers_component), drop = FALSE] %>%
-      `^`(2) %>%
-      rowSums() %>%
-      sqrt()
+    pca_outliers <- pca_dfxy[, paste0("PC", outliers_component), drop = FALSE]^2 %>%
+    pca_outliers <- sqrt(rowSums(pca_outliers))
     pca_outliers <- tibble::tibble("euclid_dist" = pca_outliers) %>%
       tibble::rownames_to_column(var = id_var) %>%
       dplyr::mutate(
