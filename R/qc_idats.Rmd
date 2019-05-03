@@ -315,18 +315,6 @@ call_rate_env <- list(
 	bad_cpgs = bad_cpgs,
 	bad_samples = bad_samples
 )
-
-minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
-  as.data.frame() %>%
-  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
-  dplyr::left_join(
-    y = data_call_rate_samples %>% 
-      as.data.frame() %>% 
-      dplyr::select(Sample_ID, call_rate), 
-    by = "Sample_ID"
-  ) %>% 
-  S4Vectors::DataFrame()
-
 ```
 
 * Detection p-values threshold have been set to: `` `r params[["threshold_detection_pvalues"]]` ``
@@ -411,6 +399,17 @@ data_mset <- ENmix::preprocessENmix(
 )
 
 data_mset <- ENmix::norm.quantile(mdat = data_mset, method = params[["norm_quantile"]])
+
+minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
+  as.data.frame() %>%
+  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
+  dplyr::left_join(
+    y = data_call_rate_samples %>% 
+      as.data.frame() %>% 
+      dplyr::select(Sample_ID, call_rate), 
+    by = "Sample_ID"
+  ) %>% 
+  S4Vectors::DataFrame()
 ```
 
 ## Cell composition
