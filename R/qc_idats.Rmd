@@ -315,6 +315,18 @@ call_rate_env <- list(
 	bad_cpgs = bad_cpgs,
 	bad_samples = bad_samples
 )
+
+minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
+  as.data.frame() %>%
+  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
+  dplyr::left_join(
+    y = data_call_rate_samples %>% 
+      as.data.frame() %>% 
+      dplyr::select(Sample_ID, call_rate), 
+    by = "Sample_ID"
+  ) %>% 
+  S4Vectors::DataFrame()
+
 ```
 
 * Detection p-values threshold have been set to: `` `r params[["threshold_detection_pvalues"]]` ``
@@ -345,10 +357,10 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    nudge_x = 200, 
-    nudge_y = 0.01,
+    # nudge_x = 200, 
+    # nudge_y = 0.01,
     min.segment.length = ggplot2::unit(0, "lines"), 
-    size = 5, 
+    size = 2, 
     segment.colour = "black",
     colour = "black",
     na.rm = TRUE
@@ -709,6 +721,7 @@ if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) {
     mod = NULL
   )
 }
+colnames(norm_beta) <- minfi::pData(data_mset)[, "Sample_ID"]
 data_mset@metadata <- list(cnbeta = norm_beta)
 ```
 
