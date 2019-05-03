@@ -431,7 +431,7 @@ cell_comp <- switch(
     cat("No method defined yet")
   },
   {
-    estimate_k_cluster <- function(Rmat, max_k = 10, n_cores = 1) {
+    estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
       svdRmat <- RefFreeEWAS::svdSafe(Rmat)
       tmp <- do.call("rbind", parallel::mclapply(
         X = 0:max_k,
@@ -470,10 +470,11 @@ cell_comp <- switch(
       )
     }
     beta_matrix <- minfi::getBeta(data_mset)
+    max_k <- min(ncol(beta_matrix), 25)
     k_estimated <- min(estimate_k_cluster(
       Rmat = beta_matrix, 
-      max_k = 25, 
-      n_cores = min(params[["n_cores"]], 25)
+      max_k = max_k, 
+      n_cores = min(params[["n_cores"]], max_k)
     )$best)
     mu0 <- RefFreeEWAS::RefFreeCellMixInitialize(
       Y = minfi::getBeta(data_mset),
@@ -734,8 +735,8 @@ for (ibeta in seq_along(list_beta)) {
 		design = minfi::pData(data_mset), 
 		id_var = "Sample_ID",
 		technical_vars = pca_vars, 
-		n_comp = 10, 
-		fig_n_comp = 3,
+		n_comp = min(10, ncol(data_batch[[names(list_beta)[ibeta]]])), 
+		fig_n_comp = min(3, ncol(data_batch[[names(list_beta)[ibeta]]])),
 		title_level = 4
 	)
 	cat("\n")
