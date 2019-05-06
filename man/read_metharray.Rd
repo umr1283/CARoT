@@ -11,7 +11,7 @@ read_metharray(basenames, n_cores = 1)
 \code{basenames} are the filename without the ending \code{_Grn.idat} or \code{_Red.idat}.
 \code{filenames} are filenames including \code{_Grn.idat} or \code{_Red.idat}.}
 
-\item{n_cores}{A \code{integer}. The number of cores to use,
+\item{n_cores}{An \code{integer}. The number of cores to use,
 i.e., at most how many child processes will be run simultaneously.}
 }
 \description{

@@ -4,19 +4,18 @@
 \alias{qc_idats}
 \title{qc_idats}
 \usage{
-qc_idats(csv_file, data_directory, output_file = "EPIC_QC.html",
-  output_directory = ".", array = "EPIC",
-  annotation = "ilm10b4.hg19", filter_snps = TRUE,
-  filter_non_cpg = TRUE, filter_xy = TRUE, filter_multihit = TRUE,
-  filter_beads = TRUE, population = NULL, bead_cutoff = 0.05,
-  threshold_detection_pvalues = 0.01,
-  threshold_call_rate_samples = 0.99, threshold_call_rate_cpgs = 1,
-  threshold_gender = -2, colname_gender = "sexe",
+qc_idats(csv_file, data_directory, array = "EPIC",
+  annotation = "ilm10b4.hg19", output_file = paste(array, "QC.html"),
+  output_directory = ".", filter_snps = TRUE, filter_non_cpg = TRUE,
+  filter_xy = TRUE, filter_multihit = TRUE, filter_beads = TRUE,
+  population = NULL, bead_cutoff = 0.05, detection_pvalues = 0.01,
+  filter_callrate = TRUE, callrate_samples = 0.99,
+  callrate_probes = 1, gender_threshold = -2, gender_colname = NULL,
   norm_background = "oob", norm_dye = "RELIC",
   norm_quantile = "quantile1", cell_tissue = NULL,
-  pca_vars = c("Sample_Plate", "Sentrix_ID"),
-  title = "EPIC Array Quality-Control", author_name = "CARoT",
-  author_affiliation = "", author_email = "", show_code = FALSE,
+  pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
+  "Array Quality-Control"), author_name = "CARoT",
+  author_affiliation = NULL, author_email = NULL, show_code = FALSE,
   n_cores = 20, dpi = 300, gg_fontsize = 12, encoding = "UTF-8")
 }
 \arguments{
@@ -24,13 +23,13 @@ qc_idats(csv_file, data_directory, output_file = "EPIC_QC.html",
 
 \item{data_directory}{A \code{character}.}
 
-\item{output_file}{A \code{character}.}
-
-\item{output_directory}{A \code{character}.}
-
 \item{array}{A \code{character}.}
 
 \item{annotation}{A \code{character}.}
+
+\item{output_file}{A \code{character}.}
+
+\item{output_directory}{A \code{character}.}
 
 \item{filter_snps}{A \code{logical}.}
 
@@ -46,15 +45,17 @@ qc_idats(csv_file, data_directory, output_file = "EPIC_QC.html",
 
 \item{bead_cutoff}{A \code{numeric}.}
 
-\item{threshold_detection_pvalues}{A \code{numeric}.}
+\item{detection_pvalues}{A \code{numeric}.}
 
-\item{threshold_call_rate_samples}{A \code{numeric}.}
+\item{filter_callrate}{A \code{logical}.}
 
-\item{threshold_call_rate_cpgs}{A \code{numeric}.}
+\item{callrate_samples}{A \code{numeric}.}
 
-\item{threshold_gender}{A \code{numeric}.}
+\item{callrate_probes}{A \code{numeric}.}
 
-\item{colname_gender}{A \code{character}.}
+\item{gender_threshold}{A \code{numeric}.}
+
+\item{gender_colname}{A \code{character}.}
 
 \item{norm_background}{A \code{character}.}
 

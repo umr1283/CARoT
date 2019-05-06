@@ -38,7 +38,9 @@ Imports:
     readr,
     tidyr,
     tibble,
-    R.utils
+    R.utils,
+    S4Vectors,
+    ENmix
 Suggests:
     covr,
     testthat

@@ -7,9 +7,11 @@
 read_idats(directory = getwd(), csv_file = "csv$",
   meth_value_type = "B", filter_beads = TRUE, bead_cutoff = 0.05,
   filter_non_cpg = TRUE, filter_snps = TRUE, population = NULL,
-  filter_multihit = TRUE, filter_xy = TRUE, array_name = c("EPIC",
-  "450k"), annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"),
-  n_cores = 1)
+  filter_multihit = TRUE, filter_xy = TRUE, detection_pvalues = 0.01,
+  filter_callrate = TRUE, callrate_samples = 0.99,
+  callrate_probes = 1, norm_background = "oob", norm_dye = "RELIC",
+  norm_quantile = "quantile1", array_name = c("EPIC", "450k"),
+  annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"), n_cores = 1)
 }
 \arguments{
 \item{directory}{A \code{character}. Location of IDAT files,
@@ -39,13 +41,27 @@ locations with bwa be removed? Default is \code{TRUE}.}
 
 \item{filter_xy}{A \code{logical}. Should probes from X and Y chromosomes be removed? Default is \code{TRUE}.}
 
+\item{detection_pvalues}{A \code{numeric}.}
+
+\item{filter_callrate}{A \code{logical}.,}
+
+\item{callrate_samples}{A \code{numeric}.}
+
+\item{callrate_probes}{A \code{numeric}.}
+
+\item{norm_background}{A \code{character}.}
+
+\item{norm_dye}{A \code{character}.}
+
+\item{norm_quantile}{A \code{character}.}
+
 \item{array_name}{A \code{character}. Choose microarray type, eiyther \code{"450K"} or \code{"EPIC"}.
 Default is \code{"EPIC"}.}
 
 \item{annotation_version}{A \code{character}. Version of the annotation package that should be used.
 Default is \code{"ilm10b4.hg19"} for the \code{"EPIC"} array}
 
-\item{n_cores}{A \code{integer}. The number of cores to use,
+\item{n_cores}{An \code{integer}. The number of cores to use,
 i.e., at most how many child processes will be run simultaneously.}
 }
 \value{
