@@ -20,7 +20,7 @@ If \code{FALSE}, the file names (rather than paths) are returned.}
 
 \item{full.names}{A \code{logical}. Should pattern-matching be case-insensitive?}
 
-\item{n_cores}{A \code{integer}. The number of cores to use,
+\item{n_cores}{An \code{integer}. The number of cores to use,
 i.e., at most how many child processes will be run simultaneously.}
 }
 \description{

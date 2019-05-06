@@ -28,11 +28,12 @@ params:
   filter_beads: TRUE
   population: NULL
   bead_cutoff: 0.05
-  threshold_detection_pvalues: 0.01
-  threshold_call_rate_samples: 0.99
-  threshold_call_rate_cpgs: 1
-  threshold_gender: -2 
-  colname_gender: NULL
+  detection_pvalues: 0.01
+  filter_callrate: TRUE
+  callrate_samples: 0.99
+  callrate_probes: 1
+  gender_threshold: -2 
+  gender_colname: NULL
   norm_background: "oob"
   norm_dye: "RELIC"
   norm_quantile: "quantile1" 
@@ -125,29 +126,7 @@ pretty_kable <- function(
   if (echo) print(output) else invisible(output)
 }
 
-
-col_se <- function (x, na.rm = TRUE) {
-  if (na.rm) {
-    n <- colSums(!is.na(x))
-  } else {
-    n <- nrow(x)
-  }
-  colVar <- colMeans(x*x, na.rm = na.rm) - (colMeans(x, na.rm = na.rm))^2
-  
-  sqrt(colVar/n)
-}
-
-col_sd <- function(x, na.rm = TRUE) {
-  if (na.rm) {
-    n <- colSums(!is.na(x))
-  } else {
-    n <- nrow(x)
-  }
-  colVar <- colMeans(x*x, na.rm = na.rm) - (colMeans(x, na.rm = na.rm))^2
-  sqrt(colVar * n/(n-1))
-}
-
-do_check_gender <- !is.null(params[["colname_gender"]])
+do_check_gender <- !is.null(params[["gender_colname"]])
 do_cell_composition <- !is.null(params[["cell_tissue"]])
 ```
 
@@ -199,7 +178,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
 sample_sheet <- readr::read_csv(params[["csv_file"]])  %>% 
   dplyr::mutate(
     gender_clean = if (do_check_gender) {
-      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[get(params[["colname_gender"]])]
+      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[get(params[["gender_colname"]])]
     } else {
       NULL
     }
@@ -217,7 +196,7 @@ if (do_check_gender) {
 
 ```{r read_idats}
 output <- utils::capture.output({
-  data_raw <- read_idats(
+  data_mset <- read_idats(
     directory = params[["data_directory"]], 
     csv_file = paste0(tempdir(), "/sample_sheet.csv"), 
     meth_value_type = "B",
@@ -228,6 +207,13 @@ output <- utils::capture.output({
     population = params[["population"]], 
     filter_multihit = params[["filter_multihit"]],
     filter_xy = params[["filter_xy"]], 
+    detection_pvalues = params[["detection_pvalues"]],
+    filter_callrate = params[["filter_callrate"]],
+    callrate_samples = params[["callrate_samples"]],
+    callrate_probes = params[["callrate_probes"]],
+    norm_background = params[["norm_background"]],
+    norm_dye = params[["norm_dye"]],
+    norm_quantile = params[["norm_quantile"]],
     array_name = params[["array"]], 
     annotation_version = params[["annotation"]],
     n_cores = params[["n_cores"]]
@@ -236,101 +222,36 @@ output <- utils::capture.output({
 output <- output[grep(pattern = "[MethPipe] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
 output <- output[!grepl(pattern = "^[=[]", x = output)]
 cat(output, sep = "\n\n")
+phenotypes <- data_mset@metadata[["phenotypes"]]
 ```
 
-## Call Rate
-
 ```{r call_rate}
-data_detP <- data_raw$detP
-data_detP[is.na(data_detP)] <- 1
-data_detP_logical <- data_detP < params[["threshold_detection_pvalues"]]
-
-call_rate_samples <- colSums(data_detP_logical)/nrow(data_detP_logical)
-bad_samples <- setdiff(
-  colnames(data_detP),
-	names(which(call_rate_samples >= params[["threshold_call_rate_samples"]]))
-)
-good_samples <- setdiff(colnames(data_detP_logical), bad_samples)
-call_rate_cpg <- rowSums(data_detP_logical[, good_samples]) / ncol(data_detP_logical[, good_samples])
-bad_cpgs <- setdiff(
-  rownames(data_detP),
-	names(which(call_rate_cpg >= params[["threshold_call_rate_cpgs"]]))
-)
-
-minfi::pData(data_raw$mset) <- data_raw$mset %>% 
-  minfi::pData() %>% 
-	as.data.frame() %>% 
-	dplyr::mutate(
-	  Sample_ID = as.character(Sample_ID),
-		mean_detection_pvalue = colMeans(data_detP)[Sample_ID],
-		sd_detection_pvalue = col_sd(data_detP)[Sample_ID],
-		se_detection_pvalue = col_se(data_detP)[Sample_ID],
-		call_rate = (colSums(data_detP < params[["threshold_detection_pvalues"]]) / nrow(data_detP))[Sample_ID]
-	) %>% 
-  S4Vectors::DataFrame()
-
-
-data_call_rate_samples <- data_raw$mset %>% 
-  minfi::pData() %>% 
+data_call_rate_samples <- phenotypes  %>% 
   as.data.frame() %>% 
 	dplyr::select(Sample_ID, call_rate) %>% 
 	dplyr::arrange(call_rate) %>% 
 	dplyr::mutate(
 		x = seq_along(call_rate),
-		label = ifelse(call_rate<params[["threshold_call_rate_samples"]], Sample_ID, NA)
+		label = ifelse(call_rate < params[["callrate_samples"]], Sample_ID, NA)
 	)
-tab_call_rate_samples <- lapply(call_rate_samples, `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
+```
+  
+```{r call_rate_samples_tab}
+tab_call_rate_samples <- lapply(phenotypes[["call_rate"]], `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
 	do.call("rbind", .) %>%
 	colSums() %>%
 	data.frame(
 		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
 		"Samples (N)" = .,
-		"Samples (%)" = signif((. / length(call_rate_samples)) * 100, digits = 3),
+		"Samples (%)" = signif((. / nrow(data_call_rate_samples)) * 100, digits = 3),
 		check.names = FALSE
 	)
-
-data_call_rate_cpgs <- data.frame(
-  call_rate = rowSums(data_detP<params[["threshold_detection_pvalues"]]) / ncol(data_detP)
-) %>% 
-  tibble::rownames_to_column("cpg_names") %>% 
-	dplyr::arrange(call_rate) %>% 
-	dplyr::mutate(x = seq_along(call_rate)) %>% 
-	dplyr::filter(call_rate!=1)
-tab_call_rate_cpg <- lapply(call_rate_cpg, `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
-	do.call("rbind", .) %>%
-	colSums() %>%
-	data.frame(
-		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
-		"CpG Sites (N)" = .,
-		"CpG Sites (%)" = signif((. / length(call_rate_cpg)) * 100, digits = 3),
-		check.names = FALSE
-	)
-
-call_rate_env <- list(
-	data_call_rate_samples = data_call_rate_samples,
-	tab_call_rate_samples = tab_call_rate_samples,
-	data_call_rate_cpgs = data_call_rate_cpgs,
-	tab_call_rate_cpg = tab_call_rate_cpg,
-	good_samples = good_samples,
-	bad_cpgs = bad_cpgs,
-	bad_samples = bad_samples
-)
-```
-
-* Detection p-values threshold have been set to: `` `r params[["threshold_detection_pvalues"]]` ``
-* Samples below `` `r params[["threshold_call_rate_samples"]]` `` are removed.
-* CpG sites below `` `r params[["threshold_call_rate_samples"]]` `` are removed.
-  
-
-### Call rate per samples
-
-```{r call_rate_samples_tab}
-pretty_kable(call_rate_env[["tab_call_rate_samples"]])
+pretty_kable(tab_call_rate_samples)
 ```
 
 ```{r call_rate_samples_fig}
 ggplot2::ggplot(
-  data = call_rate_env[["data_call_rate_samples"]],
+  data = data_call_rate_samples,
   mapping = ggplot2::aes(x = x, y = call_rate, label = label)
 ) +
   ggplot2::geom_point(
@@ -339,7 +260,7 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggplot2::geom_hline(
-    mapping = ggplot2::aes(yintercept = params[["threshold_call_rate_samples"]]),
+    mapping = ggplot2::aes(yintercept = params[["callrate_samples"]]),
     colour = "black", 
     linetype = 2,
     na.rm = TRUE
@@ -356,60 +277,6 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Samples", y = "Call Rate") +
   ggplot2::scale_y_continuous(label = scales::percent) +
 	ggplot2::scale_x_continuous(label = scales::comma)
-```
-
-### Call rate per CpGs
-
-```{r call_rate_cpgs_tab}
-pretty_kable(call_rate_env[["tab_call_rate_cpg"]])
-```
-
-```{r call_rate_cpgs_fig}
-ggplot2::ggplot(
-  data = call_rate_env[["data_call_rate_cpgs"]],
-  mapping = ggplot2::aes(x = x, y = call_rate)
-) +
-  ggplot2::geom_point(
-    colour = scales::viridis_pal()(1), 
-    shape = 21,
-    na.rm = TRUE
-  ) +
-  ggplot2::geom_hline(
-    mapping = ggplot2::aes(yintercept = params[["threshold_call_rate_cpgs"]]),
-    colour = "black", 
-    linetype = 2,
-    na.rm = TRUE
-  ) +
-  ggplot2::labs(x = "CpGs", y = "Call Rate", caption = "Only CpGs with a call rate strictly below 100 % are shown") +
-  ggplot2::scale_y_continuous(label = scales::percent) +
-	ggplot2::scale_x_continuous(label = scales::comma)
-```
-
-```{r preprocess, results = "hide"}
-data_mset <- ENmix::preprocessENmix(
-  rgSet = data_raw[["rgSet"]], 
-  bgParaEst = params[["norm_background"]], 
-  dyeCorr = params[["norm_dye"]], 
-  QCinfo = NULL, 
-  exQCsample = FALSE,
-  exQCcpg = FALSE, 
-  exSample = call_rate_env[["bad_samples"]], 
-  exCpG = call_rate_env[["bad_cpgs"]], 
-  nCores = params[["n_cores"]]
-)
-
-data_mset <- ENmix::norm.quantile(mdat = data_mset, method = params[["norm_quantile"]])
-
-minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
-  as.data.frame() %>%
-  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
-  dplyr::left_join(
-    y = data_call_rate_samples %>% 
-      as.data.frame() %>% 
-      dplyr::select(Sample_ID, call_rate), 
-    by = "Sample_ID"
-  ) %>% 
-  S4Vectors::DataFrame()
 ```
 
 ## Cell composition
@@ -511,7 +378,7 @@ cell_comp <- switch(
   }
 )
 
-minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
+phenotypes <- phenotypes %>% 
   as.data.frame() %>%
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
   dplyr::left_join(
@@ -541,7 +408,7 @@ def_height <- ifelse(def_height>=16, 16, def_height)
 ggheatmap.show(
   data = edit.hm.legend(
     ggheatmap = ggheatmap(
-      data = minfi::pData(data_mset) %>% 
+      data = phenotypes %>% 
         as.data.frame() %>% 
         dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
         tibble::column_to_rownames("Sample_ID") %>% 
@@ -573,25 +440,24 @@ if (!do_check_gender) {
 ```
 
 ```{r gender_check, eval = do_check_gender}
-sex_predicted <- minfi::getSex(minfi::mapToGenome(data_mset), cutoff = params[["threshold_gender"]])
+sex_predicted <- minfi::getSex(minfi::mapToGenome(data_mset), cutoff = params[["gender_threshold"]])
 gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
-threshold_gender <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
+gender_threshold <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
 
-minfi::pData(data_mset) <- data_mset %>% 
-  minfi::mapToGenome() %>% 
-  minfi::getSex(cutoff = threshold_gender) %>% 
+phenotypes <- phenotypes %>% 
   as.data.frame() %>% 
-  dplyr::mutate(Sample_ID = minfi::pData(data_mset)[,"Sample_ID"]) %>% 
-  dplyr::rename(
-    qc_xmedian = xMed,
-    qc_ymedian = yMed,
-    qc_predicted_gender = predictedSex
-  ) %>% 
-  dplyr::full_join(
+  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
+  dplyr::left_join(
     y = data_mset %>% 
-      minfi::pData() %>% 
+      minfi::mapToGenome() %>% 
+      minfi::getSex(cutoff = gender_threshold) %>% 
       as.data.frame() %>% 
-      dplyr::mutate(Sample_ID = as.character(Sample_ID)), 
+      dplyr::mutate(Sample_ID = phenotypes[,"Sample_ID"]) %>% 
+      dplyr::rename(
+        qc_xmedian = xMed,
+        qc_ymedian = yMed,
+        qc_predicted_gender = predictedSex
+      ), 
     by = c("Sample_ID")
   ) %>% 
   dplyr::mutate(
@@ -604,13 +470,13 @@ minfi::pData(data_mset) <- data_mset %>%
 
 ```{r gender_check_threshold, eval = FALSE}
 ggplot2::ggplot(
-  data = minfi::pData(data_mset) %>%
+  data = phenotypes %>%
     as.data.frame() %>%
     dplyr::mutate(diff = qc_ymedian - qc_xmedian),
   mapping = ggplot2::aes(x = diff)
 ) +
   ggplot2::geom_density(position = "identity", na.rm = TRUE) +
-  ggplot2::geom_vline(xintercept = threshold_gender, linetype = 2, na.rm = TRUE) +
+  ggplot2::geom_vline(xintercept = gender_threshold, linetype = 2, na.rm = TRUE) +
   ggplot2::labs(
     x = expression(atop(
       paste("Y chromosome median total intensity ", (log[2])),
@@ -623,9 +489,9 @@ ggplot2::ggplot(
 ```
 
 ```{r gender_check_fig, eval = do_check_gender}
-plot_range <- range(as.data.frame(minfi::pData(data_mset)[c("qc_xmedian", "qc_ymedian")]))
+plot_range <- range(as.data.frame(phenotypes[c("qc_xmedian", "qc_ymedian")]))
 ggplot2::ggplot(
-  data = minfi::pData(data_mset) %>% 
+  data = phenotypes %>% 
     as.data.frame() %>% 
     dplyr::filter(!qc_gender_discrepancy), 
   mapping = ggplot2::aes(
@@ -636,13 +502,13 @@ ggplot2::ggplot(
   )
 ) +
   ggplot2::geom_abline(
-    data = data.frame(Threshold = paste("=", threshold_gender), Seuil = threshold_gender), 
+    data = data.frame(Threshold = paste("=", gender_threshold), Seuil = gender_threshold), 
     mapping = ggplot2::aes(intercept = Seuil, slope = 1, linetype = Threshold),
     na.rm = TRUE
   ) +
   ggplot2::geom_point(size = 2, na.rm = TRUE) +
   ggplot2::geom_point(
-    data = minfi::pData(data_mset) %>% 
+    data = phenotypes %>% 
       as.data.frame() %>% 
       dplyr::filter(qc_gender_discrepancy),
     size = 4,
@@ -650,7 +516,7 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    data = minfi::pData(data_mset) %>% 
+    data = phenotypes %>% 
       as.data.frame() %>% 
       dplyr::filter(qc_gender_discrepancy),
     mapping = ggplot2::aes(x = qc_xmedian, y = qc_ymedian, label = Sample_ID),
@@ -684,7 +550,7 @@ ggplot2::ggplot(
 ```
 
 ```{r descrepancy_table, eval = do_check_gender}
-minfi::pData(data_mset) %>%
+phenotypes %>%
   as.data.frame() %>% 
   group_by(qc_predicted_gender, qc_observed_gender) %>% 
   summarise(n = n()) %>% 
@@ -700,7 +566,7 @@ minfi::pData(data_mset) %>%
 ```
 
 ```{r descrepancy_samples_table, eval = do_check_gender}
-minfi::pData(data_mset) %>% 
+phenotypes %>% 
   as.data.frame() %>% 
   dplyr::filter(qc_gender_discrepancy) %>% 
   dplyr::select(Sample_Name, Sample_ID, qc_observed_gender, qc_predicted_gender) %>% 
@@ -720,8 +586,15 @@ if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) {
     mod = NULL
   )
 }
-colnames(norm_beta) <- minfi::pData(data_mset)[, "Sample_ID"]
-data_mset@metadata <- list(cnbeta = norm_beta)
+colnames(norm_beta) <- minfi::pData(data_mset)[["Sample_ID"]]
+if (min(norm_beta, na.rm = TRUE) <= 0) {
+  norm_beta[norm_beta <= 0] <- min(norm_beta[norm_beta > 0])
+}
+if (max(norm_beta, na.rm = TRUE) >= 1) {
+  norm_beta[norm_beta >= 1] <- max(norm_beta[norm_beta < 1])
+}
+data_mset@metadata[grep("_values", names(data_mset@metadata))] <- NULL
+data_mset@metadata[["norm_beta_values"]] <- norm_beta
 ```
 
 ```{r export}
@@ -734,10 +607,9 @@ list_beta <- c(
 	"cnbeta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"beta" =  minfi::getBeta(data_mset) %>% 
+	"raw_beta" =  minfi::getBeta(data_mset) %>% 
 	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
-	"cnbeta" = data_mset@metadata[["cnbeta"]] %>% 
-	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"])
+	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )
 
 for (ibeta in seq_along(list_beta)) {

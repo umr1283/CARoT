@@ -17,11 +17,18 @@
 #' @param filter_multihit A `logical`. Should probes in which the probe aligns to multiple
 #'     locations with bwa be removed? Default is `TRUE`.
 #' @param filter_xy A `logical`. Should probes from X and Y chromosomes be removed? Default is `TRUE`.
+#' @param detection_pvalues A `numeric`.
+#' @param filter_callrate A `logical`.,
+#' @param callrate_samples A `numeric`.
+#' @param callrate_probes A `numeric`.
+#' @param norm_background A `character`.
+#' @param norm_dye A `character`.
+#' @param norm_quantile A `character`.
 #' @param array_name A `character`. Choose microarray type, eiyther `"450K"` or `"EPIC"`.
 #'     Default is `"EPIC"`.
 #' @param annotation_version A `character`. Version of the annotation package that should be used.
 #'     Default is `"ilm10b4.hg19"` for the `"EPIC"` array
-#' @param n_cores A `integer`. The number of cores to use,
+#' @param n_cores An `integer`. The number of cores to use,
 #'     i.e., at most how many child processes will be run simultaneously.
 #'
 #' @return A `list`.
@@ -37,6 +44,13 @@ read_idats <- function(
   population = NULL,
   filter_multihit = TRUE,
   filter_xy = TRUE,
+  detection_pvalues = 0.01,
+  filter_callrate = TRUE,
+  callrate_samples = 0.99,
+  callrate_probes = 1,
+  norm_background = "oob",
+  norm_dye = "RELIC",
+  norm_quantile = "quantile1",
   array_name = c("EPIC", "450k"),
   annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"),
   n_cores = 1
@@ -58,8 +72,8 @@ read_idats <- function(
     "[MethPipe] ", "Reading IDAT files ...", "\n",
     "================================="
   )
-  sample_sheet <- read_sample_sheet(directory= directory, csv_file = csv_file)
-  rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = n_cores)
+  sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
+  rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
 
   rgSet@annotation <- switch(
     EXPR = array_name,
@@ -74,15 +88,55 @@ read_idats <- function(
     "======================================="
   )
   minfi::sampleNames(rgSet) <- rgSet[[1]]
-  pd <- minfi::pData(rgSet)
-  detP <- minfi::detectionP(rgSet)
-  mset <- minfi::preprocessRaw(rgSet)
 
-  if (meth_value_type == "B") {
-    methylation_matrix <- minfi::getBeta(mset, "Illumina")
+  data_detP <- minfi::detectionP(rgSet)
+  data_detP[is.na(data_detP)] <- 1
+
+  if (filter_callrate) {
+    good_detection <- data_detP < detection_pvalues
+
+    call_rate_samples <- colSums(good_detection) / nrow(good_detection)
+    bad_samples <- names(which(call_rate_samples < callrate_samples))
+    message(
+      "Filtering samples with call rate below ", scales::percent(callrate_samples), ":\n",
+      "  - ", scales::comma(length(bad_samples)), " samples were discarded"
+    )
+
+    good_detection <- good_detection[, setdiff(colnames(good_detection), bad_samples)]
+
+    call_rate_cpg <- rowSums(good_detection) / ncol(good_detection)
+    bad_cpgs <- names(which(call_rate_cpg < callrate_probes))
+    message(
+      "Filtering probes with call rate below ", scales::percent(bead_cutoff), ":\n",
+      "  - ", scales::comma(length(bad_cpgs)), " probes were discarded"
+    )
   } else {
-    methylation_matrix <- minfi::getM(mset)
+    bad_samples <- NULL
+    bad_cpgs <- NULL
   }
+
+  mset <- ENmix::preprocessENmix(
+    rgSet = rgSet,
+    bgParaEst = norm_background,
+    dyeCorr = norm_dye,
+    QCinfo = NULL,
+    exQCsample = FALSE,
+    exQCcpg = FALSE,
+    exSample = bad_samples,
+    exCpG = bad_cpgs,
+    nCores = n_cores
+  )
+  mset <- ENmix::norm.quantile(mdat = mset, method = norm_quantile)
+
+  mset@metadata[["phenotypes"]] <- rgSet %>%
+    minfi::pData() %>%
+  	as.data.frame() %>%
+  	dplyr::mutate(
+  	  Sample_ID = as.character(get("Sample_ID")),
+  		mean_detection_pvalue = colMeans(data_detP)[get("Sample_ID")],
+  		call_rate = (colSums(data_detP < detection_pvalues) / nrow(data_detP))[get("Sample_ID")]
+  	) %>%
+    S4Vectors::DataFrame()
 
   message(
     "\n",
@@ -95,9 +149,7 @@ read_idats <- function(
     bc <- get_beadcount(rgSet)
     bc2 <- bc[rowSums(is.na(bc)) < bead_cutoff * (ncol(bc)), ]
     mset_f2 <- mset[minfi::featureNames(mset) %in% rownames(bc2), ]
-    methylation_matrix <- methylation_matrix[rownames(methylation_matrix) %in% rownames(bc2), ]
     message(
-      # "[MethPipe] ",
       "Filtering probes with a beadcount <3 in at least ", scales::percent(bead_cutoff), " of samples:\n",
       "  - ", scales::comma(dim(mset)[1] - dim(mset_f2)[1]), " probes were discarded"
     )
@@ -105,10 +157,8 @@ read_idats <- function(
   }
 
   if (filter_non_cpg) {
-    mset_f2 <- minfi::dropMethylationLoci(mset, dropCH = T)
-    methylation_matrix <- methylation_matrix[rownames(methylation_matrix) %in% minfi::featureNames(mset_f2), ]
+    mset_f2 <- minfi::dropMethylationLoci(mset, dropCH = TRUE)
     message(
-      # "[MethPipe] ",
       "Filtering non-cg probes:\n",
       "  - ", scales::comma(dim(mset)[1] - dim(mset_f2)[1]), " probes were discarded"
     )
@@ -142,9 +192,7 @@ read_idats <- function(
     }
     maskname <- rownames(manifest_hg19)[which_population]
     mset_f2 <- mset[!minfi::featureNames(mset) %in% maskname, ]
-    methylation_matrix <- methylation_matrix[!rownames(methylation_matrix) %in% maskname, ]
     message(
-      # "[MethPipe] ",
       "Filtering probes with SNPs (Zhou et al., 2016; doi:10.1093/nar/gkw967):\n",
       "  - ", scales::comma(dim(mset)[1] - dim(mset_f2)[1]), " probes were discarded"
     )
@@ -154,9 +202,7 @@ read_idats <- function(
   if (filter_multihit) {
     multi_hit <- get(utils::data("multi.hit", package = "ChAMPdata"))
     mset_f2 <- mset[!minfi::featureNames(mset) %in% multi_hit$TargetID, ]
-    methylation_matrix <- methylation_matrix[!rownames(methylation_matrix) %in% multi_hit$TargetID, ]
     message(
-      # "[MethPipe] ",
       "Filtering probes that align to multiple locations (Nordlund et al., 2013; doi:10.1186/gb-2013-14-9-r105):\n",
       "  - ", scales::comma(dim(mset)[1] - dim(mset_f2)[1]), " probes were discarded"
     )
@@ -172,29 +218,30 @@ read_idats <- function(
     probe_features <- get("probe.features")
     autosomes <- probe_features[!probe_features$CHR %in% c("X", "Y"), ]
     mset_f2 <- mset[minfi::featureNames(mset) %in% rownames(autosomes), ]
-    methylation_matrix <- methylation_matrix[rownames(methylation_matrix) %in% rownames(autosomes), ]
     message(
-      # "[MethPipe] ",
       "Filtering probes on the X or Y chromosome:\n",
       "  - ", scales::comma(dim(mset)[1] - dim(mset_f2)[1]), " probes were discarded"
     )
     mset <- mset_f2
   }
 
-  intensity <- minfi::getMeth(mset) + minfi::getUnmeth(mset)
-  detP <- detP[which(rownames(detP) %in% rownames(methylation_matrix)), ]
+
+  if (meth_value_type == "B") {
+    methylation_matrix <- minfi::getBeta(mset, "Illumina")
+  } else {
+    methylation_matrix <- minfi::getM(mset)
+  }
+
   if (min(methylation_matrix, na.rm = TRUE) <= 0) {
     methylation_matrix[methylation_matrix <= 0] <- min(methylation_matrix[methylation_matrix > 0])
   }
   message(
-    # "[MethPipe] ",
     "Zeros have been replaced with smallest value over zero."
   )
-  if (max(methylation_matrix, na.rm = TRUE) >= 0) {
+  if (max(methylation_matrix, na.rm = TRUE) >= 1) {
     methylation_matrix[methylation_matrix >= 1] <- max(methylation_matrix[methylation_matrix < 1])
   }
   message(
-    # "[MethPipe] ",
     "Ones have been replaced with largest value below one."
   )
 
@@ -206,22 +253,27 @@ read_idats <- function(
   )
 
   message(
-    # "[MethPipe] ",
     "Data contains:\n",
     "  - ", scales::comma(dim(methylation_matrix)[1]), " probes\n",
     "  - ", scales::comma(dim(methylation_matrix)[2]), " samples\n",
     "  - ", scales::comma(sum(is.na(methylation_matrix))), " missing values"
   )
 
-  list(
-    mset = mset,
-    rgSet = rgSet,
-    pd = pd,
-    intensity = intensity,
-    beta = methylation_matrix,
-    detP = detP
+  colnames(methylation_matrix) <- minfi::pData(mset)[["Sample_ID"]]
+
+  switch(
+    EXPR = meth_value_type,
+    "B" = {
+      mset@metadata[["beta_values"]] <- methylation_matrix
+    },
+    "M" = {
+      mset@metadata[["M_values"]] <- methylation_matrix
+    }
   )
+
+  mset
 }
+
 
 #' read_sample_sheet
 #'

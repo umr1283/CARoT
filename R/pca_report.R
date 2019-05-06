@@ -43,9 +43,15 @@ pca_report <- function(
     variables_excluded <- setdiff(technical_vars, keep_technical)
     message(
       "The following variables have been excluded (null variances or confounding with samples): ",
-        paste(variables_excluded[-length(variables_excluded)], collapse = ", "),
-        " and ",
+      if (length(variables_excluded) > 1) {
+        c(
+          paste(variables_excluded[-length(variables_excluded)], collapse = ", "),
+          " and ",
+          variables_excluded[length(variables_excluded)]
+        )
+      } else {
         variables_excluded[length(variables_excluded)]
+      }
     )
   }
 
@@ -55,9 +61,7 @@ pca_report <- function(
     ndim = n_comp
   )
 
-  pca_dfxy <- pca_res %>%
-    `[[`("projection") %>%
-    as.data.frame()
+  pca_dfxy <- as.data.frame(pca_res[["projection"]])
   colnames(pca_dfxy) <- paste0("PC", seq_len(ncol(pca_dfxy)))
   pca_dfxy <- dplyr::mutate(.data = pca_dfxy, Sample_ID = as.character(colnames(data)))
   pca_dfxy <- as.data.frame(dplyr::left_join(x = design, y = pca_dfxy, by = id_var))
@@ -146,7 +150,7 @@ pca_report <- function(
   if (!is.null(outliers_component)) {
     euclid_dist <- dplyr::sym("euclid_dist")
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA Outliers {-}\n"))
-    pca_outliers <- pca_dfxy[, paste0("PC", outliers_component), drop = FALSE]^2 %>%
+    pca_outliers <- pca_dfxy[, paste0("PC", outliers_component), drop = FALSE]^2
     pca_outliers <- sqrt(rowSums(pca_outliers))
     pca_outliers <- tibble::tibble("euclid_dist" = pca_outliers) %>%
       tibble::rownames_to_column(var = id_var) %>%
