@@ -99,10 +99,6 @@ ggplot2::theme_set(ggplot2::theme_light(base_size = params[["gg_fontsize"]]))
 
 
 ### Additional packages and functions
-source("/disks/PROJECT/Rpackages/CARoT/R/read_idats.R")
-source("/disks/PROJECT/Rpackages/CARoT/R/pca_report.R")
-source("/disks/PROJECT/Rscripts/ggheatmap.R")
-
 pretty_kable <- function(
   data, 
   font_size = 12, 
@@ -196,7 +192,7 @@ if (do_check_gender) {
 
 ```{r read_idats}
 output <- utils::capture.output({
-  data_mset <- read_idats(
+  data_mset <- CARoT::read_idats(
     directory = params[["data_directory"]], 
     csv_file = paste0(tempdir(), "/sample_sheet.csv"), 
     meth_value_type = "B",
@@ -405,9 +401,9 @@ def_height <- ifelse(def_height>=16, 16, def_height)
 ```
 
 ```{r cell_composition_fig, fig.width = def_height, fig.height = def_height, eval = do_cell_composition}
-ggheatmap.show(
-  data = edit.hm.legend(
-    ggheatmap = ggheatmap(
+CARoT::ggheatmap.show(
+  data = CARoT::edit.hm.legend(
+    ggheatmap = CARoT::ggheatmap(
       data = phenotypes %>% 
         as.data.frame() %>% 
         dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
@@ -603,8 +599,8 @@ readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["ar
 
 ```{r pca}
 list_beta <- c(
-	"beta" = "Raw $beta$-values",
-	"cnbeta" = "ComBat normalised $beta$-values"
+	"raw_beta" = "Raw $beta$-values",
+	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
 	"raw_beta" =  minfi::getBeta(data_mset) %>% 
@@ -614,9 +610,9 @@ data_batch <- list(
 
 for (ibeta in seq_along(list_beta)) {
 	cat("\n###", list_beta[ibeta], " {.tabset .tabset-fade .tabset-pills}\n\n")
-	pca_report(
+	CARoT::pca_report(
 		data = data_batch[[names(list_beta)[ibeta]]], 
-		design = minfi::pData(data_mset), 
+		design = data_mset@metadata[["phenotypes"]], 
 		id_var = "Sample_ID",
 		technical_vars = pca_vars, 
 		n_comp = min(10, ncol(data_batch[[names(list_beta)[ibeta]]])), 
