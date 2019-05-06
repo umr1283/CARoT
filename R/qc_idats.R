@@ -2,10 +2,10 @@
 #'
 #' @param csv_file A `character`.
 #' @param data_directory A `character`.
-#' @param output_file A `character`.
-#' @param output_directory A `character`.
 #' @param array A `character`.
 #' @param annotation A `character`.
+#' @param output_file A `character`.
+#' @param output_directory A `character`.
 #' @param filter_snps A `logical`.
 #' @param filter_non_cpg A `logical`.
 #' @param filter_xy A `logical`.
@@ -14,8 +14,8 @@
 #' @param population A `character`.
 #' @param bead_cutoff A `numeric`.
 #' @param threshold_detection_pvalues A `numeric`.
-#' @param threshold_call_rate_samples A `numeric`.
-#' @param threshold_call_rate_cpgs A `numeric`.
+#' @param threshold_callrate_samples A `numeric`.
+#' @param threshold_callrate_cpgs A `numeric`.
 #' @param threshold_gender A `numeric`.
 #' @param colname_gender A `character`.
 #' @param norm_background A `character`.
@@ -38,10 +38,10 @@
 qc_idats <- function(
   csv_file,
   data_directory,
-  output_file = "EPIC_QC.html",
-  output_directory = ".",
   array = "EPIC",
   annotation = "ilm10b4.hg19",
+  output_file = paste(array, "QC.html"),
+  output_directory = ".",
   filter_snps = TRUE,
   filter_non_cpg = TRUE,
   filter_xy = TRUE,
@@ -50,19 +50,19 @@ qc_idats <- function(
   population = NULL,
   bead_cutoff = 0.05,
   threshold_detection_pvalues = 0.01,
-  threshold_call_rate_samples = 0.99,
-  threshold_call_rate_cpgs = 1,
-  threshold_gender = -2,
-  colname_gender = "sexe",
+  threshold_callrate_samples = 0.99,
+  threshold_callrate_cpgs = 1,
+  gender_threshold = -2,
+  gender_colname = NULL,
   norm_background = "oob",
   norm_dye = "RELIC",
   norm_quantile = "quantile1",
   cell_tissue = NULL,
   pca_vars = c("Sample_Plate", "Sentrix_ID"),
-  title = "EPIC Array Quality-Control",
+  title = paste(array, "Array Quality-Control"),
   author_name = "CARoT",
-  author_affiliation = "",
-  author_email = "",
+  author_affiliation = NULL,
+  author_email = NULL,
   show_code = FALSE,
   n_cores = 20,
   dpi = 300,
@@ -101,8 +101,8 @@ qc_idats <- function(
       population = population,
       bead_cutoff = bead_cutoff,
       threshold_detection_pvalues = threshold_detection_pvalues,
-      threshold_call_rate_samples = threshold_call_rate_samples,
-      threshold_call_rate_cpgs = threshold_call_rate_cpgs,
+      threshold_callrate_samples = threshold_callrate_samples,
+      threshold_callrate_cpgs = threshold_callrate_cpgs,
       threshold_gender = threshold_gender,
       colname_gender = colname_gender,
       norm_background = norm_background,
