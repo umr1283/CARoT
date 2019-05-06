@@ -107,7 +107,7 @@ qc_idats <- function(
       callrate_samples = callrate_samples,
       callrate_probes = callrate_probes,
       gender_threshold = gender_threshold,
-      colname_gender = gender_colname,
+      gender_colname = gender_colname,
       norm_background = norm_background,
       norm_dye = norm_dye,
       norm_quantile = norm_quantile,
