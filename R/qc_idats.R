@@ -13,11 +13,12 @@
 #' @param filter_beads A `logical`.
 #' @param population A `character`.
 #' @param bead_cutoff A `numeric`.
-#' @param threshold_detection_pvalues A `numeric`.
-#' @param threshold_callrate_samples A `numeric`.
-#' @param threshold_callrate_cpgs A `numeric`.
-#' @param threshold_gender A `numeric`.
-#' @param colname_gender A `character`.
+#' @param detection_pvalues A `numeric`.
+#' @param filter_callrate A `logical`.
+#' @param callrate_samples A `numeric`.
+#' @param callrate_probes A `numeric`.
+#' @param gender_threshold A `numeric`.
+#' @param gender_colname A `character`.
 #' @param norm_background A `character`.
 #' @param norm_dye A `character`.
 #' @param norm_quantile A `character`.
@@ -50,8 +51,9 @@ qc_idats <- function(
   population = NULL,
   bead_cutoff = 0.05,
   detection_pvalues = 0.01,
+  filter_callrate = TRUE,
   callrate_samples = 0.99,
-  callrate_cpgs = 1,
+  callrate_probes = 1,
   gender_threshold = -2,
   gender_colname = NULL,
   norm_background = "oob",
@@ -100,10 +102,11 @@ qc_idats <- function(
       filter_beads = filter_beads,
       population = population,
       bead_cutoff = bead_cutoff,
-      threshold_detection_pvalues = detection_pvalues,
-      threshold_call_rate_samples = callrate_samples,
-      threshold_call_rate_cpgs = callrate_cpgs,
-      threshold_gender = gender_threshold,
+      detection_pvalues = detection_pvalues,
+      filter_callrate = filter_callrate,
+      callrate_samples = callrate_samples,
+      callrate_probes = callrate_probes,
+      gender_threshold = gender_threshold,
       colname_gender = gender_colname,
       norm_background = norm_background,
       norm_dye = norm_dye,
