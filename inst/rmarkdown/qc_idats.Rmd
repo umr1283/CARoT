@@ -234,18 +234,18 @@ data_call_rate_samples <- phenotypes  %>%
 		x = seq_along(call_rate),
 		label = ifelse(call_rate < params[["callrate_samples"]], Sample_ID, NA)
 	)
+```
+  
+```{r call_rate_samples_tab}
 tab_call_rate_samples <- lapply(phenotypes[["call_rate"]], `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
 	do.call("rbind", .) %>%
 	colSums() %>%
 	data.frame(
 		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
 		"Samples (N)" = .,
-		"Samples (%)" = signif((. / length(call_rate_samples)) * 100, digits = 3),
+		"Samples (%)" = signif((. / nrow(data_call_rate_samples)) * 100, digits = 3),
 		check.names = FALSE
 	)
-```
-  
-```{r call_rate_samples_tab}
 pretty_kable(tab_call_rate_samples)
 ```
 
