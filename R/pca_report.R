@@ -43,9 +43,15 @@ pca_report <- function(
     variables_excluded <- setdiff(technical_vars, keep_technical)
     message(
       "The following variables have been excluded (null variances or confounding with samples): ",
-        paste(variables_excluded[-length(variables_excluded)], collapse = ", "),
-        " and ",
+      if (length(variables_excluded) > 1) {
+        c(
+          paste(variables_excluded[-length(variables_excluded)], collapse = ", "),
+          " and ",
+          variables_excluded[length(variables_excluded)]
+        )
+      } else {
         variables_excluded[length(variables_excluded)]
+      }
     )
   }
 
