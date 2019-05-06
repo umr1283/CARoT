@@ -488,7 +488,7 @@ cell_comp <- switch(
       n_cores = min(params[["n_cores"]], max_k)
     )$best)
     mu0 <- RefFreeEWAS::RefFreeCellMixInitialize(
-      Y = minfi::getBeta(data_mset),
+      Y = beta_matrix,
       K = k_estimated,
       Y.Distance = NULL, 
       Y.Cluster = NULL, 
@@ -514,7 +514,7 @@ cell_comp <- switch(
 minfi::pData(data_mset) <- minfi::pData(data_mset) %>% 
   as.data.frame() %>%
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
-  dplyr::full_join(
+  dplyr::left_join(
     y = cell_comp %>% 
       as.data.frame() %>% 
       tibble::rownames_to_column("Sample_ID"), 
