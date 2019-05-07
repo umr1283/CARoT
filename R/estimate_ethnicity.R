@@ -475,7 +475,15 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   colnames(pca_gg) <- paste0("PC", sprintf("%02d", seq_len(ncol(pca_gg))))
 
   pca_gg <- dplyr::as_tibble(pca_gg)
-  pca_gg[["sample"]] <- utils::read.table(paste0(input_plink, ".fam"))[[1]]
+
+  fid_iid <- utils::read.table(paste0(input_plink, ".fam"))[, c(1, 2)]
+
+  if (all.equal(fid_iid[[1]], fid_iid[[2]])) {
+    pca_gg[["sample"]] <- fid_iid[[2]]
+  } else {
+    pca_gg[["sample"]] <- paste(fid_iid[[1]], fid_iid[[2]], sep = "/")
+  }
+
   pca_gg <- dplyr::left_join(
     x = pca_gg,
     y = suppressWarnings(
