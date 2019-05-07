@@ -392,7 +392,7 @@ def_res <- params[["dpi"]]
 def_label_gene_y <- params[["gg_fontsize"]] / 8
 def_label_gene_x <- params[["gg_fontsize"]] / 2
 
-def_grid_h_middle <- 0.60
+def_grid_h_middle <- 0.75
 def_height <- nrow(sample_sheet) * 
   (def_label_gene_y * params[["gg_fontsize"]] / 0.75) / 
   def_grid_h_middle /
@@ -402,29 +402,20 @@ def_height <- ifelse(def_height>=16, 16, def_height)
 ```
 
 ```{r cell_composition_fig, fig.width = def_height, fig.height = def_height, eval = do_cell_composition}
-CARoT::ggheatmap.show(
-  data = CARoT::edit.hm.legend(
-    ggheatmap = CARoT::ggheatmap(
-      data = phenotypes %>% 
-        as.data.frame() %>% 
-        dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
-        tibble::column_to_rownames("Sample_ID") %>% 
-        as.matrix,
-      legend.title = "Cell Composition", 
-      label.h.size = def_label_gene_y,
-      label.v.size = def_label_gene_x, 
-      print = FALSE
-    ), 
-    size = params[["gg_fontsize"]] * 2, 
-    barwidth = params[["gg_fontsize"]] * 1, 
-    barheight = params[["gg_fontsize"]] * 0.25
-  ),
-  grid.h.ratio = c(0.15, def_grid_h_middle, 0.25),
-  grid.v.ratio = rev(c(0.15, def_grid_h_middle, 0.25)),
-  legend.position = c(
-    which.max(c(c(0.15, def_grid_h_middle, 0.25)[1], 0, c(0.15, def_grid_h_middle, 0.25)[3])), 
-    which.max(c(rev(c(0.15, def_grid_h_middle, 0.25))[1], 0, rev(c(0.15, def_grid_h_middle, 0.25))[3]))
-  )
+CARoT::ggheatmap(
+  data = phenotypes %>% 
+    as.data.frame() %>% 
+    dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
+    tibble::column_to_rownames("Sample_ID"),
+  dendrogram_columns = TRUE,
+  dendrogram_rows = TRUE,
+  line_size = 0.5,
+  font_size_x = def_label_gene_x,
+  font_size_y = def_label_gene_y,
+  distance_method = "euclidean",
+  cluster_method = "ward.D2",
+  scale_name = "Cell Composition",
+  scale_revert = FALSE
 )
 ```
 
