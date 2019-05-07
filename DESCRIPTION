@@ -40,7 +40,9 @@ Imports:
     tibble,
     R.utils,
     S4Vectors,
-    ENmix
+    ENmix,
+    cowplot,
+    ggdendro
 Suggests:
     covr,
     testthat
