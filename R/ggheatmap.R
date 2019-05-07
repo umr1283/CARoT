@@ -4,6 +4,7 @@
 #' @param dendrogram_columns description
 #' @param dendrogram_rows description
 #' @param line_size description
+#' @param font_size description
 #' @param font_size_x description
 #' @param font_size_y description
 #' @param distance_method description
