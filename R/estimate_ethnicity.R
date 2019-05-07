@@ -14,6 +14,7 @@
 #' @param bin_path A `list(character)`.
 #'
 #' @return A `data.frame`.
+#' @export
 estimate_ethnicity <- function(
   cohort_name,
   input_vcfs,
