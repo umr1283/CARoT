@@ -305,6 +305,7 @@ cell_comp <- switch(
     cat("No method defined yet")
   },
   {
+    cat("`RefFreeEWAS` package is used to estimate the cell composition. (Houseman et al., 2016; doi:10.1186/s12859-016-1140-4)\n\n")
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
       svdRmat <- RefFreeEWAS::svdSafe(Rmat)
       tmp <- do.call("rbind", parallel::mclapply(
