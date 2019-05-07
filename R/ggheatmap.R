@@ -18,7 +18,7 @@ ggheatmap <- function(
   dendrogram_columns = TRUE,
   dendrogram_rows = TRUE,
   line_size = 0.1,
-  fon_size = 11,
+  font_size = 11,
   font_size_x = 11,
   font_size_y = 11,
   distance_method = "euclidean",
@@ -52,7 +52,7 @@ ggheatmap <- function(
     mapping = ggplot2::aes_(x = ~variable, y = ~rowname, fill = ~value)
   ) +
     ggplot2::geom_tile() +
-    ggplot2::theme_minimal(base_size = fon_size) +
+    ggplot2::theme_minimal(base_size = font_size) +
     ggplot2::theme(
       axis.ticks = ggplot2::element_line(colour = "black"),
       axis.ticks.length = ggplot2::unit(x = 0.1, units = "line"),

@@ -5,9 +5,10 @@
 \title{ggheatmap}
 \usage{
 ggheatmap(data, dendrogram_columns = TRUE, dendrogram_rows = TRUE,
-  line_size = 0.5, font_size_x = 11, font_size_y = 11,
-  distance_method = "euclidean", cluster_method = "ward.D2",
-  scale_name = "value", scale_revert = FALSE)
+  line_size = 0.1, fon_size = 11, font_size_x = 11,
+  font_size_y = 11, distance_method = "euclidean",
+  cluster_method = "ward.D2", scale_name = "value",
+  scale_revert = FALSE)
 }
 \arguments{
 \item{data}{description}
