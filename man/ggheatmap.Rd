@@ -19,6 +19,8 @@ ggheatmap(data, dendrogram_columns = TRUE, dendrogram_rows = TRUE,
 
 \item{line_size}{description}
 
+\item{font_size}{description}
+
 \item{font_size_x}{description}
 
 \item{font_size_y}{description}
