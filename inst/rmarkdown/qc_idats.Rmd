@@ -390,9 +390,9 @@ phenotypes <- phenotypes %>%
 ```{r cell_composition_size}
 def_res <- params[["dpi"]]
 def_label_gene_y <- params[["gg_fontsize"]] / 8
-def_label_gene_x <- params[["gg_fontsize"]] / 2
+def_label_gene_x <- params[["gg_fontsize"]] / 8
 
-def_grid_h_middle <- 0.75
+def_grid_h_middle <- 0.90
 def_height <- nrow(sample_sheet) * 
   (def_label_gene_y * params[["gg_fontsize"]] / 0.75) / 
   def_grid_h_middle /
