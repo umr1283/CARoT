@@ -401,7 +401,7 @@ def_height <- nrow(sample_sheet) *
 def_height <- ifelse(def_height>=16, 16, def_height)
 ```
 
-```{r cell_composition_fig, fig.width = def_height, fig.height = def_height, eval = do_cell_composition}
+```{r cell_composition_fig, fig.height = def_height, eval = do_cell_composition}
 CARoT::ggheatmap(
   data = phenotypes %>% 
     as.data.frame() %>% 
