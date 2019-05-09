@@ -307,11 +307,12 @@ cell_comp <- switch(
   {
     cat("`RefFreeEWAS` package is used to estimate the cell composition. (Houseman et al., 2016; doi:10.1186/s12859-016-1140-4)\n\n")
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
+      cluster <- parallel::makeCluster(n_cores)
+      doParallel::registerDoParallel(cluster)
+
       svdRmat <- RefFreeEWAS::svdSafe(Rmat)
-      tmp <- do.call("rbind", parallel::mclapply(
+      tmp <- do.call("rbind", lapply(
         X = 0:max_k,
-        mc.preschedule = FALSE, 
-        mc.cores = n_cores,
         mc_Rmat = Rmat,
         mc_svdRmat = svdRmat,
         FUN = function(Ktest, mc_Rmat, mc_svdRmat) {
@@ -334,7 +335,9 @@ cell_comp <- switch(
               N2 * sum(log(tmpSigSq))
           )
       }))
-      
+
+      parallel::stopCluster(cluster)
+
       list(
         icTable = tmp, 
         best = tmp[c(AIC = which.min(tmp[, "AIC"]), BIC = which.min(tmp[, "BIC"])), "K"],
@@ -406,7 +409,8 @@ CARoT::ggheatmap(
   data = phenotypes %>% 
     as.data.frame() %>% 
     dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
-    tibble::column_to_rownames("Sample_ID"),
+    tibble::column_to_rownames(var = "Sample_ID") %>% 
+    tidyr::drop_na(), 
   dendrogram_columns = TRUE,
   dendrogram_rows = TRUE,
   line_size = 0.5,
@@ -587,6 +591,7 @@ data_mset@metadata[["norm_beta_values"]] <- norm_beta
 ```
 
 ```{r export}
+data_mset@metadata[["phenotypes"]] <- phenotypes
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
 
