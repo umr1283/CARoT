@@ -30,46 +30,50 @@ estimate_ethnicity <- function(
   bin_path = list(
     vcftools = "/usr/bin/vcftools",
     bcftools = "/usr/bin/bcftools",
-    bgzip = "/usr/local/bin/bgzip",
-    tabix = "/usr/local/bin/tabix",
+    bgzip = "/usr/bin/bgzip",
+    tabix = "/usr/bin/tabix",
     plink1.9 = "/usr/bin/plink1.9"
   )
 ) {
+  if (!all(grepl(".vcf.gz$", c(input_vcfs, list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE))))) {
+    stop('[CARoT] VCF files must be compressed using bgzip!')
+  }
+
   if (!input_type%in%c("array", "sequencing")) {
     stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
   }
-  if (!dir.exists(input_vcfs) & !file.exists(input_vcfs)) {
+  if (all(!dir.exists(input_vcfs) & !file.exists(input_vcfs))) {
     stop(
       '[CARoT] A valid "input_vcfs" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
     )
   }
-  if (!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs)) {
+  if (all(!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs))) {
     stop(
       '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
     )
   }
 
-  if (dir.exists(input_vcfs)) {
-    list_input <- list.files(path = input_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
-  } else {
+  if (all(grepl(".vcf.gz$", input_vcfs))) {
     list_input <- input_vcfs
-  }
-
-  if (dir.exists(ref1kg_vcfs)) {
-    list_ref <- list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
   } else {
-    list_ref <- ref1kg_vcfs
+    list_input <- list.files(path = input_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
   }
 
-  if (length(list_ref)==0) {
+  if (all(grepl(".vcf.gz$", ref1kg_vcfs))) {
+    list_ref <- ref1kg_vcfs
+  } else {
+    list_ref <- list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
+  }
+
+  if (length(list_input)==0) {
     stop(
       '[CARoT] A valid "input_vcfs" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
     )
   }
-  if (length(ref1kg_vcfs)==0) {
+  if (length(list_ref)==0) {
     stop(
       '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
@@ -248,19 +252,22 @@ format_vcf <- function(
 #'
 #' @keywords internal
 merge_vcf <- function(input_vcfs, bin_path) {
-  if (length(input_vcfs)>1) {
-    output_temp <- paste(tempdir(), "/samples_merged.vcf.gz")
+  if (length(input_vcfs) > 1) {
+    output_temp <- paste0(tempdir(), "/samples_merged.vcf.gz")
+    vcf_list <- paste0(tempdir(), "/samples_merged.txt")
+    cat(input_vcfs, sep = "\n", file = vcf_list)
     system(
       ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
       command = paste(
         bin_path[["bcftools"]], "merge --merge none",
-        paste(input_vcfs, collapse = " "),
+        " --file-list", vcf_list,
         "--output-type z",
         "--output", output_temp,
         "&&",
         bin_path[["tabix"]], "-p vcf", output_temp
       )
     )
+    unlink(vcf_list)
   } else {
     output_temp <- input_vcfs
   }
@@ -278,17 +285,11 @@ format_array_chr <- function(
   input_vcfs,
   output_directory,
   ref1kg_vcfs,
-  ref1kg_maf = 0.05,
-  quality_tag = "INFO",
-  quality_threshold = 0.9,
-  n_cores = 6,
-  bin_path = list(
-    vcftools = "/usr/bin/vcftools",
-    bcftools = "/usr/bin/bcftools",
-    bgzip = "/usr/bin/bgzip",
-    tabix = "/usr/bin/tabix",
-    plink1.9 = "/usr/bin/plink1.9"
-  )
+  ref1kg_maf,
+  quality_tag,
+  quality_threshold,
+  n_cores,
+  bin_path
 ) {
   out <- parallel::mclapply(
     X = 1:22,
@@ -382,16 +383,10 @@ format_array_all <- function(
   input_vcfs,
   output_directory,
   ref1kg_vcfs,
-  ref1kg_maf = 0.05,
-  quality_tag = "INFO",
-  quality_threshold = 0.9,
-  bin_path = list(
-    vcftools = "/usr/bin/vcftools",
-    bcftools = "/usr/bin/bcftools",
-    bgzip = "/usr/bin/bgzip",
-    tabix = "/usr/bin/tabix",
-    plink1.9 = "/usr/bin/plink1.9"
-  )
+  ref1kg_maf,
+  quality_tag,
+  quality_threshold,
+  bin_path
 ) {
   format_vcf(
     input_vcfs = input_vcfs,
@@ -437,14 +432,8 @@ format_sequencing <- function(
   input_vcfs,
   output_directory,
   ref1kg_vcfs,
-  ref1kg_maf = 0.05,
-  bin_path = list(
-    vcftools = "/usr/bin/vcftools",
-    bcftools = "/usr/bin/bcftools",
-    bgzip = "/usr/bin/bgzip",
-    tabix = "/usr/bin/tabix",
-    plink1.9 = "/usr/bin/plink1.9"
-  )
+  ref1kg_maf,
+  bin_path
 ) {
   merged_vcfs <- merge_vcf(
     input_vcfs = input_vcfs,
@@ -454,9 +443,12 @@ format_sequencing <- function(
   format_vcf(
     input_vcfs = merged_vcfs,
     ref1kg_vcfs = ref1kg_vcfs,
+    ref1kg_maf = ref1kg_maf,
     ichr = "ALL",
     quality_tag = NULL,
-    output_directory = output_directory
+    quality_threshold = NULL,
+    output_directory = output_directory,
+    bin_path = bin_path
   )
 
   system(
