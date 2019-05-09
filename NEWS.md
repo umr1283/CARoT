@@ -1,10 +1,14 @@
-# CARoT (development version)
+# CARoT 0.1.1 (development version)
 
-# CARoT 0.1.1
+## Minor improvements and fixes
 
-# CARoT 0.1.0.9000 (development version)
+* In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`
+
+# CARoT 0.1.0
 
 ## Breaking changes
+
+* None
 
 ## New features
 
