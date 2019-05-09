@@ -5,9 +5,7 @@
 \title{format_sequencing}
 \usage{
 format_sequencing(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
-  ref1kg_maf = 0.05, bin_path = list(vcftools = "/usr/bin/vcftools",
-  bcftools = "/usr/bin/bcftools", bgzip = "/usr/bin/bgzip", tabix =
-  "/usr/bin/tabix", plink1.9 = "/usr/bin/plink1.9"))
+  ref1kg_maf, bin_path)
 }
 \arguments{
 \item{cohort_name}{A \code{character}.}
