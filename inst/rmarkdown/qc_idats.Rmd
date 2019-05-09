@@ -307,11 +307,12 @@ cell_comp <- switch(
   {
     cat("`RefFreeEWAS` package is used to estimate the cell composition. (Houseman et al., 2016; doi:10.1186/s12859-016-1140-4)\n\n")
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
+      cluster <- parallel::makeCluster(n_cores)
+      doParallel::registerDoParallel(cluster)
+
       svdRmat <- RefFreeEWAS::svdSafe(Rmat)
-      tmp <- do.call("rbind", parallel::mclapply(
+      tmp <- do.call("rbind", lapply(
         X = 0:max_k,
-        mc.preschedule = FALSE, 
-        mc.cores = n_cores,
         mc_Rmat = Rmat,
         mc_svdRmat = svdRmat,
         FUN = function(Ktest, mc_Rmat, mc_svdRmat) {
@@ -334,7 +335,9 @@ cell_comp <- switch(
               N2 * sum(log(tmpSigSq))
           )
       }))
-      
+
+      parallel::stopCluster(cluster)
+
       list(
         icTable = tmp, 
         best = tmp[c(AIC = which.min(tmp[, "AIC"]), BIC = which.min(tmp[, "BIC"])), "K"],
