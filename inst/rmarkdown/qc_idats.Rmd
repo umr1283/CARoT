@@ -410,7 +410,7 @@ CARoT::ggheatmap(
   dendrogram_columns = TRUE,
   dendrogram_rows = TRUE,
   line_size = 0.5,
-  fon_size = params[["gg_fontsize"]],
+  font_size = params[["gg_fontsize"]],
   font_size_x = def_label_gene_x,
   font_size_y = def_label_gene_y,
   distance_method = "euclidean",
