@@ -482,7 +482,6 @@ ggplot2::ggplot(
 ```
 
 ```{r gender_check_fig, eval = do_check_gender}
-plot_range <- range(as.data.frame(phenotypes[c("qc_xmedian", "qc_ymedian")]))
 ggplot2::ggplot(
   data = phenotypes %>% 
     as.data.frame() %>% 
