@@ -2,7 +2,7 @@
 
 ## Minor improvements and fixes
 
-* In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`
+* In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`.
 
 # CARoT 0.1.0
 

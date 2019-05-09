@@ -9,7 +9,7 @@ estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
   splitted_by_chr = TRUE, quality_tag = "INFO",
   quality_threshold = 0.9, n_cores = 6, bin_path = list(vcftools =
   "/usr/bin/vcftools", bcftools = "/usr/bin/bcftools", bgzip =
-  "/usr/local/bin/bgzip", tabix = "/usr/local/bin/tabix", plink1.9 =
+  "/usr/bin/bgzip", tabix = "/usr/bin/tabix", plink1.9 =
   "/usr/bin/plink1.9"))
 }
 \arguments{
