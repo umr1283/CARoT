@@ -39,10 +39,16 @@ estimate_ethnicity <- function(
     stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
   }
   if (!dir.exists(input_vcfs) & !file.exists(input_vcfs)) {
-    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
+    stop(
+      '[CARoT] A valid "input_vcfs" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
   }
   if (!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs)) {
-    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
+    stop(
+      '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
   }
 
   if (dir.exists(input_vcfs)) {
@@ -58,10 +64,29 @@ estimate_ethnicity <- function(
   }
 
   if (length(list_ref)==0) {
-    stop('[CARoT] A valid "input_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
+    stop(
+      '[CARoT] A valid "input_vcfs" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
   }
   if (length(ref1kg_vcfs)==0) {
-    stop('[CARoT] A valid "ref1kg_vcfs" must be provided, either a directory (with VCF files) or a vcf file!')
+    stop(
+      '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
+  }
+
+  if (input_type=="sequencing" & length(ref1kg_vcfs)!=1) {
+    stop(
+      '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
+      'with `input_type = "sequencing"`!'
+    )
+  }
+  if (input_type=="array" & splitted_by_chr & length(ref1kg_vcfs)!=1) {
+    stop(
+      '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
+      'with `input_type = "array"` & `splitted_by_chr = FALSE`!'
+    )
   }
 
   ######################
