@@ -582,7 +582,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   #################
   message("[CARoT] Exporting ...")
   ggplot2::ggsave(
-    filename = paste0(output_directory, "/", cohort_name, "_ethnicty.tiff"),
+    filename = paste0(output_directory, "/", cohort_name, "_ethnicity.tiff"),
     plot = p_ethni,
     width = 6.3,
     height = 4.7 * 1.5,
@@ -593,7 +593,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   invisible(
     readr::write_csv(
       x = pca_gg_pred,
-      path = paste0(output_directory, "/", cohort_name, "_ethnicty.csv")
+      path = paste0(output_directory, "/", cohort_name, "_ethnicity.csv")
     )
   )
 }
