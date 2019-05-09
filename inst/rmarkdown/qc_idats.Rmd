@@ -406,7 +406,8 @@ CARoT::ggheatmap(
   data = phenotypes %>% 
     as.data.frame() %>% 
     dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
-    tibble::column_to_rownames("Sample_ID"),
+    tibble::column_to_rownames(var = "Sample_ID") %>% 
+    tidyr::drop_na(), 
   dendrogram_columns = TRUE,
   dendrogram_rows = TRUE,
   line_size = 0.5,
@@ -587,6 +588,7 @@ data_mset@metadata[["norm_beta_values"]] <- norm_beta
 ```
 
 ```{r export}
+data_mset@metadata[["phenotypes"]] <- phenotypes
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
 
