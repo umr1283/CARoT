@@ -115,7 +115,7 @@ read_idats <- function(
     bad_cpgs <- NULL
   }
 
-  mset <- ENmix::preprocessENmix(
+  mset <- suppressMessages(ENmix::preprocessENmix(
     rgSet = rgSet,
     bgParaEst = norm_background,
     dyeCorr = norm_dye,
@@ -125,8 +125,8 @@ read_idats <- function(
     exSample = bad_samples,
     exCpG = bad_cpgs,
     nCores = n_cores
-  )
-  mset <- ENmix::norm.quantile(mdat = mset, method = norm_quantile)
+  ))
+  mset <- suppressMessages(ENmix::norm.quantile(mdat = mset, method = norm_quantile))
 
   mset@metadata[["phenotypes"]] <- rgSet %>%
     minfi::pData() %>%
