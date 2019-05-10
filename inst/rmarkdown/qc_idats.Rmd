@@ -202,7 +202,7 @@ output <- utils::capture.output({
     filter_snps = params[["filter_snps"]], 
     population = params[["population"]], 
     filter_multihit = params[["filter_multihit"]],
-    filter_xy = params[["filter_xy"]], 
+    filter_xy = FALSE, 
     detection_pvalues = params[["detection_pvalues"]],
     filter_callrate = params[["filter_callrate"]],
     callrate_samples = params[["callrate_samples"]],
@@ -305,7 +305,6 @@ cell_comp <- switch(
     cat("No method defined yet")
   },
   {
-    cat("`RefFreeEWAS` package is used to estimate the cell composition. (Houseman et al., 2016; doi:10.1186/s12859-016-1140-4)\n\n")
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
       cluster <- parallel::makeCluster(n_cores)
       doParallel::registerDoParallel(cluster)
@@ -565,6 +564,21 @@ phenotypes %>%
   pretty_kable(full_width = FALSE)
 ```
 
+```{r filter_xy, eval = params[["filter_xy"]]}
+switch(
+  EXPR = array_name,
+  "450k" = utils::data("probe.features", package = "ChAMPdata"),
+  "EPIC" = utils::data("probe.features.epic", package = "ChAMPdata")
+)
+probe_features <- get("probe.features")
+autosomes <- probe_features[!probe_features$CHR %in% c("X", "Y"), ]
+mset_f2 <- data_mset[minfi::featureNames(data_mset) %in% rownames(autosomes), ]
+cat(
+  "Filtering probes on the X or Y chromosome:\n",
+  "  - ", scales::comma(dim(data_mset)[1] - dim(mset_f2)[1]), " probes were discarded"
+)
+data_mset <- mset_f2
+```
 
 ## Principal Component Analysis
 
@@ -590,7 +604,6 @@ data_mset@metadata[["norm_beta_values"]] <- norm_beta
 ```
 
 ```{r export}
-data_mset@metadata[["phenotypes"]] <- NULL # need to be unset then update
 data_mset@metadata[["phenotypes"]] <- phenotypes
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
