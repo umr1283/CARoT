@@ -5,6 +5,7 @@
 * In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`.
 * In `/inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
 * In `/inst/rmarkdown/qc_idats.Rmd`, fix `Sample_ID` (*i.e.,* rownames) for gender check.
+* In `/R/c_idats.R`, remove `cat()` messages from `ENmix` functions.
 
 # CARoT 0.1.0
 

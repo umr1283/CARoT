@@ -115,7 +115,7 @@ read_idats <- function(
     bad_cpgs <- NULL
   }
 
-  trash <- capture.output({
+  trash <- utils::capture.output({
     mset <- suppressMessages(ENmix::preprocessENmix(
       rgSet = rgSet,
       bgParaEst = norm_background,
