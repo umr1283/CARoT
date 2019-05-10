@@ -566,7 +566,7 @@ phenotypes %>%
 
 ```{r filter_xy, eval = params[["filter_xy"]]}
 switch(
-  EXPR = array_name,
+  EXPR = params[["array"]],
   "450k" = utils::data("probe.features", package = "ChAMPdata"),
   "EPIC" = utils::data("probe.features.epic", package = "ChAMPdata")
 )
