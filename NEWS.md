@@ -3,6 +3,7 @@
 ## Minor improvements and fixes
 
 * In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`.
+* In `/inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
 
 # CARoT 0.1.0
 
