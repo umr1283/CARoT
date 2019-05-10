@@ -590,6 +590,7 @@ data_mset@metadata[["norm_beta_values"]] <- norm_beta
 ```
 
 ```{r export}
+data_mset@metadata[["phenotypes"]] <- NULL # need to be unset then update
 data_mset@metadata[["phenotypes"]] <- phenotypes
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
