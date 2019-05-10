@@ -115,18 +115,20 @@ read_idats <- function(
     bad_cpgs <- NULL
   }
 
-  mset <- suppressMessages(ENmix::preprocessENmix(
-    rgSet = rgSet,
-    bgParaEst = norm_background,
-    dyeCorr = norm_dye,
-    QCinfo = NULL,
-    exQCsample = FALSE,
-    exQCcpg = FALSE,
-    exSample = bad_samples,
-    exCpG = bad_cpgs,
-    nCores = n_cores
-  ))
-  mset <- suppressMessages(ENmix::norm.quantile(mdat = mset, method = norm_quantile))
+  trash <- capture.output({
+    mset <- suppressMessages(ENmix::preprocessENmix(
+      rgSet = rgSet,
+      bgParaEst = norm_background,
+      dyeCorr = norm_dye,
+      QCinfo = NULL,
+      exQCsample = FALSE,
+      exQCcpg = FALSE,
+      exSample = bad_samples,
+      exCpG = bad_cpgs,
+      nCores = n_cores
+    ))
+    mset <- suppressMessages(ENmix::norm.quantile(mdat = mset, method = norm_quantile))
+  })
 
   mset@metadata[["phenotypes"]] <- rgSet %>%
     minfi::pData() %>%
