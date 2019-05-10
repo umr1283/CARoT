@@ -444,7 +444,7 @@ phenotypes <- phenotypes %>%
       minfi::mapToGenome() %>% 
       minfi::getSex(cutoff = gender_threshold) %>% 
       as.data.frame() %>% 
-      dplyr::mutate(Sample_ID = phenotypes[,"Sample_ID"]) %>% 
+      dplyr::mutate(Sample_ID = minfi::sampleNames(data_mset)) %>% 
       dplyr::rename(
         qc_xmedian = xMed,
         qc_ymedian = yMed,
