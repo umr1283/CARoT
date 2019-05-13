@@ -42,7 +42,8 @@ Imports:
     S4Vectors,
     ENmix,
     cowplot,
-    ggdendro
+    ggdendro,
+    fs
 Suggests:
     covr,
     testthat
