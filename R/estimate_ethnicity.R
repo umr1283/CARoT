@@ -35,58 +35,20 @@ estimate_ethnicity <- function(
     plink1.9 = "/usr/bin/plink1.9"
   )
 ) {
-  if (!all(grepl(".vcf.gz$", c(input_vcfs, list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE))))) {
-    stop('[CARoT] VCF files must be compressed using bgzip!')
-  }
+  list_input <- check_input(input = input_vcfs)
+  list_ref <- check_input(input = ref1kg_vcfs)
 
   if (!input_type%in%c("array", "sequencing")) {
     stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
   }
-  if (all(!dir.exists(input_vcfs) & !file.exists(input_vcfs))) {
-    stop(
-      '[CARoT] A valid "input_vcfs" must be provided, ',
-      'either a directory (with VCF files) or a vcf file!'
-    )
-  }
-  if (all(!dir.exists(ref1kg_vcfs) & !file.exists(ref1kg_vcfs))) {
-    stop(
-      '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
-      'either a directory (with VCF files) or a vcf file!'
-    )
-  }
 
-  if (all(grepl(".vcf.gz$", input_vcfs))) {
-    list_input <- input_vcfs
-  } else {
-    list_input <- list.files(path = input_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
-  }
-
-  if (all(grepl(".vcf.gz$", ref1kg_vcfs))) {
-    list_ref <- ref1kg_vcfs
-  } else {
-    list_ref <- list.files(path = ref1kg_vcfs, pattern = ".vcf.gz$", full.names = TRUE)
-  }
-
-  if (length(list_input)==0) {
-    stop(
-      '[CARoT] A valid "input_vcfs" must be provided, ',
-      'either a directory (with VCF files) or a vcf file!'
-    )
-  }
-  if (length(list_ref)==0) {
-    stop(
-      '[CARoT] A valid "ref1kg_vcfs" must be provided, ',
-      'either a directory (with VCF files) or a vcf file!'
-    )
-  }
-
-  if (input_type=="sequencing" & length(ref1kg_vcfs)!=1) {
+  if (input_type=="sequencing" & length(list_ref)!=1) {
     stop(
       '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "sequencing"`!'
     )
   }
-  if (input_type=="array" & splitted_by_chr & length(ref1kg_vcfs)!=1) {
+  if (input_type=="array" & splitted_by_chr & length(list_ref)!=1) {
     stop(
       '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "array"` & `splitted_by_chr = FALSE`!'
@@ -148,6 +110,37 @@ estimate_ethnicity <- function(
     ref1kg_population = ref1kg_population
   )
 
+}
+
+
+#' check_input
+#'
+#' @param input A `character`
+#'
+#' @keywords internal
+check_input <- function(input) {
+  name <- deparse(substitute(input))
+  if (!fs::is_dir(input) & !fs::is_file(input)) {
+    stop(
+      '[CARoT] A valid "', name, '" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
+  }
+  if (fs::is_dir(input)) {
+    list_input <- list.files(path = input, pattern = ".vcf.gz$", full.names = TRUE)
+  } else {
+    list_input <- input
+  }
+  if (!all(grepl(".vcf.gz$", list_input))) {
+    stop('[CARoT] VCF files must be compressed using bgzip!')
+  }
+  if (length(list_input)==0) {
+    stop(
+      '[CARoT] A valid "', name, '" must be provided, ',
+      'either a directory (with VCF files) or a vcf file!'
+    )
+  }
+  invisible(list_input)
 }
 
 
