@@ -17,9 +17,11 @@ before_install:
 
 r_github_packages:
   - r-lib/covr
+  - gabraham/flashpca/flashpcaR
 
 bioc_packages:
-  - GEOquery
+  - IlluminaHumanMethylation450kmanifest
+  - IlluminaHumanMethylationEPICmanifest
 
 matrix:
   include:
