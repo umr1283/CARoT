@@ -23,8 +23,11 @@ environment:
 
 build_script:
   - travis-tool.sh install_bioc GEOquery
+  - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest
+  - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
   - travis-tool.sh install_bioc_deps
   - travis-tool.sh install_deps
+  - travis-tool.sh install_github gabraham/flashpca/flashpcaR
 
 test_script:
   - travis-tool.sh run_tests
