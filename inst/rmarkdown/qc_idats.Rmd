@@ -147,10 +147,10 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * `filter_beads`  
         => remove probes with a beadcount less than 3
     * __Call Rate__  
-        => remove probes with less than the specified call rate for detection p-values below $\alpha=0.01$ (default)
+        => remove probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$
 1. Filtering Samples
     * __Call Rate__  
-        => remove samples with less than the specified call rate for detection p-values below $\alpha=0.01$ (default)
+        => remove samples with less than the specified call rate (`r params[["callrate_samples"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$
     * __Gender~[Phenotype]~ $\neq$ Gender~[Probes]~__  
         => flag samples with gender discrepancy
 1. Normalisation
