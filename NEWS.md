@@ -1,3 +1,10 @@
+# CARoT 0.1.2 (development version)
+
+## Minor improvements and fixes
+
+* In `/R/estimate_ethnicity.R`, add `check_input()` function to properly check inputs using `fs` package.
+* In `/inst/rmarkdown/qc_idats.Rmd`, now print call rate parameters in plain text.
+
 # CARoT 0.1.1 (development version)
 
 ## Minor improvements and fixes
@@ -6,9 +13,8 @@
 * In `/inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
 * In `/inst/rmarkdown/qc_idats.Rmd`, fix `Sample_ID` (*i.e.,* rownames) for gender check.
 * In `/R/c_idats.R`, remove `cat()` messages from `ENmix` functions.
-* In `/R/estimate_ethnicity.R`, add `check_input()` function to properly check inputs using `fs` package.
 
-# CARoT 0.1.0
+# CARoT 0.1.0 (development version)
 
 ## Breaking changes
 
