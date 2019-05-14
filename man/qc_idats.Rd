@@ -15,8 +15,9 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   norm_quantile = "quantile1", cell_tissue = NULL,
   pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
   "Array Quality-Control"), author_name = "CARoT",
-  author_affiliation = NULL, author_email = NULL, show_code = FALSE,
-  n_cores = 20, dpi = 300, gg_fontsize = 12, encoding = "UTF-8")
+  author_affiliation = NULL, author_email = NULL, cache = FALSE,
+  show_code = FALSE, n_cores = 20, dpi = 300, gg_fontsize = 12,
+  encoding = "UTF-8")
 }
 \arguments{
 \item{csv_file}{A \code{character}.}
@@ -74,6 +75,8 @@ qc_idats(csv_file, data_directory, array = "EPIC",
 \item{author_affiliation}{A \code{character}.}
 
 \item{author_email}{A \code{character}.}
+
+\item{cache}{A \code{logical}.}
 
 \item{show_code}{A \code{logical}.}
 

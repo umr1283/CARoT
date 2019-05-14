@@ -28,6 +28,7 @@
 #' @param author_name A `character`.
 #' @param author_affiliation A `character`.
 #' @param author_email A `character`.
+#' @param cache A `logical`.
 #' @param show_code A `logical`.
 #' @param n_cores A `numeric`.
 #' @param dpi A `numeric`.
@@ -65,6 +66,7 @@ qc_idats <- function(
   author_name = "CARoT",
   author_affiliation = NULL,
   author_email = NULL,
+  cache = FALSE,
   show_code = FALSE,
   n_cores = 20,
   dpi = 300,
@@ -87,6 +89,7 @@ qc_idats <- function(
       author_affiliation = author_affiliation,
       author_email = author_email,
       output_directory = output_directory,
+      cache = cache,
       show_code = show_code,
       n_cores = n_cores,
       dpi = dpi,
