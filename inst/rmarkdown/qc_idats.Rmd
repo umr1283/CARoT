@@ -13,6 +13,7 @@ params:
   author_affiliation: "Institution"
   author_email: "some@email.com"
   output_directory: "/EPIC_QC"
+  cache: FALSE
   show_code: FALSE
   n_cores: 20
   dpi: 120
@@ -61,7 +62,7 @@ options(stringsAsFactors = FALSE)
 
 output_directory <- params[["output_directory"]]
 
-dir.create(paste0(output_directory, "/KnitrFiles/"), recursive = TRUE, showWarnings = FALSE, mode = '0777')
+dir.create(paste0(output_directory, "/cache/"), recursive = TRUE, showWarnings = FALSE, mode = '0777')
 
 
 ### Load packages and functions
@@ -84,9 +85,9 @@ knitr::opts_chunk$set(
   autodep = TRUE,
   fig.align = "center",
   fig.pos = "!H",
-  cache = FALSE,
-  cache.path = paste0(output_directory, "/KnitrFiles/"),
-  fig.path = paste0(output_directory, "/KnitrFiles/")
+  cache = params[["cache"]],
+  cache.path = paste0(output_directory, "/cache/"),
+  fig.path = paste0(output_directory, "/cache/")
 )
 
 
