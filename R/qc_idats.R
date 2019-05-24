@@ -69,7 +69,7 @@ qc_idats <- function(
   cache = FALSE,
   show_code = FALSE,
   n_cores = 20,
-  dpi = 300,
+  dpi = 120,
   gg_fontsize = 12,
   encoding = "UTF-8"
 ) {
