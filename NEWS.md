@@ -1,3 +1,10 @@
+# CARoT 0.1.3 (development version)
+
+## Minor improvements and fixes
+
+* In `/R/qc_idats.R`, decrease default dpi value from `300` to `120`.
+* In `/inst/rmarkdown/qc_idats.Rmd`, fix the bullet list in gender check section.
+
 # CARoT 0.1.2 (development version)
 
 ## Minor improvements and fixes
@@ -14,7 +21,7 @@
 * In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`.
 * In `/inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
 * In `/inst/rmarkdown/qc_idats.Rmd`, fix `Sample_ID` (*i.e.,* rownames) for gender check.
-* In `/R/c_idats.R`, remove `cat()` messages from `ENmix` functions.
+* In `/R/qc_idats.R`, remove `cat()` messages from `ENmix` functions.
 
 
 # CARoT 0.1.0 (development version)
