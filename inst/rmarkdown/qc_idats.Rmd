@@ -575,7 +575,7 @@ probe_features <- get("probe.features")
 autosomes <- probe_features[!probe_features$CHR %in% c("X", "Y"), ]
 mset_f2 <- data_mset[minfi::featureNames(data_mset) %in% rownames(autosomes), ]
 cat(
-  "Filtering probes on the X or Y chromosome:\n",
+  "Filtering probes on the X or Y chromosome:\n\n",
   "  - ", scales::comma(dim(data_mset)[1] - dim(mset_f2)[1]), " probes were discarded"
 )
 data_mset <- mset_f2
