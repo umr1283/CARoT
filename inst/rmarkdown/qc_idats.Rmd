@@ -135,15 +135,15 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * __Import data__  
         => (custom) `read_idats` based on [*minfi*](https://doi.org/doi:10.18129/B9.bioc.minfi)
 1. Filtering Probes
-    * `filter_snps` (Zhou et al., 2016; doi:10.1093/nar/gkw967)  
-        => keep probes in which the probed CpG falls near a SNP
+    * `filter_snps` ([Zhou et al., 2016][https://www.doi.org/10.1093/nar/gkw967))  
+        => remove probes in which the probed CpG falls near a SNP
     * `filter_non_cpg`  
         => remove non-cg probes
     * `filter_xy`  
-        => keep probes from X and Y chromosomes
+        => remove probes from X and Y chromosomes
 
 1. Filtering Probes
-    * `filter_multihit` (Nordlund et al., 2013; doi:10.1186/gb-2013-14-9-r105)  
+    * `filter_multihit` ([Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105))  
         => remove probes which align to multiple locations
     * `filter_beads`  
         => remove probes with a beadcount less than 3

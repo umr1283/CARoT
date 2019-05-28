@@ -1,3 +1,9 @@
+# CARoT 0.1.4 (development version)
+
+## Minor improvements and fixes
+
+* In `/inst/rmarkdown/qc_idats.Rmd`, fix __Methods__ section describing what `filter_` parameters do.
+
 # CARoT 0.1.3 (development version)
 
 ## Minor improvements and fixes

@@ -16,7 +16,7 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
   "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
-  show_code = FALSE, n_cores = 20, dpi = 300, gg_fontsize = 12,
+  show_code = FALSE, n_cores = 20, dpi = 120, gg_fontsize = 12,
   encoding = "UTF-8")
 }
 \arguments{
