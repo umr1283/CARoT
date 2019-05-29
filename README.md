@@ -9,6 +9,8 @@ Status](https://travis-ci.org/mcanouil/CARoT.svg?branch=master)](https://travis-
 Status](https://ci.appveyor.com/api/projects/status/github/mcanouil/CARoT?branch=master&svg=true)](https://ci.appveyor.com/project/mcanouil/CARoT)
 [![Coverage Status
 (codecov)](https://codecov.io/gh/mcanouil/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/mcanouil/CARoT)
+[![GitHub
+tag](https://img.shields.io/github/tag/mcanouil/CARoT.svg?label=Github)](https://github.com/mcanouil/CARoT)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)
 [![CRAN\_Download\_total](http://cranlogs.r-pkg.org/badges/grand-total/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)
 <!--[![CRAN_Download_month](http://cranlogs.r-pkg.org/badges/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)-->
