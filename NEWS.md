@@ -1,3 +1,13 @@
+# CARoT 0.1.6 (development version)
+
+## Minor improvements and fixes
+
+* In `R/estimate_ethnicity.R`, add roxygen2 documentation for `estimate_ethnicity()`.
+* In `R/ggheatmap.R`, add roxygen2 documentation for `ggheatmap()`.
+* In `R/pca_report.R`, add roxygen2 documentation for `pca_report()`.
+* In `R/qc_idats.R`, add roxygen2 documentation for `qc_idats()`.
+* In `/man`, add roxygen2 documentation for `estimate_ethnicity()`, `ggheatmap()`, `pca_report()` and `qc_idats()`.
+
 # CARoT 0.1.5 (development version)
 
 ## Minor improvements and fixes

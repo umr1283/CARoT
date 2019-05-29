@@ -13,29 +13,30 @@ estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
   "/usr/bin/plink1.9"))
 }
 \arguments{
-\item{cohort_name}{A \code{character}.}
+\item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
 
-\item{input_vcfs}{A \code{character}.}
+\item{input_vcfs}{A \code{character}. A path to one or several VCFs file.}
 
-\item{input_type}{A \code{character}.}
+\item{input_type}{A \code{character}. Either \code{"array"} or \code{"sequencing"}.}
 
-\item{output_directory}{A \code{character}.}
+\item{output_directory}{A \code{character}. The path where the data and figures is written.}
 
-\item{ref1kg_vcfs}{A \code{character}.}
+\item{ref1kg_vcfs}{A \code{character}. A path to the reference VCFs files (i.e., 1,000 Genomes sequencing data).}
 
-\item{ref1kg_population}{A \code{character}.}
+\item{ref1kg_population}{A \code{character}. A file which describe samples and their ethnicity.}
 
-\item{ref1kg_maf}{A \code{numeric}.}
+\item{ref1kg_maf}{A \code{numeric}. MAF threshold for SNPs in 1,000 Genomes}
 
-\item{splitted_by_chr}{A \code{logical}.}
+\item{splitted_by_chr}{A \code{logical}. Is the VCFs files splitted by chromosome?}
 
-\item{quality_tag}{A \code{character}.}
+\item{quality_tag}{A \code{character}. Name of the imputation quality tag for \code{"array"}.}
 
-\item{quality_threshold}{A \code{numeric}.}
+\item{quality_threshold}{A \code{numeric}. The threshold to keep/discard SNPs based on their imputation quality.}
 
-\item{n_cores}{An \code{integer}.}
+\item{n_cores}{An \code{integer}. The number of CPUs to use to estimate the ethnicity.}
 
-\item{bin_path}{A \code{list(character)}.}
+\item{bin_path}{A \code{list(character)}. A list giving the binary path of
+\code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}
 }
 \value{
 A \code{data.frame}.

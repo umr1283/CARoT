@@ -8,17 +8,18 @@ format_sequencing(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
   ref1kg_maf, bin_path)
 }
 \arguments{
-\item{cohort_name}{A \code{character}.}
+\item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
 
-\item{input_vcfs}{A \code{character}.}
+\item{input_vcfs}{A \code{character}. A path to one or several VCFs file.}
 
-\item{output_directory}{A \code{character}.}
+\item{output_directory}{A \code{character}. The path where the data and figures is written.}
 
-\item{ref1kg_vcfs}{A \code{character}.}
+\item{ref1kg_vcfs}{A \code{character}. A path to the reference VCFs files (i.e., 1,000 Genomes sequencing data).}
 
-\item{ref1kg_maf}{A \code{numeric}.}
+\item{ref1kg_maf}{A \code{numeric}. MAF threshold for SNPs in 1,000 Genomes}
 
-\item{bin_path}{A \code{list(character)}.}
+\item{bin_path}{A \code{list(character)}. A list giving the binary path of
+\code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}
 }
 \description{
 format_sequencing
