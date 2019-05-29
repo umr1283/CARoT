@@ -1,17 +1,18 @@
 #' estimate_ethnicity
 #'
-#' @param cohort_name A `character`.
-#' @param input_vcfs A `character`.
-#' @param input_type A `character`.
-#' @param output_directory A `character`.
-#' @param ref1kg_vcfs A `character`.
-#' @param ref1kg_population A `character`.
-#' @param ref1kg_maf A `numeric`.
-#' @param splitted_by_chr A `logical`.
-#' @param quality_tag A `character`.
-#' @param quality_threshold A `numeric`.
-#' @param n_cores An `integer`.
-#' @param bin_path A `list(character)`.
+#' @param cohort_name A `character`. A name to describe the studied population compared to 1,000 Genomes.
+#' @param input_vcfs A `character`. A path to one or several VCFs file.
+#' @param input_type A `character`. Either `"array"` or `"sequencing"`.
+#' @param output_directory A `character`. The path where the data and figures is written.
+#' @param ref1kg_vcfs A `character`. A path to the reference VCFs files (i.e., 1,000 Genomes sequencing data).
+#' @param ref1kg_population A `character`. A file which describe samples and their ethnicity.
+#' @param ref1kg_maf A `numeric`. MAF threshold for SNPs in 1,000 Genomes
+#' @param splitted_by_chr A `logical`. Is the VCFs files splitted by chromosome?
+#' @param quality_tag A `character`. Name of the imputation quality tag for `"array"`.
+#' @param quality_threshold A `numeric`. The threshold to keep/discard SNPs based on their imputation quality.
+#' @param n_cores An `integer`. The number of CPUs to use to estimate the ethnicity.
+#' @param bin_path A `list(character)`. A list giving the binary path of
+#'   `vcftools`, `bcftools`, `bgzip`, `tabix` and `plink1.9`.
 #'
 #' @return A `data.frame`.
 #' @export
@@ -115,7 +116,7 @@ estimate_ethnicity <- function(
 
 #' check_input
 #'
-#' @param input A `character`
+#' @param input A `character`. A file path.
 #'
 #' @keywords internal
 check_input <- function(input) {
@@ -147,7 +148,7 @@ check_input <- function(input) {
 #' format_vcf
 #'
 #' @inheritParams estimate_ethnicity
-#' @param ichr A chracter or `numeric`.
+#' @param ichr A `character` or `numeric`. The chromosome identifier.
 #'
 #' @keywords internal
 format_vcf <- function(
@@ -470,7 +471,7 @@ format_sequencing <- function(
 #' compute_pca
 #'
 #' @inheritParams estimate_ethnicity
-#' @param input_plink A `character`.
+#' @param input_plink A `character`. The path to plink format files (i.e., `.bed`, `.bim` and `.fam` files).
 #'
 #' @keywords internal
 compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_population) {
