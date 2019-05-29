@@ -1,14 +1,14 @@
 #' pca_report
 #'
-#' @param data A `vector` or `data.frame`.
-#' @param design A `data.frame`.
-#' @param id_var A `character`.
-#' @param technical_vars A `vector(character)`.
-#' @param n_comp A `numeric`.
-#' @param fig_n_comp A `numeric`.
-#' @param outliers_component A `logical`.
-#' @param outliers_threshold A `numeric`.
-#' @param title_level A `numeric`.
+#' @param data A `vector` or `data.frame`. The data on which the PCA has to be performed.
+#' @param design A `data.frame`. Additional variables to be used with factorial planes.
+#' @param id_var A `character`. The identifier column used to merge the data.
+#' @param technical_vars A `vector(character)`. Variables from design to be used with factorial planes.
+#' @param n_comp A `numeric`. The number of principal components to be computed.
+#' @param fig_n_comp A `numeric`. The number of principal components to be used for figures.
+#' @param outliers_component A `logical`. The principal components to be used to outliers detection.
+#' @param outliers_threshold A `numeric`. The treshold to define outliers.
+#' @param title_level A `numeric`. The markdown title level, i.e., the number of `#` preceding the section.
 #'
 #' @return A `data.frame`.
 #' @export
