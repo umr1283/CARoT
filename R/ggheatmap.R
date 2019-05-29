@@ -1,18 +1,21 @@
 #' ggheatmap
 #'
-#' @param data description
-#' @param dendrogram_columns description
-#' @param dendrogram_rows description
-#' @param line_size description
-#' @param font_size description
-#' @param font_size_x description
-#' @param font_size_y description
-#' @param distance_method description
-#' @param cluster_method description
-#' @param scale_name description
-#' @param scale_revert description
+#' @param data A `data.frame`. The data on which to draw the heatmap/dendrogram.
+#' @param dendrogram_columns A `logical`. Should the dendrogram for columns be plotted?
+#' @param dendrogram_rows A `logical`. Should the dendrogram for row be plotted?
+#' @param line_size A `numeric`. Value for the line size.
+#' @param font_size A `numeric`. Value for the font size.
+#' @param font_size_x A `numeric`. Value for the font size of the x-axis.
+#' @param font_size_y A `numeric`. Value for the font size of the y-axis.
+#' @param distance_method A `character`. The distance method to be used.
+#'     This must be one of `"euclidean"`, `"maximum"`, `"manhattan"`, `"canberra"`, `"binary"` or `"minkowski"`.
+#' @param cluster_method A `character`. The agglomeration method to be used.
+#'     This should be one of `"ward.D"`, `"ward.D2"`, `"single"`, `"complete"`,
+#'     `"average"` (= UPGMA), `"mcquitty"` (= WPGMA), `"median"` (= WPGMC) or `"centroid"` (= UPGMC).
+#' @param scale_name A `character`. The name of the legend.
+#' @param scale_revert A `logical`. Should the scale values be reversed?
 #'
-#' @return description
+#' @return A `ggplot` object.
 #' @export
 ggheatmap <- function(
   data,
