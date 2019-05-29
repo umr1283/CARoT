@@ -135,7 +135,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * __Import data__  
         => (custom) `read_idats` based on [*minfi*](https://doi.org/doi:10.18129/B9.bioc.minfi)
 1. Filtering Probes
-    * `filter_snps` ([Zhou et al., 2016][https://www.doi.org/10.1093/nar/gkw967))  
+    * `filter_snps` ([Zhou et al., 2016](https://www.doi.org/10.1093/nar/gkw967))  
         => remove probes in which the probed CpG falls near a SNP
     * `filter_non_cpg`  
         => remove non-cg probes
@@ -161,7 +161,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
         *Normalise __type II__ probes (with __type I__ as reference) using linear regression coefficients based on type I and type II probe pairs within specified distance*
     * __Batch effect bias__  
         => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)  
-        *Empirical Bayes framework is used to correct for batch effects using __batch/slide as covarariate__*
+        *Empirical Bayes framework is used to correct for batch effects using __batch/slide__ as covarariate*
 1. Additional Checks
     * __Cell Composition__  
         => using `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)  
