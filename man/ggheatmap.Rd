@@ -11,30 +11,33 @@ ggheatmap(data, dendrogram_columns = TRUE, dendrogram_rows = TRUE,
   scale_revert = FALSE)
 }
 \arguments{
-\item{data}{description}
+\item{data}{A \code{data.frame}. The data on which to draw the heatmap/dendrogram.}
 
-\item{dendrogram_columns}{description}
+\item{dendrogram_columns}{A \code{logical}. Should the dendrogram for columns be plotted?}
 
-\item{dendrogram_rows}{description}
+\item{dendrogram_rows}{A \code{logical}. Should the dendrogram for row be plotted?}
 
-\item{line_size}{description}
+\item{line_size}{A \code{numeric}. Value for the line size.}
 
-\item{font_size}{description}
+\item{font_size}{A \code{numeric}. Value for the font size.}
 
-\item{font_size_x}{description}
+\item{font_size_x}{A \code{numeric}. Value for the font size of the x-axis.}
 
-\item{font_size_y}{description}
+\item{font_size_y}{A \code{numeric}. Value for the font size of the y-axis.}
 
-\item{distance_method}{description}
+\item{distance_method}{A \code{character}. The distance method to be used.
+This must be one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"} or \code{"minkowski"}.}
 
-\item{cluster_method}{description}
+\item{cluster_method}{A \code{character}. The agglomeration method to be used.
+This should be one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"},
+\code{"average"} (= UPGMA), \code{"mcquitty"} (= WPGMA), \code{"median"} (= WPGMC) or \code{"centroid"} (= UPGMC).}
 
-\item{scale_name}{description}
+\item{scale_name}{A \code{character}. The name of the legend.}
 
-\item{scale_revert}{description}
+\item{scale_revert}{A \code{logical}. Should the scale values be reversed?}
 }
 \value{
-description
+A \code{ggplot} object.
 }
 \description{
 ggheatmap

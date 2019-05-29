@@ -22,7 +22,7 @@ environment:
     BIOC_USE_DEVEL: FALSE
 
 build_script:
-  - Rscript -e "install.packages('remotes', ask = FALSE);"
+  - Rscript -e "install.packages('remotes', ask = FALSE, repos = 'http://cran.us.r-project.org');"
   - Rscript -e "remotes::install_version(package = 'RSpectra', version = '0.13-1', repos = 'http://cran.us.r-project.org', upgrade = 'never');"
   - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR', upgrade = 'never');"
   - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest

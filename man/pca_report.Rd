@@ -9,23 +9,23 @@ pca_report(data, design, id_var = "Sample_ID", technical_vars,
   outliers_threshold = 3, title_level = 2)
 }
 \arguments{
-\item{data}{A \code{vector} or \code{data.frame}.}
+\item{data}{A \code{vector} or \code{data.frame}. The data on which the PCA has to be performed.}
 
-\item{design}{A \code{data.frame}.}
+\item{design}{A \code{data.frame}. Additional variables to be used with factorial planes.}
 
-\item{id_var}{A \code{character}.}
+\item{id_var}{A \code{character}. The identifier column used to merge the data.}
 
-\item{technical_vars}{A \code{vector(character)}.}
+\item{technical_vars}{A \code{vector(character)}. Variables from design to be used with factorial planes.}
 
-\item{n_comp}{A \code{numeric}.}
+\item{n_comp}{A \code{numeric}. The number of principal components to be computed.}
 
-\item{fig_n_comp}{A \code{numeric}.}
+\item{fig_n_comp}{A \code{numeric}. The number of principal components to be used for figures.}
 
-\item{outliers_component}{A \code{logical}.}
+\item{outliers_component}{A \code{logical}. The principal components to be used to outliers detection.}
 
-\item{outliers_threshold}{A \code{numeric}.}
+\item{outliers_threshold}{A \code{numeric}. The treshold to define outliers.}
 
-\item{title_level}{A \code{numeric}.}
+\item{title_level}{A \code{numeric}. The markdown title level, i.e., the number of \code{#} preceding the section.}
 }
 \value{
 A \code{data.frame}.

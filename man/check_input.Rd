@@ -7,7 +7,7 @@
 check_input(input)
 }
 \arguments{
-\item{input}{A \code{character}}
+\item{input}{A \code{character}. A file path.}
 }
 \description{
 check_input

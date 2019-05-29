@@ -8,21 +8,22 @@ format_vcf(input_vcfs, ref1kg_vcfs, ref1kg_maf, ichr, quality_tag,
   quality_threshold, output_directory, bin_path)
 }
 \arguments{
-\item{input_vcfs}{A \code{character}.}
+\item{input_vcfs}{A \code{character}. A path to one or several VCFs file.}
 
-\item{ref1kg_vcfs}{A \code{character}.}
+\item{ref1kg_vcfs}{A \code{character}. A path to the reference VCFs files (i.e., 1,000 Genomes sequencing data).}
 
-\item{ref1kg_maf}{A \code{numeric}.}
+\item{ref1kg_maf}{A \code{numeric}. MAF threshold for SNPs in 1,000 Genomes}
 
-\item{ichr}{A chracter or \code{numeric}.}
+\item{ichr}{A \code{character} or \code{numeric}. The chromosome identifier.}
 
-\item{quality_tag}{A \code{character}.}
+\item{quality_tag}{A \code{character}. Name of the imputation quality tag for \code{"array"}.}
 
-\item{quality_threshold}{A \code{numeric}.}
+\item{quality_threshold}{A \code{numeric}. The threshold to keep/discard SNPs based on their imputation quality.}
 
-\item{output_directory}{A \code{character}.}
+\item{output_directory}{A \code{character}. The path where the data and figures is written.}
 
-\item{bin_path}{A \code{list(character)}.}
+\item{bin_path}{A \code{list(character)}. A list giving the binary path of
+\code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}
 }
 \description{
 format_vcf

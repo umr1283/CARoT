@@ -7,9 +7,10 @@
 merge_vcf(input_vcfs, bin_path)
 }
 \arguments{
-\item{input_vcfs}{A \code{character}.}
+\item{input_vcfs}{A \code{character}. A path to one or several VCFs file.}
 
-\item{bin_path}{A \code{list(character)}.}
+\item{bin_path}{A \code{list(character)}. A list giving the binary path of
+\code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}
 }
 \description{
 merge_vcf

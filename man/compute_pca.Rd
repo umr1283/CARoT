@@ -7,13 +7,13 @@
 compute_pca(cohort_name, input_plink, output_directory, ref1kg_population)
 }
 \arguments{
-\item{cohort_name}{A \code{character}.}
+\item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
 
-\item{input_plink}{A \code{character}.}
+\item{input_plink}{A \code{character}. The path to plink format files (i.e., \code{.bed}, \code{.bim} and \code{.fam} files).}
 
-\item{output_directory}{A \code{character}.}
+\item{output_directory}{A \code{character}. The path where the data and figures is written.}
 
-\item{ref1kg_population}{A \code{character}.}
+\item{ref1kg_population}{A \code{character}. A file which describe samples and their ethnicity.}
 }
 \description{
 compute_pca
