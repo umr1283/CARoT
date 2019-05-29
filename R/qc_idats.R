@@ -1,39 +1,73 @@
 #' qc_idats
 #'
-#' @param csv_file A `character`.
-#' @param data_directory A `character`.
-#' @param array A `character`.
-#' @param annotation A `character`.
-#' @param output_file A `character`.
-#' @param output_directory A `character`.
-#' @param filter_snps A `logical`.
-#' @param filter_non_cpg A `logical`.
-#' @param filter_xy A `logical`.
-#' @param filter_multihit A `logical`.
-#' @param filter_beads A `logical`.
-#' @param population A `character`.
-#' @param bead_cutoff A `numeric`.
-#' @param detection_pvalues A `numeric`.
-#' @param filter_callrate A `logical`.
-#' @param callrate_samples A `numeric`.
-#' @param callrate_probes A `numeric`.
-#' @param gender_threshold A `numeric`.
-#' @param gender_colname A `character`.
-#' @param norm_background A `character`.
-#' @param norm_dye A `character`.
-#' @param norm_quantile A `character`.
-#' @param cell_tissue A `character`.
-#' @param pca_vars A `vector(character)`.
-#' @param title A `character`.
-#' @param author_name A `character`.
-#' @param author_affiliation A `character`.
-#' @param author_email A `character`.
-#' @param cache A `logical`.
-#' @param show_code A `logical`.
-#' @param n_cores A `numeric`.
-#' @param dpi A `numeric`.
-#' @param gg_fontsize A `numeric`.
-#' @param encoding A `character`.
+#' @param csv_file A `character`. The path to a CSV file, i.e., a sample sheet describing the data.
+#' @param data_directory A `character`. The path to the data directory.
+#' @param array A `character`. The array name, i.e., `"EPIC"` or `"450k"`.
+#' @param annotation A `character`. The name and version of the annotation package to be used.
+#' @param output_file A `character`. The name of the html file produced.
+#' @param output_directory A `character`. The path to the output directory.
+#' @param filter_snps A `logical`. Should the probes in which the probed CpG falls near a SNP
+#'     (according to ([Zhou et al., 2016](https://www.doi.org/10.1093/nar/gkw967))) be removed?
+#'     Default is `TRUE`.
+#' @param filter_non_cpg A `logical`. Should the non-cg probes be removed?
+#' @param filter_xy A `logical`. Should the probes from X and Y chromosomes be removed?
+#'     Default is `TRUE`.
+#' @param filter_multihit A `logical`. Should the probes which align to multiple locations
+#'     (according to [Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105)) be removed?
+#'     Default is `TRUE`.
+#' @param filter_beads A `logical`. Should the probes with a beadcount less than 3 be removed?
+#'     Default is `TRUE`.
+#' @param population A `character`. Name of the ethnicity population to be used.
+#'     Default is `NULL` for none.
+#' @param bead_cutoff A `numeric`. The threshold for beadcount.
+#'     Default is `0.05`.
+#' @param detection_pvalues A `numeric`. The treshold for the detection pvalues above which,
+#'     values are considered as missing. Default is `0.01`.
+#' @param filter_callrate A `logical`. Should the data be filtered based on call rate metric?
+#'     Default is `TRUE`.
+#' @param callrate_samples A `numeric`. The call rate threshold for samples, under which samples are excluded.
+#'     Default is `0.99`.
+#' @param callrate_probes A `numeric`. The call rate threshold for probes, under which probes are excluded.
+#'     Default is `1`.
+#' @param gender_threshold A `numeric`. The threshold value to discrimate gender based
+#'     on sexual chromosomes methylation.
+#'    Default is `-2`.
+#' @param gender_colname A `character`. The name of the column containing the gender
+#'     in the file provided in `csv_file`.
+#'     Default is `NULL`.
+#' @param norm_background A `character`. Optional method to estimate background normal distribution parameters.
+#'     This must be one of "oob", "est" or "neg".
+#'     Default is `"oob"`.
+#' @param norm_dye A `character`. Dye bias correction, "mean": correction based on averaged red/green ratio;
+#'     or "RELIC": correction with RELIC method;
+#'     or "none": no dye bias correction.
+#'     Default is `"RELIC"`.
+#' @param norm_quantile A `character`. The quantile normalisation to be used.
+#'     This should be one of "quantile1", "quantile2", or "quantile3".
+#'     Default is `quantile1`.
+#' @param cell_tissue A `character`. The cell tissue to be used for cell composition estimation,
+#'     using a reference panel (i.e., blood or chord blood) or a mathematical deconvolution.
+#'     Default is `NULL`.
+#' @param pca_vars A `vector(character)`. Variables to be used with factorial planes.
+#'     Default is `c("Sample_Plate", "Sentrix_ID")`.
+#' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
+#' @param author_name A `character`. The author's name to be printed in the report.
+#'     Default is `CARoT`.
+#' @param author_affiliation A `character`. The affiliation to be printed in the report.
+#'     Default is `NULL`.
+#' @param author_email A `character`. The email to be printed in the report.
+#'     Default is `NULL`.
+#' @param cache A `logical`. Should the R code be cached?
+#'     Default is `FALSE`.
+#' @param show_code A `logical`. Should the R code be printed in the report?
+#'     Default is `FALSE`.
+#' @param n_cores A `numeric`. The number of CPUs to use to estimate the ethnicity.
+#'     Default is `20`.
+#' @param dpi A `numeric`. The value for dpi when plotting the data.
+#'     Default is `120`.
+#' @param gg_fontsize A `numeric`. Value for the font size. Default is `12`.
+#' @param encoding A `character`. The encoding to be used for the html report.
+#'     Default is `"UTF-8"`.
 #'
 #' @return NULL
 #' @export
