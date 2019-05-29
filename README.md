@@ -11,9 +11,9 @@ Status](https://ci.appveyor.com/api/projects/status/github/mcanouil/CARoT?branch
 (codecov)](https://codecov.io/gh/mcanouil/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/mcanouil/CARoT)
 [![GitHub
 tag](https://img.shields.io/github/tag/mcanouil/CARoT.svg?label=Github)](https://github.com/mcanouil/CARoT)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)
-[![CRAN\_Download\_total](http://cranlogs.r-pkg.org/badges/grand-total/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)
-<!--[![CRAN_Download_month](http://cranlogs.r-pkg.org/badges/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)-->
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/CARoT)](https://cran.r-project.org/package=CARoT)
+[![CRAN\_Download\_total](http://cranlogs.r-pkg.org/badges/grand-total/CARoT)](https://cran.r-project.org/package=CARoT)
+<!--[![CRAN_Download_month](http://cranlogs.r-pkg.org/badges/CARoT)](https://cran.r-project.org/package=CARoT)-->
 <!--[![Coverage Status (coveralls)](https://coveralls.io/repos/github/mcanouil/CARoT/badge.svg?branch=master)](https://coveralls.io/github/mcanouil/CARoT?branch=master)-->
 
 ## Installation
