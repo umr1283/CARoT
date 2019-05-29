@@ -1,3 +1,10 @@
+# CARoT 0.1.7 (development version)
+
+## Minor improvements and fixes
+
+* In `/inst/rmarkdown/qc_idats.Rmd`, parameters are now described using question "should ... be removed?" 
+    instead of "remove ...".
+
 # CARoT 0.1.6 (development version)
 
 ## Minor improvements and fixes
