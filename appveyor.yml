@@ -26,9 +26,7 @@ build_script:
   - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
   - travis-tool.sh install_bioc_deps
   - travis-tool.sh install_deps
-  - Rscript -e 'install.packages("devtools", ask = FALSE)'
-  - Rscript -e 'remotes::install_version(package = "RSpectra", version = "0.13-1", repos = "http://cran.us.r-project.org", upgrade = "never")'
-  - Rscript -e 'remotes::install_github(repo = "gabraham/flashpca/flashpcaR", upgrade = "never")'
+  - Rscript -e 'remotes::install_version(package = "RSpectra", version = "0.13-1", repos = "http://cran.us.r-project.org", upgrade = "never"); remotes::install_github(repo = "gabraham/flashpca/flashpcaR", upgrade = "never")';
 
 test_script:
   - travis-tool.sh run_tests
