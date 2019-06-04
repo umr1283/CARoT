@@ -22,6 +22,7 @@ environment:
     BIOC_USE_DEVEL: FALSE
 
 build_script:
+  - Rscript -e "install.packages('remotes');"
   - Rscript -e "remotes::install_version(package = 'RSpectra', version = '0.13-1', repos = 'http://cran.us.r-project.org', upgrade = 'never');"
   - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest
   - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
