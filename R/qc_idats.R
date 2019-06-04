@@ -21,7 +21,7 @@
 #'     Default is `NULL` for none.
 #' @param bead_cutoff A `numeric`. The threshold for beadcount.
 #'     Default is `0.05`.
-#' @param detection_pvalues A `numeric`. The treshold for the detection pvalues above which,
+#' @param detection_pvalues A `numeric`. The threshold for the detection pvalues above which,
 #'     values are considered as missing. Default is `0.01`.
 #' @param filter_callrate A `logical`. Should the data be filtered based on call rate metric?
 #'     Default is `TRUE`.
