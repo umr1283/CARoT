@@ -1,3 +1,9 @@
+# CARoT 0.1.8 (development version)
+
+## Minor improvements and fixes
+
+* In `DESCRIPTION`, add *RSpectra (<= 0.13-1)* for *flashpcaR* to `Imports`.
+
 # CARoT 0.1.7 (development version)
 
 ## Minor improvements and fixes
