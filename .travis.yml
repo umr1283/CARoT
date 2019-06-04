@@ -16,10 +16,10 @@ before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
   - Rscript -e 'install.packages("devtools", ask = FALSE)'
   - Rscript -e 'remotes::install_version(package = "RSpectra", version = "0.13-1", repos = "http://cran.us.r-project.org", upgrade = "never")'
-  - Rscript -e 'remotes::install_github(repo = "gabraham/flashpca/flashpcaR", upgrade = "never")'
 
 r_github_packages:
   - r-lib/covr
+  - gabraham/flashpca/flashpcaR
 
 bioc_packages:
   - IlluminaHumanMethylation450kmanifest
