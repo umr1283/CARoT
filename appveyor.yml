@@ -29,7 +29,7 @@ build_script:
   - travis-tool.sh install_deps
   - Rscript -e "install.packages('remotes', repos = 'http://cran.us.r-project.org');"
   - Rscript -e "remotes::install_version(package = 'RSpectra', version = '0.13-1', repos = 'http://cran.us.r-project.org', upgrade = 'never');"
-  - Rscript -e 'remotes::install_github(repo = "gabraham/flashpca/flashpcaR", upgrade = "never")'
+  - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR', upgrade = 'never')"
 
 test_script:
   - travis-tool.sh run_tests
