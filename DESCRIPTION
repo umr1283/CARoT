@@ -31,6 +31,7 @@ Imports:
     SummarizedExperiment,
     methods,
     magrittr,
+    RSpectra (<= 0.13-1),
     flashpcaR,
     ggforce,
     ggplot2,
