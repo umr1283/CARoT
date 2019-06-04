@@ -169,6 +169,28 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
         => using [FlashPCA](https://doi.org/10.1093/bioinformatics/btx299) for R on [GitHub](https://github.com/gabraham/flashpca/tree/master/flashpcaR)
 
 
+# Parameters
+
+* Array: `r params[["array"]]`
+* Annotation package from bioconductor: `r params[["annotation"]]`
+* `filter_snps`: `r params[["filter_snps"]]`
+* `filter_non_cpg`: `r params[["filter_non_cpg"]]`
+* `filter_xy`: `r params[["filter_xy"]]`
+* `filter_multihit`: `r params[["filter_multihit"]]`
+* `filter_beads`: `r params[["filter_beads"]]`
+* Name of the ethnicity population: `r params[["population"]]`
+* The threshold for beadcount: `r params[["bead_cutoff"]]`
+* The threshold for the detection pvalues: `r params[["detection_pvalues"]]`
+* `filter_callrate`: `r params[["filter_callrate"]]`
+* The call rate threshold for samples: `r params[["callrate_samples"]]`
+* The call rate threshold for probes: `r params[["callrate_probes"]]`
+* The threshold value to discrimate gender: `r params[["gender_threshold"]]`
+* The method to estimate background normal distribution parameters: `r params[["norm_background"]]`
+* The dye bias correction: `r params[["norm_dye"]]`
+* The quantile normalisation: `r params[["norm_quantile"]]`
+* The cell tissue: `r params[["cell_tissue"]]`
+
+
 # Quality Control
 
 ```{r sample_sheet}
