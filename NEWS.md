@@ -4,6 +4,8 @@
 
 * In `/inst/rmarkdown/qc_idats.Rmd`, parameters are now described using question "should ... be removed?" 
     instead of "remove ...".
+* In `/inst/rmarkdown/qc_idats.Rmd`, now includes a section with the parameters used.
+* In `R/qc_idats.R`, fix a typo in the `detection_pvalues` parameter's documentation.
 
 # CARoT 0.1.6 (development version)
 

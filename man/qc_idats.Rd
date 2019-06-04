@@ -54,7 +54,7 @@ Default is \code{NULL} for none.}
 \item{bead_cutoff}{A \code{numeric}. The threshold for beadcount.
 Default is \code{0.05}.}
 
-\item{detection_pvalues}{A \code{numeric}. The treshold for the detection pvalues above which,
+\item{detection_pvalues}{A \code{numeric}. The threshold for the detection pvalues above which,
 values are considered as missing. Default is \code{0.01}.}
 
 \item{filter_callrate}{A \code{logical}. Should the data be filtered based on call rate metric?
