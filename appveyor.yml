@@ -23,7 +23,6 @@ environment:
 
 build_script:
   - Rscript -e "remotes::install_version(package = 'RSpectra', version = '0.13-1', repos = 'http://cran.us.r-project.org', upgrade = 'never');"
-  - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR', upgrade = 'never');"
   - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest
   - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
   - travis-tool.sh install_bioc_deps
