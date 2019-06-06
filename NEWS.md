@@ -1,3 +1,9 @@
+# CARoT 0.2.0 (development version)
+
+## New features
+
+* New `qc_plink()` allows to compute quality-control of genotyping array (PLINK format) using a default rmarkdown template (`/inst/rmarkdown/qc_plink.Rmd`).
+
 # CARoT 0.1.8 (development version)
 
 ## Minor improvements and fixes

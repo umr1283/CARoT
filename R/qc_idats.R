@@ -76,7 +76,7 @@ qc_idats <- function(
   data_directory,
   array = "EPIC",
   annotation = "ilm10b4.hg19",
-  output_file = paste(array, "QC.html"),
+  output_file = paste0(array, "_QC.html"),
   output_directory = ".",
   filter_snps = TRUE,
   filter_non_cpg = TRUE,
@@ -102,7 +102,7 @@ qc_idats <- function(
   author_email = NULL,
   cache = FALSE,
   show_code = FALSE,
-  n_cores = 20,
+  n_cores = 22,
   dpi = 120,
   gg_fontsize = 12,
   encoding = "UTF-8"
@@ -118,16 +118,6 @@ qc_idats <- function(
     output_dir = output_directory,
     encoding = encoding,
     params = list(
-      title = title,
-      author_name = author_name,
-      author_affiliation = author_affiliation,
-      author_email = author_email,
-      output_directory = output_directory,
-      cache = cache,
-      show_code = show_code,
-      n_cores = n_cores,
-      dpi = dpi,
-      gg_fontsize = gg_fontsize,
       csv_file = csv_file,
       data_directory = data_directory,
       array = array,
@@ -149,7 +139,17 @@ qc_idats <- function(
       norm_dye = norm_dye,
       norm_quantile = norm_quantile,
       cell_tissue = cell_tissue,
-      pca_vars = pca_vars
+      pca_vars = pca_vars,
+      title = title,
+      author_name = author_name,
+      author_affiliation = author_affiliation,
+      author_email = author_email,
+      output_directory = output_directory,
+      cache = cache,
+      show_code = show_code,
+      n_cores = n_cores,
+      dpi = dpi,
+      gg_fontsize = gg_fontsize
     )
   )
 }
