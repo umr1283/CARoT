@@ -221,15 +221,13 @@ snps_number <- nrow(data.table::fread(input = paste0(temp_directory, "/raw_data.
 cohort_details <- paste0(dirname(params[["input_directory"]]), "/Details_Cohorts.xlsx")
 if (file.exists(cohort_details)) {
   recruit_centre <- readxl::read_xlsx(path = cohort_details, sheet = 1) %>% 
-    dplyr::select(1:3) %>%
-    `colnames<-`(c("Sample.Name", "Cohort", "Gender")) %>%
+    dplyr::select(Sample.Name = 1, Cohort = 2, Gender = 3) %>%
     dplyr::filter(Sample.Name %in% samples[[2]]) %>% 
     dplyr::mutate(Sample.Name = as.character(Sample.Name))
 } else {
   recruit_centre <- samples %>%
-    dplyr::select(2, 5) %>%
+    dplyr::select(Sample.Name = 2, Gender = 5) %>%
     dplyr::mutate(Cohort = !!params[["cohort_name"]]) %>%
-    `colnames<-`(c("Sample.Name", "Gender", "Cohort")) %>% 
     dplyr::mutate(Sample.Name = as.character(Sample.Name))
 }
 

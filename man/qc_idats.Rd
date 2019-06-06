@@ -5,7 +5,7 @@
 \title{qc_idats}
 \usage{
 qc_idats(csv_file, data_directory, array = "EPIC",
-  annotation = "ilm10b4.hg19", output_file = paste(array, "QC.html"),
+  annotation = "ilm10b4.hg19", output_file = paste0(array, "_QC.html"),
   output_directory = ".", filter_snps = TRUE, filter_non_cpg = TRUE,
   filter_xy = TRUE, filter_multihit = TRUE, filter_beads = TRUE,
   population = NULL, bead_cutoff = 0.05, detection_pvalues = 0.01,
@@ -16,7 +16,7 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
   "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
-  show_code = FALSE, n_cores = 20, dpi = 120, gg_fontsize = 12,
+  show_code = FALSE, n_cores = 22, dpi = 120, gg_fontsize = 12,
   encoding = "UTF-8")
 }
 \arguments{

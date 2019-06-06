@@ -1,16 +1,17 @@
 #' qc_plink
 #'
-#' @param input_directory A `character`. 
+#' @param input_directory A `character`.
 #' @param output_directory A `character`. The path to the output directory.
 #' @param cohort_name A `character`.
 #' @param output_file A `character`. The name of the html file produced.
-#' @param callrate_samples A `numeric`. 
-#' @param callrate_snps A `numeric`. 
-#' @param heterozygosity_treshold A `numeric`. 
-#' @param maf_threshold A `numeric`. 
-#' @param hwe_pvalue A `numeric`. 
-#' @param includes_relatives A `logical`. 
-#' @param mendelian_samples A `numeric`. 
+#' @param array A `character`. The array name.
+#' @param callrate_samples A `numeric`.
+#' @param callrate_snps A `numeric`.
+#' @param heterozygosity_treshold A `numeric`.
+#' @param maf_threshold A `numeric`.
+#' @param hwe_pvalue A `numeric`.
+#' @param includes_relatives A `logical`.
+#' @param mendelian_samples A `numeric`.
 #' @param mendelian_snp A `numeric`.
 #' @param IBD_threshold A `numeric`.
 #' @param population A `character`.
@@ -20,9 +21,7 @@
 #' @param ref1kg_panel A `character`.
 #' @param ref1kg_population A `character`.
 #' @param ref1kg_genotypes A `character`.
-#' @param ref1kg_population A `character`.
 #' @param ref1kg_legend A `character`.
-#' @param ref1kg_population A `character`.
 #' @param ref1kg_fasta A `character`.
 #' @param bin_path A `list(character)`.
 #' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
@@ -71,9 +70,9 @@ qc_plink <- function(
   ref1kg_legend = NULL,
   ref1kg_fasta = NULL,
   bin_path = list(
-    bcftools = "/usr/bin/bcftools", 
-    bgzip = "/usr/bin/bgzip", 
-    plink = "/usr/bin/plink1.9", 
+    bcftools = "/usr/bin/bcftools",
+    bgzip = "/usr/bin/bgzip",
+    plink = "/usr/bin/plink1.9",
     gcta = "/usr/bin/gcta64"
   ),
   title = paste(array, "Array Quality-Control"),
@@ -130,7 +129,7 @@ qc_plink <- function(
       show_code = show_code,
       n_cores = n_cores,
       dpi = dpi,
-      gg_fontsize = gg_fontsize,
+      gg_fontsize = gg_fontsize
     )
   )
 }

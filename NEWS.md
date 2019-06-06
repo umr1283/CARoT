@@ -2,13 +2,12 @@
 
 ## New features
 
-* New `qc_plink()` allows to compute quality-control of genotyping array (PLINK format) using a default rmarkdown template (`/inst/rmarkdown/qc_plink.Rmd`).
-
-# CARoT 0.1.8 (development version)
+* New `qc_plink()`, it allows to compute quality-control of genotyping array (PLINK format) using a default rmarkdown template (`/inst/rmarkdown/qc_plink.Rmd`).
 
 ## Minor improvements and fixes
 
 * In `DESCRIPTION`, add *RSpectra (<= 0.13-1)* for *flashpcaR* to `Imports`.
+* In `DESCRIPTION`, add *data.table* and *qdap* to `Imports`.
 
 # CARoT 0.1.7 (development version)
 
@@ -71,9 +70,9 @@
 
 ## New features
 
-* New `read_idats()` allows to efficiently import idats files mostly using `minfi` functions.
-* New `estimate_ethnicity()` allows to compute the genomic component for ethnicity based on VCF files.
-* New `pca_report()` allows to compute an analysis report using principal component analysis.  
+* New `read_idats()`, it allows to efficiently import idats files mostly using `minfi` functions.
+* New `estimate_ethnicity()`, it allows to compute the genomic component for ethnicity based on VCF files.
+* New `pca_report()`, it allows to compute an analysis report using principal component analysis.  
   The function can be used in Rmarkdown chunk with `results="asis"` to render the report.
-* New `ggheatmap()` allows to compute heatmap with dendrogram on x-axis and y-axis.
-* New `qc_idats()` allows to compute quality-control of methylation array from Illumina using a default rmarkdown template (`/inst/rmarkdown/qc_idats.Rmd`).
+* New `ggheatmap()`, it allows to compute heatmap with dendrogram on x-axis and y-axis.
+* New `qc_idats()`, it allows to compute quality-control of methylation array from Illumina using a default rmarkdown template (`/inst/rmarkdown/qc_idats.Rmd`).
