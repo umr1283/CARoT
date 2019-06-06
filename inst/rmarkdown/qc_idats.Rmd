@@ -8,16 +8,7 @@ date: '`r format(Sys.time(), "%B %d, %Y")`'
 monofont: 'Source Code Pro'
 monofontoptions: 'Scale=0.7'
 params:
-  title: "EPIC Array Quality-Control"
-  author_name: "Firstname Lastname"
-  author_affiliation: "Institution"
-  author_email: "some@email.com"
   output_directory: "/EPIC_QC"
-  cache: FALSE
-  show_code: FALSE
-  n_cores: 20
-  dpi: 120
-  gg_fontsize: 12
   csv_file: "sample_sheet_clean.csv"
   data_directory: "/idats"
   array: "EPIC"
@@ -40,6 +31,15 @@ params:
   norm_quantile: "quantile1" 
   cell_tissue: NULL
   pca_vars: !r c("Sample_Plate", "Sentrix_ID")
+  title: "EPIC Array Quality-Control"
+  author_name: "Firstname Lastname"
+  author_affiliation: "Institution"
+  author_email: "some@email.com"
+  cache: FALSE
+  show_code: FALSE
+  n_cores: 20
+  dpi: 120
+  gg_fontsize: 12
 output:
   bookdown::html_document2:
     theme: simplex
@@ -62,7 +62,9 @@ options(stringsAsFactors = FALSE)
 
 output_directory <- params[["output_directory"]]
 
-dir.create(paste0(output_directory, "/cache/"), recursive = TRUE, showWarnings = FALSE, mode = '0777')
+if (params[["cache"]]) {
+  dir.create(paste0(output_directory, "/cache/"), recursive = TRUE, showWarnings = FALSE, mode = "0777")
+}
 
 
 ### Load packages and functions
@@ -105,7 +107,7 @@ pretty_kable <- function(
   font_size = 12, 
   format_args = list(scientific = -1, digits = 3, big.mark = ","), 
   col.names = NA,
-  full_width,
+  full_width = NULL,
   echo = TRUE,
   ...
 ) {
@@ -115,7 +117,7 @@ pretty_kable <- function(
   output <- kableExtra::kable_styling(
     kable_input = output,
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-    full_width = ifelse(missing(full_width), FALSE, full_width),
+    full_width = ifelse(is.null(full_width), FALSE, full_width),
     position = "center",
     font_size = font_size
   )
