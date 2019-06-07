@@ -7,7 +7,7 @@
 #' @param n_comp A `numeric`. The number of principal components to be computed.
 #' @param fig_n_comp A `numeric`. The number of principal components to be used for figures.
 #' @param outliers_component A `logical`. The principal components to be used to outliers detection.
-#' @param outliers_threshold A `numeric`. The treshold to define outliers.
+#' @param outliers_threshold A `numeric`. The threshold to define outliers.
 #' @param title_level A `numeric`. The markdown title level, i.e., the number of `#` preceding the section.
 #'
 #' @return A `data.frame`.
