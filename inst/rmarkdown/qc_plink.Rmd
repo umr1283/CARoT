@@ -152,7 +152,7 @@ ggplot2::theme_set(ggplot2::theme_light(base_size = params[["gg_fontsize"]]))
 ```{r data}
 cat(
   "Data from:", dirname(params[["input_directory"]]), 
-  file = paste0(params[["output_directory"]], "/README.txt")
+  file = paste0(params[["output_directory"]], "/README.md")
 )
 
 system(command = paste(
@@ -176,7 +176,7 @@ system(command = paste(
     `` `r params[["population"]]` ``
 * Sample-based call rate threshold: 
     `` `r params[["callrate_samples"]]` ``
-* SNP-based call rate threshold: 
+* Variant-based call rate threshold: 
     `` `r params[["callrate_snps"]]` ``
 * Number of standard deviations (SD) from the mean heterozygosity rate: 
     `` `r params[["heterozygosity_treshold"]]` ``
@@ -499,7 +499,7 @@ sexcheck <- data.table::fread(paste0(temp_directory, "/raw_data.sexcheck")) %>%
   dplyr::mutate(
     sex_discrepancy = Gender != SNPSEX,
     STATUS = ifelse(sex_discrepancy | is.na(sex_discrepancy) | `F` >= 0.20 & `F` < 0.80, "PROBLEM", STATUS),
-    labs = ifelse(STATUS == "PROBLEM", IID, NA)
+    labs = ifelse(STATUS == "PROBLEM" & F_MISS < 1 - params[["callrate_samples"]], IID, NA)
   )
 
 sexcheck_problem <- dplyr::filter(sexcheck, STATUS == "PROBLEM")
@@ -558,6 +558,10 @@ ggplot2::ggplot(
     shape = sex_discrepancy
   )
 ) +
+  ggplot2::geom_rect(
+    mapping = ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = params[["callrate_samples"]]), 
+    fill = "grey80"
+  ) +
   ggplot2::geom_point() +
   ggplot2::geom_hline(yintercept = params[["callrate_samples"]], colour = "firebrick2", linetype = 2) +
   ggrepel::geom_label_repel(
@@ -610,9 +614,10 @@ heterozygosity <- data.table::fread(paste0(temp_directory, "/raw_data_auto.het")
           (F_MISS - mean(F_MISS, na.rm = TRUE))^2
       ), 
       labs = ifelse(
-        test = F_MISS >= 1 - params[["callrate_samples"]] | 
+        test = F_MISS < 1 - params[["callrate_samples"]] & ( 
           hrate > mean(hrate) + stats::sd(hrate * params[["heterozygosity_treshold"]]) | 
-          hrate < mean(hrate) - stats::sd(hrate * params[["heterozygosity_treshold"]]), 
+            hrate < mean(hrate) - stats::sd(hrate * params[["heterozygosity_treshold"]])
+        ), 
         yes = IID, 
         no = NA
       )
@@ -631,9 +636,10 @@ if (is_maf_lower) {
         hrate = (N.NM. - O.HOM.) / N.NM.,
         colour = sqrt((hrate - mean(hrate, na.rm = TRUE))^2 + (F_MISS - mean(F_MISS, na.rm = TRUE))^2), 
         labs = ifelse(
-          test = F_MISS >= 1 - params[["callrate_samples"]] | 
+          test = F_MISS < 1 - params[["callrate_samples"]] & ( 
             hrate > mean(hrate) + stats::sd(hrate * params[["heterozygosity_treshold"]]) | 
-            hrate < mean(hrate) - stats::sd(hrate * params[["heterozygosity_treshold"]]), 
+              hrate < mean(hrate) - stats::sd(hrate * params[["heterozygosity_treshold"]])
+          ), 
           yes = IID, 
           no = NA
         )
@@ -663,7 +669,7 @@ p_heteR <- ggplot2::ggplot(
 ) +
   ggplot2::geom_rect(
     mapping = ggplot2::aes(ymin = -Inf, ymax = Inf, xmin = -Inf, xmax = params[["callrate_samples"]]), 
-    fill = "grey70"
+    fill = "grey80"
   ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(colour = colour),
@@ -714,7 +720,7 @@ if (is_maf_lower) {
   ) +
     ggplot2::geom_rect(
       mapping = ggplot2::aes(ymin = -Inf, ymax = Inf, xmin = -Inf, xmax = params[["callrate_samples"]]), 
-      fill = "grey70"
+      fill = "grey80"
     ) +
     ggplot2::geom_point(
       mapping = ggplot2::aes(colour = colour),
@@ -932,7 +938,7 @@ Pairs = `r scales::comma(max_n_pairs)`) who look too similar to each other,
 using the `--genome` command in PLINK, pairwise IBD (identity by descent) are computed.
 
 Prior to the analysis, the dataset was pruned to exclude high-LD-regions, 
-that is no SNPs with MAF < `r params[["maf_threshold"]]` and no pair of SNPs within 50 Kb have an r² > 0.2.
+that is no variants with MAF < `r params[["maf_threshold"]]` and no pair of variants within 50 Kb have an r² > 0.2.
 
 Table \@ref(tab:Relatedness_02) shows the distribution of pi-hat (proportion of IBD) for related samples. 
 A priori, samples in cohort *`r params[["cohort_name"]]`* are not supposed to be related, 
@@ -1228,7 +1234,7 @@ samples_toexclude <- dplyr::bind_rows(
 ## Population structure
 
 ```{r population_01}
-## Get Autosomal SNPs
+## Get Autosomal variants
 data.table::fread(paste0(temp_directory, "/raw_data.bim")) %>%
   dplyr::filter(V1 %in% seq(22)) %>%
   dplyr::select(V2) %>%
@@ -1357,7 +1363,7 @@ if (file.exists(paste0(out, "-merge.missnp"))) {
 }
 
 ## Merge raw_data with 1kgenome
-# Merge raw_data with 1kGenome; ERROR: Stopping due to mis-matching SNPs -- check +/- strand?
+# Merge raw_data with 1kGenome; ERROR: Stopping due to mis-matching variants -- check +/- strand?
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/1kgenome_small/1kgenome_small_complete"),
@@ -1369,7 +1375,7 @@ system(command = paste(
   "--out", paste0(temp_directory, "/raw_data_1kgenome")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
-# Flip SNP strand
+# Flip variant strand
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/1kgenome_small/1kgenome_small_complete"),
@@ -1378,7 +1384,7 @@ system(command = paste(
   "--out", paste0(temp_directory, "/1kgenome_small/1kgenome_small_flipped")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
-# Merge raw_data with 1kGenome; ERROR: Stopping due to mis-matching SNPs -- check +/- strand?
+# Merge raw_data with 1kGenome; ERROR: Stopping due to mis-matching variants -- check +/- strand?
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/1kgenome_small/1kgenome_small_flipped"),
@@ -1390,7 +1396,7 @@ system(command = paste(
   "--out", paste0(temp_directory, "/raw_data_1kgenome")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
-# Exclude mis-matching SNPs in raw_data And 1kGenome
+# Exclude mis-matching variants in raw_data And 1kGenome
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/1kgenome_small/1kgenome_small_flipped"),
@@ -1425,7 +1431,7 @@ dplyr::intersect(
  data.table::fread(paste0(temp_directory, "/clean_data_tmp_cleaned.bim"))[["V2"]]
 ) %>%
   utils::write.table(
-    file = paste0(temp_directory, "/raw_data_1kgenome_SNPs.txt"),
+    file = paste0(temp_directory, "/raw_data_1kgenome_snps.txt"),
     col.names = FALSE, 
     row.names = FALSE, 
     quote = FALSE, 
@@ -1435,7 +1441,7 @@ dplyr::intersect(
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data_1kgenome"), 
-  "--extract", paste0(temp_directory, "/raw_data_1kgenome_SNPs.txt"), 
+  "--extract", paste0(temp_directory, "/raw_data_1kgenome_snps.txt"), 
   "--make-bed ",
   "--out", paste0(temp_directory, "/raw_data_1kgenome")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
@@ -1479,7 +1485,7 @@ system(command = paste(
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
 ## Analysis summary
-# SNP
+# variant
 n_good_snp <- nrow(data.table::fread(
   input = paste0(temp_directory, "/clean_data_tmp.bim"), 
   select = 1
@@ -1674,9 +1680,9 @@ p_superpop <- ggplot2::ggplot(
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component", 
-    color = "Super Population", 
-    shape = "Super Population", 
-    fill = "Super Population"
+    color = NULL, # "Super Population", 
+    shape = NULL, # "Super Population", 
+    fill = NULL, # "Super Population"
   ) +
   ggforce::facet_zoom(
     xlim = range(get_lims[["x"]]), 
@@ -1686,7 +1692,8 @@ p_superpop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom", 
-    legend.justification = c(0.5, 0.5)
+    legend.justification = c(0.5, 0.5), 
+    legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
   )
 
 data_pca_plot_closest <- data_pca_plot %>% 
@@ -2212,7 +2219,7 @@ system(command = paste(
   "--out", paste0(temp_directory, "/raw_data_good_samples")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
-maf_02_caption <- "Distribution of SNPs number per class of Minor Allele Frequency (MAF)"
+maf_02_caption <- "Distribution of variants number per class of Minor Allele Frequency (MAF)"
 ```
 
 ```{r maf_02, fig.cap = maf_02_caption}
@@ -2225,8 +2232,11 @@ data.table::fread(paste0(temp_directory, "/raw_data_good_samples.frq")) %>%
     mapping = ggplot2::aes(x = maf_dist)
   ) +
     ggplot2::geom_bar(fill = scales::viridis_pal(begin = 0.5, end = 0.5)(1)) +
-    ggplot2::labs(x = "MAF", y = "Number of SNPs") +
-    ggplot2::scale_y_continuous(labels = scales::comma_format())
+    ggplot2::labs(x = "MAF", y = "Number of variants") +
+    ggplot2::scale_y_continuous(
+      labels = scales::comma_format(),
+      expand = ggplot2::expand_scale(mult = c(0, 0.1))
+    )
 ```
 
 
@@ -2270,7 +2280,7 @@ ggplot2::ggplot(data = hwe_significant) +
   ) +
   ggplot2::geom_hline(yintercept = params[["hwe_pvalue"]], colour = "firebrick2", linetype = 2) +
   ggplot2::scale_x_continuous(labels = scales::comma_format(), trans = "log10") +
-  ggplot2::scale_y_continuous(trans = "pval") +
+  ggplot2::scale_y_continuous(trans = pval_trans()) +
   ggplot2::labs(x = "Variants", y = "Hardy-Weinberg Equilibrium P-value")
 ```
 
