@@ -100,7 +100,6 @@ qc_plink <- function(
       input_directory = input_directory,
       output_directory = output_directory,
       cohort_name = cohort_name,
-      output_file = output_file,
       array = array,
       callrate_samples = callrate_samples,
       callrate_snps = callrate_snps,
