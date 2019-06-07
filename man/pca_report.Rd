@@ -23,7 +23,7 @@ pca_report(data, design, id_var = "Sample_ID", technical_vars,
 
 \item{outliers_component}{A \code{logical}. The principal components to be used to outliers detection.}
 
-\item{outliers_threshold}{A \code{numeric}. The treshold to define outliers.}
+\item{outliers_threshold}{A \code{numeric}. The threshold to define outliers.}
 
 \item{title_level}{A \code{numeric}. The markdown title level, i.e., the number of \code{#} preceding the section.}
 }

@@ -2,20 +2,24 @@
 
 ## Minor improvements and fixes
 
-* In `/inst/rmarkdown/qc_plink.Rmd`
+* In `inst/rmarkdown/qc_plink.Rmd`,
     + fix YAML header with duplicated parameters.
     + fix duplicated chunk label.
     + fix cross-references.
     + fix variant call rate import.
     + tweak figures to make them more readable.
     + set `include = FALSE` for chunk without figure, table or text output. 
-* In `/inst/rmarkdown/qc_plink.R`, fix params not declared in YAML header of `/inst/rmarkdown/qc_plink.Rmd`.
+    + add explicit `na.rm = TRUE` in `geom_point()` calls.
+* In `R/qc_plink.R`,
+    + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
+    + complete roxygen documentation.
+* In `R/pca_report.R`, fix a typo in roxygen documentation.
 
 # CARoT 0.2.0 (development version)
 
 ## New features
 
-* New `qc_plink()`, it allows to compute quality-control of genotyping array (PLINK format) using a default rmarkdown template (`/inst/rmarkdown/qc_plink.Rmd`).
+* New `qc_plink()`, it allows to compute quality-control of genotyping array (PLINK format) using a default rmarkdown template (`inst/rmarkdown/qc_plink.Rmd`).
 
 ## Minor improvements and fixes
 
@@ -26,9 +30,9 @@
 
 ## Minor improvements and fixes
 
-* In `/inst/rmarkdown/qc_idats.Rmd`, parameters are now described using question "should ... be removed?" 
+* In `inst/rmarkdown/qc_idats.Rmd`, parameters are now described using question "should ... be removed?" 
     instead of "remove ...".
-* In `/inst/rmarkdown/qc_idats.Rmd`, now includes a section with the parameters used.
+* In `inst/rmarkdown/qc_idats.Rmd`, now includes a section with the parameters used.
 * In `R/qc_idats.R`, fix a typo in the `detection_pvalues` parameter's documentation.
 
 # CARoT 0.1.6 (development version)
@@ -39,34 +43,34 @@
 * In `R/ggheatmap.R`, add roxygen2 documentation for `ggheatmap()`.
 * In `R/pca_report.R`, add roxygen2 documentation for `pca_report()`.
 * In `R/qc_idats.R`, add roxygen2 documentation for `qc_idats()`.
-* In `/man`, add roxygen2 documentation for `estimate_ethnicity()`, `ggheatmap()`, `pca_report()` and `qc_idats()`.
+* In `man`, add roxygen2 documentation for `estimate_ethnicity()`, `ggheatmap()`, `pca_report()` and `qc_idats()`.
 
 # CARoT 0.1.5 (development version)
 
 ## Minor improvements and fixes
 
-* In `/inst/rmarkdown/qc_idats.Rmd`, fix markdown typos.
+* In `inst/rmarkdown/qc_idats.Rmd`, fix markdown typos.
 
 # CARoT 0.1.4 (development version)
 
 ## Minor improvements and fixes
 
-* In `/inst/rmarkdown/qc_idats.Rmd`, fix __Methods__ section describing what `filter_` parameters do.
+* In `inst/rmarkdown/qc_idats.Rmd`, fix __Methods__ section describing what `filter_` parameters do.
 
 # CARoT 0.1.3 (development version)
 
 ## Minor improvements and fixes
 
-* In `/R/qc_idats.R`, decrease default dpi value from `300` to `120`.
-* In `/inst/rmarkdown/qc_idats.Rmd`, fix the bullet list in gender check section.
+* In `R/qc_idats.R`, decrease default dpi value from `300` to `120`.
+* In `inst/rmarkdown/qc_idats.Rmd`, fix the bullet list in gender check section.
 
 # CARoT 0.1.2 (development version)
 
 ## Minor improvements and fixes
 
-* In `/R/estimate_ethnicity.R`, add `check_input()` function to properly check inputs using `fs` package.
-* In `/inst/rmarkdown/qc_idats.Rmd`, now print call rate parameters in plain text.
-* In `/inst/rmarkdown/qc_idats.Rmd` and `/R/qc_idats.R`, `qc_idats()` has a new `cache` parameter.
+* In `R/estimate_ethnicity.R`, add `check_input()` function to properly check inputs using `fs` package.
+* In `inst/rmarkdown/qc_idats.Rmd`, now print call rate parameters in plain text.
+* In `inst/rmarkdown/qc_idats.Rmd` and `R/qc_idats.R`, `qc_idats()` has a new `cache` parameter.
 
 
 # CARoT 0.1.1 (development version)
@@ -74,9 +78,9 @@
 ## Minor improvements and fixes
 
 * In `format_sequencing()` (`R/estimate_ethnicity.R`), fix missing arguments from `format_vcf()`.
-* In `/inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
-* In `/inst/rmarkdown/qc_idats.Rmd`, fix `Sample_ID` (*i.e.,* rownames) for gender check.
-* In `/R/qc_idats.R`, remove `cat()` messages from `ENmix` functions.
+* In `inst/rmarkdown/qc_idats.Rmd`, now applies `filter_xy` after gender check.
+* In `inst/rmarkdown/qc_idats.Rmd`, fix `Sample_ID` (*i.e.,* rownames) for gender check.
+* In `R/qc_idats.R`, remove `cat()` messages from `ENmix` functions.
 
 
 # CARoT 0.1.0 (development version)
@@ -88,4 +92,4 @@
 * New `pca_report()`, it allows to compute an analysis report using principal component analysis.  
   The function can be used in Rmarkdown chunk with `results="asis"` to render the report.
 * New `ggheatmap()`, it allows to compute heatmap with dendrogram on x-axis and y-axis.
-* New `qc_idats()`, it allows to compute quality-control of methylation array from Illumina using a default rmarkdown template (`/inst/rmarkdown/qc_idats.Rmd`).
+* New `qc_idats()`, it allows to compute quality-control of methylation array from Illumina using a default rmarkdown template (`inst/rmarkdown/qc_idats.Rmd`).
