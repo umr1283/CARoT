@@ -1,3 +1,9 @@
+# CARoT 0.2.1 (development version)
+
+## Minor improvements and fixes
+
+* In `/inst/rmarkdown/qc_plink.Rmd`, fix YAML header with duplicated parameters.
+
 # CARoT 0.2.0 (development version)
 
 ## New features
