@@ -254,7 +254,7 @@ recruit_centre_table <- recruit_centre %>%
 
 PLINK files contain:
 
-* `r scales::comma(nrow(recruit_centre))` samples (table \@ref(tab:cohort-overview-table)).  
+* `r scales::comma(nrow(recruit_centre))` samples (Table \@ref(tab:cohort-overview-table)).  
     Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates.
 * `r scales::comma(snps_number)` variants.
 
@@ -666,7 +666,7 @@ if (is_maf_lower) {
 
 The observed heterozygosity rate per sample was computed using the formula 
 (Number of non-missing genotypes N(NM) - Number of homozygous genotypes O(Hom)) / N(NM) 
-(\@ref(fig:heterozygosity-05)).
+(Figure \@ref(fig:heterozygosity-05)).
 
 N(NM) and O(Hom) were obtained using the `--het` command in PLINK.
 
@@ -956,7 +956,7 @@ Table \@ref(tab:relatedness-02) shows the distribution of pi-hat (proportion of 
 A priori, samples in cohort *`r params[["cohort_name"]]`* are not supposed to be related, 
 the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`. 
 Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
-(table \@ref(tab:relatedness-03)).
+(Table \@ref(tab:relatedness-03)).
 
 ```{r relatedness-02, eval = !params[["includes_relatives"]]}
 data.frame(table(cut(
@@ -1140,7 +1140,7 @@ cat(
   "Figure \\@ref(fig:imendel-error-03) shows the Mendel error per sample.  ", "\n",
   scales::comma(nrow(mendel_errors)), " samples (from ", dplyr::n_distinct(mendel_errors[["FID"]]), " families)",
   " had a Mendel error rate higher than ", scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01), 
-  " and were flagged (table \\@ref(tab:imendel-error-04)).",
+  " and were flagged (Table \\@ref(tab:imendel-error-04)).",
   "\n\n",
   sep = ""
 )
@@ -2489,7 +2489,7 @@ final_samples_number <- nrow(data.table::fread(
 ))
 ```
 
-* Samples previously characterised in Section \@ref(sec:sample-qc) (table \@ref(tab:qc-summary-table)):
+* Samples previously characterised in Section \@ref(sec:sample-qc) (Table \@ref(tab:qc-summary-table)):
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`
         samples excluded due to failures in the call rate and/or the heterozygosity check.
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`
