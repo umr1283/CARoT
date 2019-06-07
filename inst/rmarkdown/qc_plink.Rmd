@@ -459,7 +459,7 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Samples", y = "Call rate")
 ```
 
-```{r sample_call_rate_05, eval = nrow(callrate_samples_toexclude) != 0}
+```{r sample_call_rate_06, eval = nrow(callrate_samples_toexclude) != 0}
 callrate_samples_toexclude %>% 
   dplyr::mutate(Call_Rate = scales::percent(Call_Rate, accuracy = 0.01)) %>% 
   pretty_kable(
