@@ -98,7 +98,7 @@ pretty_kable <- function(
   font_size = 12, 
   format_args = list(scientific = -1, digits = 3, big.mark = ","), 
   col.names = NA,
-  full_width = NULL,
+  full_width = TRUE,
   echo = TRUE,
   ...
 ) {
@@ -260,6 +260,7 @@ PLINK files contain:
 ```{r cohort_overview_table}
 pretty_kable(
   data = recruit_centre_table,
+  align = "c", 
   table.attr = "style='width:50%;'",
   caption = "Number of samples per recruitment centers / cohorts.", 
   echo = FALSE
@@ -427,7 +428,8 @@ cat(
 
 ```{r sample_call_rate_04}
 pretty_kable(
-  callrate_thresholds_table,
+  data = callrate_thresholds_table,
+  align = "c", 
   table.attr = "style='width:50%;'",
   caption = paste(
     "Number of samples to exclude for", qdap::replace_number(length(callrate_thresholds)), "call rate thresholds."
@@ -440,7 +442,11 @@ ggplot2::ggplot(
   data = callrate_samples,
   mapping = ggplot2::aes(x = length(F_MISS):1, y = 1 - F_MISS)
 ) +
-  ggplot2::geom_point(colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), shape = 1) +
+  ggplot2::geom_point(
+    colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), 
+    shape = 1, 
+    na.rm = TRUE
+  ) +
   ggrepel::geom_label_repel(
     mapping = ggplot2::aes(label = labs),
     min.segment.length = ggplot2::unit(0, "lines"),
@@ -560,9 +566,10 @@ ggplot2::ggplot(
 ) +
   ggplot2::geom_rect(
     mapping = ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = params[["callrate_samples"]]), 
-    fill = "grey80"
+    fill = "grey90",
+    colour = "transparent"
   ) +
-  ggplot2::geom_point() +
+  ggplot2::geom_point(na.rm = TRUE) +
   ggplot2::geom_hline(yintercept = params[["callrate_samples"]], colour = "firebrick2", linetype = 2) +
   ggrepel::geom_label_repel(
     mapping = ggplot2::aes(label = labs),
@@ -669,11 +676,13 @@ p_heteR <- ggplot2::ggplot(
 ) +
   ggplot2::geom_rect(
     mapping = ggplot2::aes(ymin = -Inf, ymax = Inf, xmin = -Inf, xmax = params[["callrate_samples"]]), 
-    fill = "grey80"
+    fill = "grey90",
+    colour = "transparent"
   ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(colour = colour),
-    size = 2, shape = 1
+    shape = 1, 
+    na.rm = TRUE
   ) +
   ggplot2::geom_vline(
     mapping = ggplot2::aes(xintercept = params[["callrate_samples"]]),
@@ -720,11 +729,13 @@ if (is_maf_lower) {
   ) +
     ggplot2::geom_rect(
       mapping = ggplot2::aes(ymin = -Inf, ymax = Inf, xmin = -Inf, xmax = params[["callrate_samples"]]), 
-      fill = "grey80"
+      fill = "grey90",
+      colour = "transparent"
     ) +
     ggplot2::geom_point(
       mapping = ggplot2::aes(colour = colour),
-      size = 2, shape = 1
+      shape = 1, 
+      na.rm = TRUE
     ) +
     ggplot2::geom_vline(
       mapping = ggplot2::aes(xintercept = params[["callrate_samples"]]),
@@ -960,7 +971,8 @@ data.frame(table(cut(
     )
   ) %>% 
   pretty_kable(
-    align = "c",
+    align = "c", 
+    table.attr = "style='width:50%;'",
     caption = paste0(
       "The distribution of PI-HAT (proportion of IBD) for related samples in the dataset ",
       "(IBD≥", params[["IBD_threshold"]], ")."
@@ -994,6 +1006,8 @@ related_samples <- relatedness %>%
 if (nrow(related_samples) != 0) {
     pretty_kable(
       data = related_samples,
+      align = "c", 
+      table.attr = "style='width:50%;'",
       caption = paste0(
         "Pairs of samples with a proportion of IBD higher than ",  params[["IBD_threshold"]], "."
       )
@@ -1021,8 +1035,9 @@ if (nrow(cross_cohorts_IBD) > 0) {
   )
   
   pretty_kable(
-    cross_cohorts_IBD, 
-    table.attr = "style='width:50%;'", 
+    data = cross_cohorts_IBD, 
+    align = "c", 
+    table.attr = "style='width:50%;'",
     caption = "Cross cohort related sample pairs."
   )
 } else {
@@ -1158,6 +1173,7 @@ cbind(
   dplyr::mutate(mendel_threshold = scales::percent(x = mendel_threshold, accuracy = 0.01)) %>%
   `colnames<-`(c("Sample Mendel error threshold", "Samples to exclude", "Samples to exclude (MAF > 0.01)")) %>% 
   pretty_kable(
+    align = "c", 
     table.attr = "style='width:50%;'",
     caption = paste(
       "Number of samples to exclude for", qdap::replace_number(length(mendel_threshold)), "call rate thresholds."
@@ -1175,7 +1191,11 @@ ggplot2::ggplot(
     y = percent
   )
 ) +
-  ggplot2::geom_point(colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), shape = 1) +
+  ggplot2::geom_point(
+    colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), 
+    shape = 1, 
+    na.rm = TRUE
+  ) +
   ggplot2::geom_hline(
     mapping = ggplot2::aes(
       yintercept = params[["mendelian_samples"]]
@@ -1652,7 +1672,7 @@ p_superpop <- ggplot2::ggplot(
 ) +
   ggplot2::geom_hline(ggplot2::aes(yintercept = 0)) +
   ggplot2::geom_vline(ggplot2::aes(xintercept = 0)) +
-  ggplot2::geom_point() +
+  ggplot2::geom_point(na.rm = TRUE) +
   ggforce::geom_mark_ellipse(
     alpha = 0.1, 
     con.cap = 0, 
@@ -1711,7 +1731,7 @@ p_pop <- ggplot2::ggplot(
 ) +
   ggplot2::geom_hline(yintercept = 0) +
   ggplot2::geom_vline(xintercept = 0) +
-  ggplot2::geom_point() +
+  ggplot2::geom_point(na.rm = TRUE) +
   ggforce::geom_mark_ellipse(
     mapping = ggplot2::aes(fill = Population, color = Population),
     alpha = 0.1,
@@ -1737,9 +1757,9 @@ p_pop <- ggplot2::ggplot(
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component",
-    color = "Population", 
-    shape = "Population", 
-    fill = "Population"
+    color = NULL, # "Population", 
+    shape = NULL, # "Population", 
+    fill = NULL # "Population"
   ) +
   ggplot2::coord_cartesian(
     xlim = range(data_pca_plot_closest[["x"]]), 
@@ -1748,7 +1768,8 @@ p_pop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom",
-    legend.justification = c(0.5, 0.5)
+    legend.justification = c(0.5, 0.5), 
+    legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
   )
 
 p_inertia <- inertia_pca %>%
@@ -1799,7 +1820,8 @@ if (nrow(not_target_population) > 15) {
     dplyr::select(FID, IID, ClosestPop) %>%
     dplyr::rename("Closest Population" = ClosestPop) %>%
     pretty_kable(
-      table.attr = "style='width:50%;'", align = "c",
+      align = "c", 
+      table.attr = "style='width:50%;'",
       caption = paste0(
         "samples determined as non-", pop_name, "(s) based on PCA ", 
         "(N=", scales::comma(nrow(not_target_population)), ")."
@@ -1897,7 +1919,10 @@ p_within <- ggplot2::ggplot(
     y = PC2
   )
 ) +
-  ggplot2::geom_point(mapping = ggplot2::aes(colour = Extremes, shape = Extremes)) +
+  ggplot2::geom_point(
+    mapping = ggplot2::aes(colour = Extremes, shape = Extremes), 
+    na.rm = TRUE
+  ) +
   ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
   ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
   ggrepel::geom_label_repel(
@@ -1961,7 +1986,8 @@ pca_planes_list <- lapply(seq(ncol(pca_planes)), function(iComb) {
         y = .data[[paste0("PC", pca_planes[2, iComb])]], 
         colour = Cohort
       ), 
-      shape = 1
+      shape = 1, 
+      na.rm = TRUE
     ) +
     ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
     ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
@@ -2073,7 +2099,11 @@ ggplot2::ggplot(
     dplyr::filter(F_MISS>=0.001),
   mapping = ggplot2::aes(x = length(F_MISS):1, y = 1 - F_MISS)
 ) +
-  ggplot2::geom_point(colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), shape = 1) +
+  ggplot2::geom_point(
+    colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), 
+    shape = 1, 
+    na.rm = TRUE
+  ) +
   ggplot2::geom_hline(
     mapping = ggplot2::aes(yintercept = params[["callrate_snps"]]),
     colour = "firebrick2", 
@@ -2173,7 +2203,8 @@ ggplot2::ggplot(
 ) +
   ggplot2::geom_point(
     colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), 
-    shape = 1
+    shape = 1, 
+    na.rm = TRUE
   ) +
   ggplot2::geom_hline(yintercept = params[["mendelian_snp"]], colour = "firebrick2", linetype = 2) +
   ggplot2::scale_x_continuous(labels = scales::comma_format(), trans = "log10") +
@@ -2272,8 +2303,10 @@ had a HWE p-value < `r scales::scientific(params[["hwe_pvalue"]])` and were excl
 ```{r hwe_02, fig.cap = hwe_02_caption}
 ggplot2::ggplot(data = hwe_significant) +
   ggplot2::geom_point(
-    ggplot2::aes(x = 1:length(P), y = P),
-    colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), size = 2, shape = 1
+    mapping = ggplot2::aes(x = 1:length(P), y = P),
+    colour = scales::viridis_pal(begin = 0.5, end = 0.5)(1), 
+    shape = 1, 
+    na.rm = TRUE
   ) +
   ggplot2::geom_hline(yintercept = params[["hwe_pvalue"]], colour = "firebrick2", linetype = 2) +
   ggplot2::scale_x_continuous(labels = scales::comma_format(), trans = "log10") +
@@ -2493,7 +2526,7 @@ recruit_centre %>%
   ) %>%
   dplyr::select(Cohort, Excluded = Exclude, `to be checked` = Check) %>%
   pretty_kable(
-    align = "c",
+    align = "c", 
     table.attr = "style='width:50%;'",
     caption = "Excluded samples and flagged samples per cohort."
   )
@@ -2554,7 +2587,7 @@ plink_ver <- strsplit(
   split = " "
 )[[1]][2]
 gcta_ver <- paste(strsplit(
-  x = system(command = paste(params[["bin_path"]][["gcta"]], "--version"), intern = TRUE)[3],
+  x = suppressWarnings(system(command = params[["bin_path"]][["gcta"]], intern = TRUE)[3]),
   split = " "
 )[[1]][3:4], collapse = "-")
 bgzip_ver <- strsplit(
@@ -2565,7 +2598,8 @@ bcftools_ver <- strsplit(
   x = system(command = paste(params[["bin_path"]][["bcftools"]], "--version"), intern = TRUE)[1],
   split = " "
 )[[1]][2]
-check_bim_script_ver <- grep("^#", readLines(params[["check_bim_script"]]), value = TRUE) %>% 
+check_bim_script_ver <- readLines(params[["check_bim_script"]], warn = FALSE) %>% 
+  grep("^#", ., value = TRUE) %>% 
   grep("-v[0-9]", ., value = TRUE) %>% 
   gsub("# *-", "", .) %>% 
   sort(decreasing = TRUE) %>% 
@@ -2581,5 +2615,6 @@ check_bim_script_ver <- grep("^#", readLines(params[["check_bim_script"]]), valu
 ## R session information
 
 ```{r session_info, results = "markup"}
+options("width" = 110)
 sessioninfo::session_info()
 ```
