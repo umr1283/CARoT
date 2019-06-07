@@ -2051,17 +2051,19 @@ variant_call_rate_02_caption <- paste(
   "cut-off.",
   "Variants with a call rate greater or equal to 99.9% are not shown."
 )
+
+callrate_snps_raw <- data.table::fread(paste0(temp_directory, "/raw_data_good_samples.lmiss"))
 ```
 
 Proportion of missing genotypes or call rate per variant was estimated using the `--missing` command in PLINK.  
 
 Figure \@ref(fig:variant_call_rate_02) shows the proportion of missing genotypes per variant. 
-In total, `r scales::comma(sum(callrate_snps[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
+In total, `r scales::comma(sum(callrate_snps_raw[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
 had a call rate < `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)` and were excluded.  
 
 ```{r variant_call_rate_02, fig.cap = variant_call_rate_02_caption}
 ggplot2::ggplot(
-  data = data.table::fread(paste0(temp_directory, "/raw_data_good_samples.lmiss")) %>%
+  data = callrate_snps_raw %>%
     dplyr::arrange(F_MISS) %>%
     tidyr::replace_na(replace = list(F_MISS = 1)) %>% 
     dplyr::filter(F_MISS>=0.001),
@@ -2081,7 +2083,7 @@ ggplot2::ggplot(
 ## Duplicated or triplicated variants
 
 ```{r duplicated_snps}
-callrate_snps <- data.table::fread(paste0(temp_directory, "/raw_data_good_samples.lmiss")) %>%
+callrate_snps <- callrate_snps_raw %>%
   dplyr::select(CHR, SNP, F_MISS) %>%
   dplyr::left_join(
     y = data.table::fread(paste0(temp_directory, "/raw_data_good_samples.bim")) %>%
