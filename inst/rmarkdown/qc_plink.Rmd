@@ -2284,7 +2284,7 @@ ggplot2::ggplot(data = hwe_significant) +
   ggplot2::labs(x = "Variants", y = "Hardy-Weinberg Equilibrium P-value")
 ```
 
-```{r file_management, results = "hide"}
+```{r file_management, results = "hide", include = FALSE}
 imputation_filename <- paste0(temp_directory, "/", params[["cohort_name"]], "_forimputation")
 
 system(command = paste(
@@ -2502,7 +2502,7 @@ recruit_centre %>%
   )
 ```
 
-```{r output_exclusion}
+```{r output_exclusion, include = FALSE}
 output_xlsx <- list()
 
 output_xlsx[["exclude_flag"]] <- samples_toexclude_export %>%
