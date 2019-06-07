@@ -262,7 +262,7 @@ PLINK files contain:
 pretty_kable(
   data = recruit_centre_table,
   align = "c", 
-  table.attr = "style='width:50%;'",
+  table.attr = "style='width:65%;'",
   caption = "Number of samples per recruitment centers / cohorts.", 
   echo = FALSE
 ) %>%
@@ -431,7 +431,7 @@ cat(
 pretty_kable(
   data = callrate_thresholds_table,
   align = "c", 
-  table.attr = "style='width:50%;'",
+  table.attr = "style='width:65%;'",
   caption = paste(
     "Number of samples to exclude for", qdap::replace_number(length(callrate_thresholds)), "call rate thresholds."
   )
@@ -471,7 +471,7 @@ callrate_samples_toexclude %>%
   dplyr::mutate(Call_Rate = scales::percent(Call_Rate, accuracy = 0.01)) %>% 
   pretty_kable(
     align = "c", 
-    table.attr = "style='width:50%;'",
+    table.attr = "style='width:65%;'",
     caption = paste0(
       "Samples to be excluded for call rate threshold of ", 
       scales::percent(params[["callrate_samples"]], accuracy = 0.01), 
@@ -955,7 +955,7 @@ data.frame(table(cut(
   ) %>% 
   pretty_kable(
     align = "c", 
-    table.attr = "style='width:50%;'",
+    table.attr = "style='width:65%;'",
     caption = paste0(
       "The distribution of PI-HAT (proportion of IBD) for related samples in the dataset ",
       "(IBD≥", params[["IBD_threshold"]], ")."
@@ -990,7 +990,7 @@ if (nrow(related_samples) != 0) {
     pretty_kable(
       data = related_samples,
       align = "c", 
-      table.attr = "style='width:50%;'",
+      table.attr = "style='width:65%;'",
       caption = paste0(
         "Pairs of samples with a proportion of IBD higher than ",  params[["IBD_threshold"]], "."
       )
@@ -1020,7 +1020,7 @@ if (nrow(cross_cohorts_IBD) > 0) {
   pretty_kable(
     data = cross_cohorts_IBD, 
     align = "c", 
-    table.attr = "style='width:50%;'",
+    table.attr = "style='width:65%;'",
     caption = "Cross cohort related sample pairs."
   )
 } else {
@@ -1159,7 +1159,7 @@ cbind(
   `colnames<-`(c("Sample Mendel error threshold", "Samples to exclude", "Samples to exclude (MAF > 0.01)")) %>% 
   pretty_kable(
     align = "c", 
-    table.attr = "style='width:50%;'",
+    table.attr = "style='width:65%;'",
     caption = paste(
       "Number of samples to exclude for", qdap::replace_number(length(mendel_threshold)), "call rate thresholds."
     )
@@ -1216,7 +1216,7 @@ if (nrow(mendel_errors_samples)>0) {
     dplyr::select(-percent, -QC) %>% 
     pretty_kable(
       align = "c", 
-      table.attr = "style='width:50%;'",
+      table.attr = "style='width:65%;'",
       caption = paste0(
         "Samples to be checked for max per-trio error rate at ", 
         scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01), "."
@@ -1796,7 +1796,7 @@ if (nrow(not_target_population) > 15) {
     dplyr::rename("Closest Population" = ClosestPop) %>%
     pretty_kable(
       align = "c", 
-      table.attr = "style='width:50%;'",
+      table.attr = "style='width:65%;'",
       caption = paste0(
         "Samples determined as non-", pop_name, "(s) based on PCA ", 
         "(N=", scales::comma(nrow(not_target_population)), ")."
@@ -2470,7 +2470,7 @@ recruit_centre %>%
   dplyr::select(Cohort, Excluded = Exclude, `to be checked` = Check) %>%
   pretty_kable(
     align = "c", 
-    table.attr = "style='width:50%;'",
+    table.attr = "style='width:65%;'",
     caption = "Excluded samples and flagged samples per cohort."
   )
 ```
