@@ -10,6 +10,7 @@
     + tweak figures to make them more readable.
     + set `include = FALSE` for chunk without figure, table or text output. 
     + add explicit `na.rm = TRUE` in `geom_point()` calls.
+    + fix `tidyr::separate()` in `relatedness_03` chunk by setting a more complex separator, i.e., `"_-_"`.
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
     + complete roxygen documentation.
