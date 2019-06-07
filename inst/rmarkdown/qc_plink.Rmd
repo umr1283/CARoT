@@ -944,7 +944,7 @@ Table \@ref(tab:Relatedness_02) shows the distribution of pi-hat (proportion of 
 A priori, samples in cohort *`r params[["cohort_name"]]`* are not supposed to be related, 
 the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`. 
 Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
-(table \@ref(tab:Relatedness_03)).
+(table \@ref(tab:relatedness_03)).
 
 ```{r Relatedness_02, eval = !params[["includes_relatives"]]}
 data.frame(table(cut(
@@ -968,7 +968,7 @@ data.frame(table(cut(
   )
 ```
 
-```{r Relatedness_03, eval = !params[["includes_relatives"]]}
+```{r relatedness_03, eval = !params[["includes_relatives"]]}
 related_samples <- relatedness %>%
   dplyr::select(FID1, IID1, FID2, IID2, PI_HAT) %>%
   dplyr::left_join(
@@ -1682,7 +1682,7 @@ p_superpop <- ggplot2::ggplot(
     y = "Second Principal Component", 
     color = NULL, # "Super Population", 
     shape = NULL, # "Super Population", 
-    fill = NULL, # "Super Population"
+    fill = NULL # "Super Population"
   ) +
   ggforce::facet_zoom(
     xlim = range(get_lims[["x"]]), 
