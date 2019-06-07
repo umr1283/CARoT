@@ -257,7 +257,7 @@ PLINK files contain:
     Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates.
 * `r scales::comma(snps_number)` variants
 
-```{r cohorte_overview_table}
+```{r cohort_overview_table}
 pretty_kable(
   data = recruit_centre_table,
   table.attr = "style='width:50%;'",
