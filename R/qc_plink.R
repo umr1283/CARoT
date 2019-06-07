@@ -1,29 +1,51 @@
 #' qc_plink
 #'
-#' @param input_directory A `character`.
+#' @param input_directory A `character`. The path to the plink files.
+#'     The path should contains the file name without the extension, i.e., without `*.bed`, `*.bim` or `*.fam`.
 #' @param output_directory A `character`. The path to the output directory.
-#' @param cohort_name A `character`.
+#' @param cohort_name A `character`. The name of the studied cohort / population.
 #' @param output_file A `character`. The name of the html file produced.
-#' @param array A `character`. The array name.
-#' @param callrate_samples A `numeric`.
-#' @param callrate_snps A `numeric`.
-#' @param heterozygosity_treshold A `numeric`.
-#' @param maf_threshold A `numeric`.
-#' @param hwe_pvalue A `numeric`.
-#' @param includes_relatives A `logical`.
-#' @param mendelian_samples A `numeric`.
-#' @param mendelian_snp A `numeric`.
-#' @param IBD_threshold A `numeric`.
-#' @param population A `character`.
-#' @param pca_components A `numeric`.
-#' @param pca_threshold A `numeric`.
-#' @param check_bim_script A `character`.
-#' @param ref1kg_panel A `character`.
-#' @param ref1kg_population A `character`.
-#' @param ref1kg_genotypes A `character`.
-#' @param ref1kg_legend A `character`.
-#' @param ref1kg_fasta A `character`.
-#' @param bin_path A `list(character)`.
+#' @param array A `character`. The array name, e.g., "Illumina Omni2.5".
+#' @param callrate_samples A `numeric`. The call rate threshold for samples, under which samples are excluded.
+#'     Default is `0.95`.
+#' @param callrate_snps A `numeric`. The call rate threshold for probes, under which probes are excluded.
+#'     Default is `0.95`.
+#' @param heterozygosity_treshold A `numeric`. The heterozygosity threshold for samples
+#'    (number of standard deviation from the mean), under/above which samples are excluded.
+#'     Default is `4`.
+#' @param maf_threshold A `numeric`. The minor allele frequency under which variants are considered "rare".
+#'     Default is `0.01`.
+#' @param hwe_pvalue A `numeric`. The p-value threshold for Hardy-Weinberg equilibrium test.
+#'     Default is `0.0001`.
+#' @param includes_relatives A `logical`. Does the data contain related samples?
+#'     Default is `FALSE`.
+#' @param mendelian_samples A `numeric`. The Mendel error rate threshold above which samples are excluded.
+#'     Default is `0.05`.
+#' @param mendelian_snp A `numeric`. The Mendel error rate threshold above which variants are excluded.
+#'     Default is `0.1`.
+#' @param IBD_threshold A `numeric`. The threshold for IBD (identical by descent) above which
+#'     samples are characterised as relatives.
+#'     Default is `0.2`.
+#' @param population A `character`. The ethnicity of the studied population if known, e.g., `"EUR"`.
+#'     Default is `NULL`.
+#' @param pca_components A `numeric`. The number of principal components to be computed.
+#'     Default is `10`.
+#' @param pca_threshold A `numeric`. The threshold to define outliers on the principal component analysis,
+#'     the as number of standard deviation from the cohort centroid.
+#'     Default is `3`.
+#' @param check_bim_script A `character`. The PERL script to use to check PLINK files to allow later imputation.
+#'     Default is `system.file("perl", "HRC-1000G-check-bim.pl", package = "CARoT")`.
+#' @param ref1kg_panel A `character`. The `*.panel` file from 1,000 Genome project.
+#'     Default is `NULL`.
+#' @param ref1kg_population A `character`. The `*.tsv` file from 1,000 Genome project describing samples and ethnicity.
+#'     Default is `NULL`.
+#' @param ref1kg_genotypes A `character`. The PLINK files from 1,000 Genome project.
+#'     Default is `NULL`.
+#' @param ref1kg_legend A `character`. The `*.legend` file from 1,000 Genome project.
+#'     Default is `NULL`.
+#' @param ref1kg_fasta A `character`. The `*.fasta` file from 1,000 Genome project.
+#'     Default is `NULL`.
+#' @param bin_path A `list(character)`. A list giving the binary path of `bcftools`, `bgzip`, `gcta` and `plink1.9`.
 #' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
 #' @param author_name A `character`. The author's name to be printed in the report.
 #'     Default is `CARoT`.
