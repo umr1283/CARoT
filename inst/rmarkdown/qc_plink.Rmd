@@ -1131,17 +1131,19 @@ if (is_maf_lower) {
   
   prop_diff_maf_lower <- abs((prop_maf_lower - prop_all) / prop_all) >= 0.05
 }
-```
 
-The sample-wise Mendel error was estimated using the `--mendel` command in PLINK.  
-The per-trio error rate threshold is `r params[["mendelian_samples"]]`.
+cat(
+  "The sample-wise Mendel error was estimated using the `--mendel` command in PLINK.  ", "\n",
+  "The per-trio error rate threshold is ", params[["mendelian_samples"]], ".",
+  "\n\n",
+  "Figure \@ref(fig:imendel_error_03) shows the Mendel error per sample.  ", "\n",
+  scales::comma(nrow(mendel_errors)), " samples (from ", dplyr::n_distinct(mendel_errors[["FID"]]), " families)",
+  " had a Mendel error rate higher than ", scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01), 
+  " and were flagged (table \@ref(tab:imendel_error_04)).",
+  "\n\n",
+  sep = ""
+)
 
-Figure \@ref(fig:imendel_error_04) shows the Mendel error per sample.  
-`r scales::comma(nrow(mendel_errors))` samples (from `r dplyr::n_distinct(mendel_errors[["FID"]])` families)
-had a Mendel error rate higher than `r scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01)`
-and were flagged (table \@ref(tab:imendel_error_05)).
-
-```{r imendel_error_03, eval = params[["includes_relatives"]] & imendel_file_check}
 if (!is.na(prop_diff_maf_lower) & prop_diff_maf_lower) {
   cat(
     "Sample-wise Mendel error rate ratio is different for variants ",
@@ -1180,10 +1182,10 @@ cbind(
     )
   )
 
-imendel_error_04_caption <- "Sample Mendel error rate."
+imendel_error_03_caption <- "Sample Mendel error rate."
 ```
 
-```{r imendel_error_04, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = imendel_error_04_caption}
+```{r imendel_error_03, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = imendel_error_03_caption}
 ggplot2::ggplot(
   data = dplyr::arrange(mendel_errors, percent),
   mapping = ggplot2::aes(
@@ -1218,7 +1220,7 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Samples", y = "Mendel Error Rate")
 ```
 
-```{r imendel_error_05, eval = params[["includes_relatives"]] & imendel_file_check}
+```{r imendel_error_04, eval = params[["includes_relatives"]] & imendel_file_check}
 mendel_errors_samples <- mendel_errors %>%
   dplyr::filter(percentage > params[["mendelian_samples"]]) %>%
   dplyr::select(FID, IID, percentage) %>%
