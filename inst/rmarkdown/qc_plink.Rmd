@@ -532,14 +532,6 @@ samples_toexclude <- dplyr::bind_rows(
   sexcheck_missing,
   sexcheck_other
 )
-
-gender_check_03_caption <- paste(
-  "The homozygosity rate for each sample (estimated using X-chromosomal variants)",
-  "plotted against the proportion of missing genotypes per sample.",
-  "Male samples are expected to have a homozygosity rate greater than 0.8,",
-  "female samples are expected to have a homozygosity rate less than 0.2.",
-  "Samples for which gender information is discordant or missing were denoted by red cross."
-)
 ```
 
 The mean homozygosity rate across the X-chromosome was computed using the `--check-sex` command in PLINK.
@@ -555,7 +547,7 @@ sample call rate, and highlights the discordant samples.
 
 `r if (!file.exists(cohort_details)) cat("Note: Gender phenotype was read from PLINK files.\n")`
 
-```{r gender-check-03, eval = gender_file_check, fig.cap = gender_check_03_caption}
+```{r gender-check-03, eval = gender_file_check, fig.cap = paste("The homozygosity rate for each sample (estimated using X-chromosomal variants)", "plotted against the proportion of missing genotypes per sample.", "Male samples are expected to have a homozygosity rate greater than 0.8,", "female samples are expected to have a homozygosity rate less than 0.2.", "Samples for which gender information is discordant or missing were denoted by red cross.")}
 ggplot2::ggplot(
   data = tidyr::drop_na(sexcheck, `F`),
   mapping = ggplot2::aes(
@@ -822,19 +814,9 @@ if (is_maf_lower) {
       dplyr::mutate(QC = paste0("Heterozygosity_Check_maf_", params[["maf_threshold"]]))
   )
 }
-
-heterozygosity_caption <- paste0(
-  "Heterozygosity rate against the call rate per sample. ",
-  "A and C, the heterozygosity rate computed based on all variants. ",
-  "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".",
-  "The horizontal red lines denotes the", qdap::replace_number(params[["heterozygosity_treshold"]]), 
-  "times standard deviations (SD) from the mean heterozygosity rate",
-  "that was used to define outlying heterozygosity.",
-  "SD was computed only on samples with a call rate greater or equal to ", params[["callrate_samples"]], "."
-)
 ```
 
-```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = heterozygosity_caption}
+```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denotes the", qdap::replace_number(params[["heterozygosity_treshold"]]), "times standard deviations (SD) from the mean heterozygosity rate", "that was used to define outlying heterozygosity.", "SD was computed only on samples with a call rate greater or equal to ", params[["callrate_samples"]], ".")}
 ggpubr::ggarrange(
   p_heteR + 
     ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 0.01)) +
@@ -1182,11 +1164,9 @@ cbind(
       "Number of samples to exclude for", qdap::replace_number(length(mendel_threshold)), "call rate thresholds."
     )
   )
-
-imendel_error_03_caption <- "Sample Mendel error rate."
 ```
 
-```{r imendel-error-03, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = imendel_error_03_caption}
+```{r imendel-error-03, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = "Sample Mendel error rate."}
 ggplot2::ggplot(
   data = dplyr::arrange(mendel_errors, percent),
   mapping = ggplot2::aes(
@@ -1624,17 +1604,9 @@ if (is.null(params[["population"]])) {
 }
 
 not_target_population <- dplyr::mutate(not_target_population, QC = "Ethnicity")
-
-population_03_caption <- paste(
-  "First factorial plane computed with a combined dataset",
-  "involving samples from the 1,000 Genomes Project.",
-  "Samples in A were colored by super population groups,",
-  "whereas samples in B were colored by population groups",
-  "and focused on the PCA area of studied cohort."
-)
 ```
 
-```{r population-03, fig.height = 4.7 * 1.5, fig.cap = population_03_caption}
+```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in A were colored by super population groups,", "whereas samples in B were colored by population groups", "and focused on the PCA area of studied cohort.")}
 data_pca_plot <- data_pca %>%
   dplyr::left_join(
     y = check_ethnicity %>%
@@ -1896,13 +1868,6 @@ recruit_centre_pca <- eigenvec_pca %>%
     by = "IID"
   ) %>%
   dplyr::mutate(Cohort = as.factor(Cohort))
-
-population_06_caption <- paste(
-  "Within-samples outliers detected as samples having at least one coordinate",
-  "in the first factorial plane larger than", 
-  qdap::replace_number(params[["pca_threshold"]]), 
-  "times the standard deviation of the principal component."
-)
 ```
 
 While performing a PCA using only samples from the cohort data, 
@@ -1910,7 +1875,7 @@ While performing a PCA using only samples from the cohort data,
 (loadings > `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation on 
 the first two principal components), this is illustrated in Figure \@ref(fig:population-06).
 
-```{r population-06, fig.cap = population_06_caption}
+```{r population-06, fig.cap = paste("Within-samples outliers detected as samples having at least one coordinate", "in the first factorial plane larger than", qdap::replace_number(params[["pca_threshold"]]), "times the standard deviation of the principal component.")}
 p_within <- ggplot2::ggplot(
   data = dplyr::mutate(
     .data = recruit_centre_pca, 
@@ -1967,8 +1932,6 @@ p_inertia_within <- ggplot2::ggplot(
 ggpubr::ggarrange(p_within, p_inertia_within, ncol = 2, labels = LETTERS, widths = c(1.2, 1))
 
 pca_threshold <- which(abs(diff(inertia_within[["y"]])) < 0.01)
-
-population_07_caption <- "PCA plot for components from two to five."
 ```
 
 According to the eigenvalues, the first factorial plane explains 
@@ -1978,7 +1941,7 @@ The principal components after `r qdap::replace_number(pca_threshold[1])` explai
 [`r paste(scales::percent(range(inertia_within[pca_threshold[1]:nrow(inertia_within), "y"]), accuracy = 0.01), collapse = "; ")`] of 
 the variance (principal components up to `r  scales::comma(nrow(inertia_within))`).  
 
-```{r population-07, fig.cap = population_07_caption}
+```{r population-07, fig.cap = "PCA plot for components from two to five."}
 pca_planes <- utils::combn(seq_len(min(params[["pca_components"]], 5))[-1], 2)
 
 pca_planes_list <- lapply(seq(ncol(pca_planes)), function(iComb) {
@@ -2078,13 +2041,6 @@ system(command = paste(
   "--out ", paste0(temp_directory, "/raw_data_good_samples")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
-variant_call_rate_02_caption <- paste(
-  "Call rate per variant. The red line denotes the call rate", 
-  scales::percent(params[["callrate_snps"]], accuracy = 0.01), 
-  "cut-off.",
-  "Variants with a call rate greater or equal to 99.9% are not shown."
-)
-
 callrate_snps_raw <- data.table::fread(paste0(temp_directory, "/raw_data_good_samples.lmiss"))
 ```
 
@@ -2094,7 +2050,7 @@ Figure \@ref(fig:variant-call-rate-02) shows the proportion of missing genotypes
 In total, `r scales::comma(sum(callrate_snps_raw[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
 had a call rate < `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)` and were excluded.  
 
-```{r variant-call-rate-02, fig.cap = variant_call_rate_02_caption}
+```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater or equal to 99.9% are not shown.")}
 ggplot2::ggplot(
   data = callrate_snps_raw %>%
     dplyr::arrange(F_MISS) %>%
@@ -2186,20 +2142,12 @@ if (!lmendel_file_check) {
     dplyr::mutate(percentage = N / dplyr::n()) %>%
     dplyr::arrange(percentage)
 }
-
-lmendel_error_02_caption <- paste(
-  "Mendel error rate per variant.",
-  scales::comma(sum(mendel_error_snps[["percentage"]] > params[["mendelian_snp"]])), 
-  "variants with more than",
-  scales::percent(x = params[["mendelian_snp"]], accuracy = 0.01),
-  "Mendel errors rate were excluded."
-)
 ```
 
 The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.  
 The per-variant error rate threshold is `r params[["mendelian_snp"]]`.
 
-```{r lmendel-error-02, eval = params[["includes_relatives"]] & lmendel_file_check, fig.cap = lmendel_error_02_caption}
+```{r lmendel-error-02, eval = params[["includes_relatives"]] & lmendel_file_check, fig.cap = paste("Mendel error rate per variant.", scales::comma(sum(mendel_error_snps[["percentage"]] > params[["mendelian_snp"]])), "variants with more than", scales::percent(x = params[["mendelian_snp"]], accuracy = 0.01), "Mendel errors rate were excluded.")}
 ggplot2::ggplot(
   data = mendel_error_snps,
   mapping = ggplot2::aes(x = seq_len(percent), y = percent)
@@ -2249,11 +2197,9 @@ system(command = paste(
   "--freq",
   "--out", paste0(temp_directory, "/raw_data_good_samples")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
-
-maf_02_caption <- "Distribution of variants number per class of Minor Allele Frequency (MAF)"
 ```
 
-```{r maf-02, fig.cap = maf_02_caption}
+```{r maf-02, fig.cap = "Distribution of variants number per class of Minor Allele Frequency (MAF)"}
 data.table::fread(paste0(temp_directory, "/raw_data_good_samples.frq")) %>%
   dplyr::mutate(
     maf_dist = cut(MAF, breaks = c(0, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), include.lowest = TRUE)
@@ -2287,12 +2233,6 @@ hwe_complete <- data.table::fread(paste0(temp_directory, "/raw_data_good_samples
 hwe_significant <- hwe_complete %>%
   dplyr::filter(P < params[["hwe_pvalue"]] * 10) %>%
   dplyr::arrange(P)
-
-hwe_02_caption <- paste0(
-  "The distribution of Hardy-Weinberg Equilibrium (HWE) p-values ", 
-  "for variants with HWE p-value < ", scales::scientific(params[["hwe_pvalue"]] * 10), ". ",
-  "The horizontal red line denotes the ", scales::scientific(params[["hwe_pvalue"]]), " cut-off."
-)
 ```
 
 Hardy-Weinberg Equilibrium (HWE) p-value was computed using the `--hardy` command in PLINK.
@@ -2303,7 +2243,7 @@ a HWE p-value below `r scales::scientific(params[["hwe_pvalue"]] * 10)`.
 In total, `r  scales::comma(sum(hwe_complete[, "P"] < params[["hwe_pvalue"]]))` variants 
 had a HWE p-value < `r scales::scientific(params[["hwe_pvalue"]])` and were excluded.  
 
-```{r hwe-02, fig.cap = hwe_02_caption}
+```{r hwe-02, fig.cap = paste0("The distribution of Hardy-Weinberg Equilibrium (HWE) p-values ",  "for variants with HWE p-value < ", scales::scientific(params[["hwe_pvalue"]] * 10), ". ", "The horizontal red line denotes the ", scales::scientific(params[["hwe_pvalue"]]), " cut-off.")}
 ggplot2::ggplot(data = hwe_significant) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(x = 1:length(P), y = P),
