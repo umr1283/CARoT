@@ -49,6 +49,7 @@ output:
       collapsed: false
     fig_width: 6.3
     fig_height: 4.7
+    fig_caption: true
     number_sections: true
     self_contained: true
     df_print: kable
@@ -537,7 +538,7 @@ gender_check_03_caption <- paste(
   "plotted against the proportion of missing genotypes per sample.",
   "Male samples are expected to have a homozygosity rate greater than 0.8,",
   "female samples are expected to have a homozygosity rate less than 0.2.",
-  "samples for which gender information is discordant or missing was (were) denoted by red cross."
+  "Samples for which gender information is discordant or missing were denoted by red cross."
 )
 ```
 
@@ -1825,7 +1826,7 @@ if (nrow(not_target_population) > 15) {
       align = "c", 
       table.attr = "style='width:50%;'",
       caption = paste0(
-        "samples determined as non-", pop_name, "(s) based on PCA ", 
+        "Samples determined as non-", pop_name, "(s) based on PCA ", 
         "(N=", scales::comma(nrow(not_target_population)), ")."
       )
     )
@@ -2545,7 +2546,7 @@ output_xlsx[["exclude_flag"]] <- samples_toexclude_export %>%
     by = c("IID" = "Sample.Name")
   ) %>%
   dplyr::rename(
-    "Ethnicity" = "PCA Outliers (non-caucasian)",
+    "Ethnicity" = "PCA Outliers (non-targeted population)",
     "Cohort PCA outliers" = "Within Cohort PCA outliers"
   ) %>%
   dplyr::select(FID, IID, Gender, Cohort, Status, dplyr::everything(-c(1:4))) %>% 
