@@ -40,8 +40,6 @@ params:
   n_cores: 1
   dpi: 120
   gg_fontsize: 12
-  cache: FALSE
-  show_code: FALSE
 output:
   bookdown::html_document2:
     theme: simplex

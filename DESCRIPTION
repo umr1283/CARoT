@@ -1,6 +1,6 @@
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.2.0.9000
+Version: 0.2.1.9000
 Authors@R: c(
     person(given = "Mickaël", family = "Canouil", role = c("aut", "cre"), email = "mickael.canouil@cnrs.fr", 
       comment = c(ORCID = "0000-0002-3396-4549")
