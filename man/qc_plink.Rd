@@ -22,53 +22,75 @@ qc_plink(input_directory = NULL, output_directory = NULL,
   encoding = "UTF-8")
 }
 \arguments{
-\item{input_directory}{A \code{character}.}
+\item{input_directory}{A \code{character}. The path to the plink files.
+The path should contains the file name without the extension, i.e., without \code{*.bed}, \code{*.bim} or \code{*.fam}.}
 
 \item{output_directory}{A \code{character}. The path to the output directory.}
 
-\item{cohort_name}{A \code{character}.}
+\item{cohort_name}{A \code{character}. The name of the studied cohort / population.}
 
 \item{output_file}{A \code{character}. The name of the html file produced.}
 
-\item{array}{A \code{character}. The array name.}
+\item{array}{A \code{character}. The array name, e.g., "Illumina Omni2.5".}
 
-\item{callrate_samples}{A \code{numeric}.}
+\item{callrate_samples}{A \code{numeric}. The call rate threshold for samples, under which samples are excluded.
+Default is \code{0.95}.}
 
-\item{callrate_snps}{A \code{numeric}.}
+\item{callrate_snps}{A \code{numeric}. The call rate threshold for probes, under which probes are excluded.
+Default is \code{0.95}.}
 
-\item{heterozygosity_treshold}{A \code{numeric}.}
+\item{heterozygosity_treshold}{A \code{numeric}. The heterozygosity threshold for samples
+(number of standard deviation from the mean), under/above which samples are excluded.
+Default is \code{4}.}
 
-\item{maf_threshold}{A \code{numeric}.}
+\item{maf_threshold}{A \code{numeric}. The minor allele frequency under which variants are considered "rare".
+Default is \code{0.01}.}
 
-\item{hwe_pvalue}{A \code{numeric}.}
+\item{hwe_pvalue}{A \code{numeric}. The p-value threshold for Hardy-Weinberg equilibrium test.
+Default is \code{0.0001}.}
 
-\item{includes_relatives}{A \code{logical}.}
+\item{includes_relatives}{A \code{logical}. Does the data contain related samples?
+Default is \code{FALSE}.}
 
-\item{mendelian_samples}{A \code{numeric}.}
+\item{mendelian_samples}{A \code{numeric}. The Mendel error rate threshold above which samples are excluded.
+Default is \code{0.05}.}
 
-\item{mendelian_snp}{A \code{numeric}.}
+\item{mendelian_snp}{A \code{numeric}. The Mendel error rate threshold above which variants are excluded.
+Default is \code{0.1}.}
 
-\item{IBD_threshold}{A \code{numeric}.}
+\item{IBD_threshold}{A \code{numeric}. The threshold for IBD (identical by descent) above which
+samples are characterised as relatives.
+Default is \code{0.2}.}
 
-\item{population}{A \code{character}.}
+\item{population}{A \code{character}. The ethnicity of the studied population if known, e.g., \code{"EUR"}.
+Default is \code{NULL}.}
 
-\item{pca_components}{A \code{numeric}.}
+\item{pca_components}{A \code{numeric}. The number of principal components to be computed.
+Default is \code{10}.}
 
-\item{pca_threshold}{A \code{numeric}.}
+\item{pca_threshold}{A \code{numeric}. The threshold to define outliers on the principal component analysis,
+the as number of standard deviation from the cohort centroid.
+Default is \code{3}.}
 
-\item{check_bim_script}{A \code{character}.}
+\item{check_bim_script}{A \code{character}. The PERL script to use to check PLINK files to allow later imputation.
+Default is \code{system.file("perl", "HRC-1000G-check-bim.pl", package = "CARoT")}.}
 
-\item{ref1kg_panel}{A \code{character}.}
+\item{ref1kg_panel}{A \code{character}. The \code{*.panel} file from 1,000 Genome project.
+Default is \code{NULL}.}
 
-\item{ref1kg_population}{A \code{character}.}
+\item{ref1kg_population}{A \code{character}. The \code{*.tsv} file from 1,000 Genome project describing samples and ethnicity.
+Default is \code{NULL}.}
 
-\item{ref1kg_genotypes}{A \code{character}.}
+\item{ref1kg_genotypes}{A \code{character}. The PLINK files from 1,000 Genome project.
+Default is \code{NULL}.}
 
-\item{ref1kg_legend}{A \code{character}.}
+\item{ref1kg_legend}{A \code{character}. The \code{*.legend} file from 1,000 Genome project.
+Default is \code{NULL}.}
 
-\item{ref1kg_fasta}{A \code{character}.}
+\item{ref1kg_fasta}{A \code{character}. The \code{*.fasta} file from 1,000 Genome project.
+Default is \code{NULL}.}
 
-\item{bin_path}{A \code{list(character)}.}
+\item{bin_path}{A \code{list(character)}. A list giving the binary path of \code{bcftools}, \code{bgzip}, \code{gcta} and \code{plink1.9}.}
 
 \item{title}{A \code{character}. The report's title. Default is \code{paste(array, "Array Quality-Control")}.}
 
