@@ -275,7 +275,7 @@ pretty_kable(
 
 ## Sample call rate evaluation
 
-```{r sample_call_rate_01}
+```{r sample_call_rate_01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data"), 
@@ -491,7 +491,7 @@ if (!gender_file_check) {
 }
 ```
 
-```{r gender_check_02, eval = gender_file_check}
+```{r gender_check_02, eval = gender_file_check, include = FALSE}
 sexcheck <- data.table::fread(paste0(temp_directory, "/raw_data.sexcheck")) %>%
   dplyr::mutate_at(.vars = c("FID", "IID"), as.character) %>% 
   dplyr::full_join(y = callrate_samples, by = c("FID", "IID")) %>%
@@ -583,7 +583,7 @@ ggplot2::ggplot(
 
 ## Heterozygosity check
 
-```{r heterozygosity_01}
+```{r heterozygosity_01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data"), 
@@ -662,7 +662,7 @@ The observed heterozygosity rate per sample was computed using the formula
 
 N(NM) and O(Hom) were obtained using the `--het` command in PLINK.
 
-```{r heterozygosity_02}
+```{r heterozygosity_02, include = FALSE}
 p_heteR <- ggplot2::ggplot(
   data = heterozygosity,
   mapping = ggplot2::aes(x = 1 - F_MISS, y = hrate)
@@ -885,7 +885,7 @@ ggpubr::ggarrange(
 
 `r if (params[["includes_relatives"]]) cat("Not applicable.\n\n")`
 
-```{r Relatedness_01, eval = !params[["includes_relatives"]]}
+```{r Relatedness_01, eval = !params[["includes_relatives"]], include = FALSE}
 ## Pruning Data
 system(command = paste(
   params[["bin_path"]][["plink"]], 
@@ -1116,20 +1116,17 @@ if (is_maf_lower) {
   
   prop_diff_maf_lower <- abs((prop_maf_lower - prop_all) / prop_all) >= 0.05
 }
+```
 
-cat(
-  "The sample-wise Mendel error was estimated using the `--mendel` command in PLINK, ",
-    "the per-trio error rate threshold is ", params[["mendelian_samples"]], ".",
-    "\n\n",
-  "Figure \\@ref(fig:imendel_error_03) shows the Mendel error per sample.",
-    "\n\n",
-  scales::comma(nrow(resMendelErrFam)), " samples ",
-    "from ", length(unique(resMendelErrFam[, "FID"])), " families ",
-    "had a Mendel error rate higher than ", scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01), 
-    " and were flagged (table \\@ref(tab:imendel_error_04)).\n\n",
-  sep = ""
-)
+The sample-wise Mendel error was estimated using the `--mendel` command in PLINK.  
+The per-trio error rate threshold is `r params[["mendelian_samples"]]`.
 
+Figure \@ref(fig:imendel_error_04) shows the Mendel error per sample.  
+`r scales::comma(nrow(mendel_errors))` samples (from `r dplyr::n_distinct(mendel_errors[["FID"]])` families)
+had a Mendel error rate higher than `r scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01)`
+and were flagged (table \@ref(tab:imendel_error_05)).
+
+```{r imendel_error_03, eval = params[["includes_relatives"]] & imendel_file_check}
 if (!is.na(prop_diff_maf_lower) & prop_diff_maf_lower) {
   cat(
     "Sample-wise Mendel error rate ratio is different for variants ",
@@ -1167,10 +1164,10 @@ cbind(
     )
   )
 
-imendel_error_03_caption <- "Sample Mendel error rate."
+imendel_error_04_caption <- "Sample Mendel error rate."
 ```
 
-```{r imendel_error_03, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = imendel_error_03_caption}
+```{r imendel_error_04, eval = params[["includes_relatives"]] & imendel_file_check, fig.cap = imendel_error_04_caption}
 ggplot2::ggplot(
   data = dplyr::arrange(mendel_errors, percent),
   mapping = ggplot2::aes(
@@ -1201,7 +1198,7 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Samples", y = "Mendel Error Rate")
 ```
 
-```{r imendel_error_04, eval = params[["includes_relatives"]] & imendel_file_check}
+```{r imendel_error_05, eval = params[["includes_relatives"]] & imendel_file_check}
 mendel_errors_samples <- mendel_errors %>%
   dplyr::filter(percentage > params[["mendelian_samples"]]) %>%
   dplyr::select(FID, IID, percentage) %>%
@@ -1233,7 +1230,7 @@ samples_toexclude <- dplyr::bind_rows(
 
 ## Population structure
 
-```{r population_01}
+```{r population_01, include = FALSE}
 ## Get Autosomal variants
 data.table::fread(paste0(temp_directory, "/raw_data.bim")) %>%
   dplyr::filter(V1 %in% seq(22)) %>%
@@ -1567,7 +1564,7 @@ We performed a principal component analysis (PCA) on the merged dataset
 (`r scales::comma(n_good_snp_1kg)` variants and `r scales::comma(n_samples)` samples, including `r scales::comma(n_samples-n_samples_1kg)` from the studied population 
 and `r scales::comma(n_samples_1kg)` from the 1,000 Genomes project)
 
-```{r population_02}
+```{r population_02, include = FALSE}
 centre_pca <- data_pca %>%
   dplyr::filter(Population != "raw_data") %>%
   dplyr::select(IID, Population, dplyr::contains("centroid")) %>%
@@ -1811,7 +1808,7 @@ if (nrow(not_target_population) > 15) {
 }
 ```
 
-```{r population_05}
+```{r population_05, include = FALSE}
 ## Only pop studied
 samples_toexclude %>%
   dplyr::filter(grepl("Sample_Call_Rate|Heterozygosity_Check$", QC)) %>%
@@ -1979,7 +1976,7 @@ pca_planes_list <- lapply(seq(ncol(pca_planes)), function(iComb) {
 ggpubr::ggarrange(plotlist = pca_planes_list, nrow = 2, ncol = 3, labels = LETTERS)
 ```
 
-```{r exclusion}
+```{r exclusion, include = FALSE}
 samples_toexclude_export <- samples_toexclude %>%
   dplyr::group_by(QC) %>% 
   dplyr::distinct(FID, IID, .keep_all = TRUE) %>% 
@@ -2044,7 +2041,7 @@ After excluding sample-based QC failed samples, variant-based QC is performed on
 
 ## Variant call rate evaluation
 
-```{r variant_call_rate_01}
+```{r variant_call_rate_01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data_good_samples"), 
@@ -2089,7 +2086,7 @@ ggplot2::ggplot(
 
 ## Duplicated or triplicated variants
 
-```{r duplicated_snps}
+```{r duplicated_snps, include = FALSE}
 callrate_snps <- callrate_snps_raw %>%
   dplyr::select(CHR, SNP, F_MISS) %>%
   dplyr::left_join(
@@ -2184,7 +2181,7 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Variants", y = "Mendel Error Rate")
 ```
 
-```{r uniq_snps_list}
+```{r uniq_snps_list, include = FALSE}
 if (lmendel_file_check) {
   cat(
     setdiff(
@@ -2210,7 +2207,7 @@ The MAF were computed using the `--freq` command in PLINK.
 
 The observed MAF distribution is shown in Figure \@ref(fig:maf_02).  
 
-```{r maf_01}
+```{r maf_01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data_good_samples"), 
@@ -2242,7 +2239,7 @@ data.table::fread(paste0(temp_directory, "/raw_data_good_samples.frq")) %>%
 
 ## Hardy-Weinberg Equilibrium
 
-```{r hwe_01}
+```{r hwe_01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
   "--bfile", paste0(temp_directory, "/raw_data_good_samples"),
@@ -2284,7 +2281,7 @@ ggplot2::ggplot(data = hwe_significant) +
   ggplot2::labs(x = "Variants", y = "Hardy-Weinberg Equilibrium P-value")
 ```
 
-```{r file_management, results = "hide", include = FALSE}
+```{r file_management, include = FALSE}
 imputation_filename <- paste0(temp_directory, "/", params[["cohort_name"]], "_forimputation")
 
 system(command = paste(
@@ -2434,7 +2431,7 @@ system(command = paste(
 
 # Final QC overview (with all filters)
 
-```{r qc_summary}
+```{r qc_summary, include = FALSE}
 initial_snps_number <- nrow(data.table::fread(
   input = paste0(params[["input_directory"]], ".bim"), 
   select = 1
@@ -2551,7 +2548,7 @@ writexl::write_xlsx(output_xlsx, path = paste0(params[["output_directory"]], "/Q
 
 ## Softwares
 
-```{r softwares_version}
+```{r softwares_version, include = FALSE}
 plink_ver <- strsplit(
   x = system(command = paste(params[["bin_path"]][["plink"]], "--version"), intern = TRUE)[1],
   split = " "
