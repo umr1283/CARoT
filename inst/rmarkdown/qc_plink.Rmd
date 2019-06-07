@@ -1049,10 +1049,10 @@ samples_toexclude <- dplyr::bind_rows(
   relatedness %>%
     dplyr::filter(PI_HAT >= params[["IBD_threshold"]]) %>% 
     dplyr::select(dplyr::matches("FID|IID")) %>% 
-    tidyr::unite(col = FID_IID1, FID1, IID1) %>% 
-    tidyr::unite(col = FID_IID2, FID2, IID2) %>% 
-    tidyr::gather(key = FID_IID, value = value) %>% 
-    tidyr::separate(col = value, into = c("FID", "IID")) %>% 
+    tidyr::unite(col = FID_IID1, FID1, IID1, sep = "_-_") %>% 
+    tidyr::unite(col = FID_IID2, FID2, IID2, sep = "_-_") %>% 
+    tidyr::gather(key = "FID_IID", value = "value") %>% 
+    tidyr::separate(col = "value", into = c("FID", "IID"), sep = "_-_") %>% 
     dplyr::select(-FID_IID) %>% 
     dplyr::distinct(FID, IID) %>% 
     dplyr::mutate(QC = "Relatedness")
