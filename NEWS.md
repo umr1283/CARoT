@@ -8,6 +8,7 @@
     + fix cross-references.
     + fix variant call rate import.
     + tweak figures to make them more readable.
+    + set `include = FALSE` for chunk without figure, table or text output. 
 * In `/inst/rmarkdown/qc_plink.R`, fix params not declared in YAML header of `/inst/rmarkdown/qc_plink.Rmd`.
 
 # CARoT 0.2.0 (development version)
