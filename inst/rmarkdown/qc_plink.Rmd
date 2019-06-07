@@ -253,7 +253,7 @@ recruit_centre_table <- recruit_centre %>%
 
 PLINK files contain:
 
-* `r scales::comma(nrow(recruit_centre))` samples (table \\@ref(tab:tablecohortoverview))
+* `r scales::comma(nrow(recruit_centre))` samples (table \@ref(tab:cohort_overview_table))
     Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates.
 * `r scales::comma(snps_number)` variants
 
@@ -399,7 +399,7 @@ callrate_samples_toexclude <- callrate_samples %>%
 
 Call rate was computed using the `--missing` command in PLINK. 
 
-Figure \\@ref(fig:sample_call_rate_05) shows the call rate per sample.  
+Figure \@ref(fig:sample_call_rate_05) shows the call rate per sample.  
 `r scales::comma(nrow(callrate_samples_toexclude))` samples had a call rate lower than 
 `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)` and were excluded.
 
@@ -543,7 +543,7 @@ with unspecified sex and `r scales::comma(sum(sexcheck_problem[, "SNPSEX"] == 0)
 samples with undetermined genotypic sex), the gender discrepancy between
 genotyping data and reported gender could not be resolved, and have been flagged.
 
-Figure \\@ref(fig:gender_check_03) illustrates the homozygosity estimate against 
+Figure \@ref(fig:gender_check_03) illustrates the homozygosity estimate against 
 sample call rate, and highlights the discordant samples.
 
 `r if (!file.exists(cohort_details)) cat("Note: Gender phenotype was read from PLINK files.\n")`
@@ -934,11 +934,11 @@ using the `--genome` command in PLINK, pairwise IBD (identity by descent) are co
 Prior to the analysis, the dataset was pruned to exclude high-LD-regions, 
 that is no SNPs with MAF < `r params[["maf_threshold"]]` and no pair of SNPs within 50 Kb have an r² > 0.2.
 
-Table \\@ref(tab:distripihat) shows the distribution of pi-hat (proportion of IBD) for related samples. 
+Table \@ref(tab:Relatedness_02) shows the distribution of pi-hat (proportion of IBD) for related samples. 
 A priori, samples in cohort *`r params[["cohort_name"]]`* are not supposed to be related, 
 the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`. 
 Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
-(table \\@ref(tab:pairsPihatSup02)).
+(table \@ref(tab:Relatedness_03)).
 
 ```{r Relatedness_02, eval = !params[["includes_relatives"]]}
 data.frame(table(cut(
@@ -1120,7 +1120,7 @@ cat(
   scales::comma(nrow(resMendelErrFam)), " samples ",
     "from ", length(unique(resMendelErrFam[, "FID"])), " families ",
     "had a Mendel error rate higher than ", scales::percent(x = params[["mendelian_samples"]], accuracy = 0.01), 
-    " and were flagged (table \\@ref(tab:mendelErrFam)).\n\n",
+    " and were flagged (table \\@ref(tab:imendel_error_04)).\n\n",
   sep = ""
 )
 

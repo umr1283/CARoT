@@ -3,7 +3,8 @@
 ## Minor improvements and fixes
 
 * In `/inst/rmarkdown/qc_plink.Rmd`, fix YAML header with duplicated parameters.
-* In `/inst/rmarkdown/qc_plink.Rmd`, fix dupicated chunk label.
+* In `/inst/rmarkdown/qc_plink.Rmd`, fix duplicated chunk label.
+* In `/inst/rmarkdown/qc_plink.Rmd`, fix cross-references.
 * In `/inst/rmarkdown/qc_plink.R`, fix params not declared in YAML header of `/inst/rmarkdown/qc_plink.Rmd`.
 
 # CARoT 0.2.0 (development version)
