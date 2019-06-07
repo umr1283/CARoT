@@ -202,7 +202,7 @@ system(command = paste(
 
 Genotyped using `r params[["array"]]`.
 
-```{r cohort_overview}
+```{r cohort_overview, include = FALSE}
 samples <- dplyr::mutate_at(
   .tbl = utils::read.table(paste0(temp_directory, "/raw_data.fam")), 
   .vars = 1:2, 
