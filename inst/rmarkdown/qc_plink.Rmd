@@ -1998,7 +1998,7 @@ samples_toexclude_export <- samples_toexclude %>%
     !!paste0("Heterozygosity Check (MAF ", params[["maf_threshold"]], ")") :=
       paste0("Heterozygosity_Check_maf_", params[["maf_threshold"]]),
     `Heterozygosity Check` = Heterozygosity_Check,
-    `PCA Outliers (non-caucasian)` = Ethnicity,
+    `PCA Outliers` = Ethnicity,
     `Within Cohort PCA outliers` = Cohortwithin,
     `Relatedness Pi_hat ≥ 0.2` = Relatedness,
     `Mendelian Error` = Sample_Mendel_Error
@@ -2486,7 +2486,7 @@ output_xlsx[["exclude_flag"]] <- samples_toexclude_export %>%
     by = c("IID" = "Sample.Name")
   ) %>%
   dplyr::rename(
-    "Ethnicity" = "PCA Outliers (non-targeted population)",
+    "Ethnicity" = "PCA Outliers",
     "Cohort PCA outliers" = "Within Cohort PCA outliers"
   ) %>%
   dplyr::select(FID, IID, Gender, Cohort, Status, dplyr::everything(-c(1:4))) %>% 
