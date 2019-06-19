@@ -110,11 +110,17 @@ qc_plink <- function(
   encoding = "UTF-8",
   ...
 ) {
+  message(
+    "[CARoT] Quality-Control started ...\n",
+    "[CARoT] Note: it can take from one to two hours."
+  )
+
   file.copy(
     from = system.file("rmarkdown", "qc_plink.Rmd", package = "CARoT"),
     to = paste0(tempdir(), "/qc_plink.Rmd"),
     overwrite = TRUE
   )
+
   rmarkdown::render(
     input = paste0(tempdir(), "/qc_plink.Rmd"),
     output_file = output_file,
@@ -156,4 +162,18 @@ qc_plink <- function(
     ),
     ...
   )
+
+  message("[CARoT] Quality-Control ended.")
+  message(
+    paste(
+      paste("  ",
+        capture.output(
+          fs::dir_tree(path = normalizePath(output_directory), recurse = FALSE)
+        )
+      ),
+      collapse = "\n"
+    )
+  )
+
+  invisible()
 }
