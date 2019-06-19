@@ -168,7 +168,7 @@ qc_plink <- function(
   message(
     paste(
       paste("  ",
-        capture.output(
+        utils::capture.output(
           fs::dir_tree(path = normalizePath(output_directory), recurse = FALSE)
         )
       ),

@@ -17,7 +17,7 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
   show_code = FALSE, n_cores = 22, dpi = 120, gg_fontsize = 12,
-  encoding = "UTF-8")
+  encoding = "UTF-8", ...)
 }
 \arguments{
 \item{csv_file}{A \code{character}. The path to a CSV file, i.e., a sample sheet describing the data.}
@@ -121,6 +121,8 @@ Default is \code{120}.}
 
 \item{encoding}{A \code{character}. The encoding to be used for the html report.
 Default is \code{"UTF-8"}.}
+
+\item{...}{Parameters to pass to \code{rmarkdown::render()}.}
 }
 \description{
 qc_idats
