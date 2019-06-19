@@ -23,6 +23,9 @@
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
     + complete roxygen documentation.
+    + add start/end messages.
+* In `R/qc_idats.R`,
+    + add start/end messages.
 * In `R/pca_report.R`, fix a typo in roxygen documentation.
 
 # CARoT 0.2.0 (development version)
