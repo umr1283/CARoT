@@ -19,7 +19,7 @@ qc_plink(input_directory = NULL, output_directory = NULL,
   title = paste(array, "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
   show_code = FALSE, n_cores = 22, dpi = 120, gg_fontsize = 12,
-  encoding = "UTF-8")
+  encoding = "UTF-8", ...)
 }
 \arguments{
 \item{input_directory}{A \code{character}. The path to the plink files.
@@ -119,6 +119,8 @@ Default is \code{120}.}
 
 \item{encoding}{A \code{character}. The encoding to be used for the html report.
 Default is \code{"UTF-8"}.}
+
+\item{...}{Parameters to pass to \code{rmarkdown::render()}.}
 }
 \description{
 qc_plink
