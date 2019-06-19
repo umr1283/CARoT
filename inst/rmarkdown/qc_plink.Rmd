@@ -174,7 +174,7 @@ system(command = paste(
 * 1,000 Genomes files: 
     `` `r params[["ref1kg_genotypes"]]` ``
 * Reference population: 
-    `` `r params[["population"]]` ``
+    `` `r if (is.null(params[["population"]])) "unspecified" else params[["population"]]` ``
 * Sample-based call rate threshold: 
     `` `r params[["callrate_samples"]]` ``
 * Variant-based call rate threshold: 
@@ -388,8 +388,8 @@ callrate_thresholds_table <- cbind(
   dplyr::mutate(callrate_thresholds = scales::percent(callrate_thresholds, accuracy = 0.01)) %>%
   `colnames<-`(c(
     "Call rate threshold", 
-    "Samples to exclude (all variants)", 
-    paste0("Samples to exclude (variants with MAF ≥ ", params[["maf_threshold"]],")")
+    "Samples to exclude<br/>(all variants)", 
+    paste0("Samples to exclude<br/>(variants with MAF ≥ ", params[["maf_threshold"]],")")
   ))
 
 callrate_samples_toexclude <- callrate_samples %>%
@@ -816,7 +816,7 @@ if (is_maf_lower) {
 }
 ```
 
-```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denotes the", qdap::replace_number(params[["heterozygosity_treshold"]]), "times standard deviations (SD) from the mean heterozygosity rate", "that was used to define outlying heterozygosity.", "SD was computed only on samples with a call rate greater or equal to ", params[["callrate_samples"]], ".")}
+```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", params[["callrate_samples"]], ".")}
 ggpubr::ggarrange(
   p_heteR + 
     ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 0.01)) +
@@ -1556,11 +1556,9 @@ The data from our studied population were pruned using the following cut-offs:
 * MAF ≥ `r params[["maf_threshold"]]`, 
 * HWE > `r scales::scientific(params[["hwe_pvalue"]])`, 
 * samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`, 
-* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from 
-    the mean heterozygosity rate (`r scales::comma(n_samples-n_samples_1kg)` samples and 
-    `r scales::comma(n_good_snp)` variants retained in analysis).
+* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate.
     
-The resulting "clean" dataset were merged with the data from the publicly available 1,000 Genomes project database, 
+The resulting "clean" dataset (`r scales::comma(n_samples-n_samples_1kg)` samples and `r scales::comma(n_good_snp)` variants retained) were merged with the data from the publicly available 1,000 Genomes project database, 
 and thinned down to only contain variants that were present in both dataset and were not palindromic. 
 
 We performed a principal component analysis (PCA) on the merged dataset 
@@ -2050,7 +2048,7 @@ Figure \@ref(fig:variant-call-rate-02) shows the proportion of missing genotypes
 In total, `r scales::comma(sum(callrate_snps_raw[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
 had a call rate < `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)` and were excluded.  
 
-```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater or equal to 99.9% are not shown.")}
+```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater than or equal to 99.9% are not shown.")}
 ggplot2::ggplot(
   data = callrate_snps_raw %>%
     dplyr::arrange(F_MISS) %>%
@@ -2135,6 +2133,9 @@ system(command = paste(
 
 lmendel_file_check <- file.exists(paste0(temp_directory, "/raw_data_good_samples.lmendel"))
 
+cat("The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.\n\n")
+cat("The per-variant error rate threshold is `", params[["mendelian_snp"]], "`.\n\n", sep = "")
+
 if (!lmendel_file_check) {
   cat("Mendel error rates check was not performed due to missing informations.\n\n")
 } else {
@@ -2143,9 +2144,6 @@ if (!lmendel_file_check) {
     dplyr::arrange(percentage)
 }
 ```
-
-The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.  
-The per-variant error rate threshold is `r params[["mendelian_snp"]]`.
 
 ```{r lmendel-error-02, eval = params[["includes_relatives"]] & lmendel_file_check, fig.cap = paste("Mendel error rate per variant.", scales::comma(sum(mendel_error_snps[["percentage"]] > params[["mendelian_snp"]])), "variants with more than", scales::percent(x = params[["mendelian_snp"]], accuracy = 0.01), "Mendel errors rate were excluded.")}
 ggplot2::ggplot(
@@ -2429,7 +2427,7 @@ final_samples_number <- nrow(data.table::fread(
 ))
 ```
 
-* Samples previously characterised in Section \@ref(sec:sample-qc) (Table \@ref(tab:qc-summary-table)):
+* Samples previously characterised in section [Sample-based QC](#sample_qc) (Table \@ref(tab:qc-summary-table)):
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`
         samples excluded due to failures in the call rate and/or the heterozygosity check.
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`
@@ -2437,7 +2435,6 @@ final_samples_number <- nrow(data.table::fread(
         Those samples need to be checked in order to determine whether or not they have to be excluded later.
 * Variant call rate at `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)`.
 * Duplicated variants based on chromosome and position
-* Palindromic variants
 * Per-variant Mendelian error rate (when applicable) at `r params[["mendelian_snp"]]`
 * Hardy-Weinberg Equilibrium p-value at `r scales::scientific(params[["hwe_pvalue"]])`
 
