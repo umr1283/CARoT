@@ -1082,7 +1082,7 @@ if (!imendel_file_check) {
 
 ```{r imendel-error-02, eval = params[["includes_relatives"]] & imendel_file_check}
 mendel_errors <- data.table::fread(paste0(temp_directory, "/raw_data.imendel")) %>%
-  dplyr::mutate_at(.vars = vars(FID, IID), as.character) %>% 
+  dplyr::mutate_at(.vars = dplyr::vars(FID, IID), as.character) %>% 
   dplyr::mutate(
     percentage = N / snps_number,
     labs = ifelse(percentage > params[["mendelian_samples"]], IID, NA),
@@ -1601,7 +1601,7 @@ if (is.null(params[["population"]])) {
 not_target_population <- dplyr::mutate(not_target_population, QC = "Ethnicity")
 ```
 
-```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in **A** were colored by super population groups,", "whereas samples in **B** were colored by population groups", "and focused on the PCA area of the **, params[["cohort_name"]], "** cohort.")}
+```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in **A** were coloured by super population groups,", "whereas samples in **B** were coloured by population groups", "and focused on the PCA area of the **, params[["cohort_name"]], "** cohort.")}
 data_pca_plot <- data_pca %>%
   dplyr::left_join(
     y = check_ethnicity %>%
@@ -1633,7 +1633,12 @@ data_pca_plot <- data_pca %>%
   dplyr::mutate(
     Population = relevel(x = factor(Population), ref = params[["cohort_name"]]),
     Population = factor(Population, levels = rev(levels(Population)))
-  )
+  ) %>% 
+  dplyr::left_join(
+    y = samples_toexclude,
+    by = c("FID", "IID")
+  ) %>% 
+  dplyr::mutate(is_kept = ifelse(is.na(QC), "KEPT", "EXCLUDED"))
 
 get_lims <- dplyr::filter(data_pca_plot, Population %in% params[["cohort_name"]])
 
@@ -1668,7 +1673,7 @@ p_superpop <- ggplot2::ggplot(
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component", 
-    color = NULL, # "Super Population", 
+    colour = NULL, # "Super Population", 
     shape = NULL, # "Super Population", 
     fill = NULL # "Super Population"
   ) +
@@ -1680,7 +1685,6 @@ p_superpop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom", 
-    legend.justification = c(0.5, 0.5), 
     legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
   )
 
@@ -1699,13 +1703,13 @@ data_pca_plot_closest <- data_pca_plot %>%
 
 p_pop <- ggplot2::ggplot(
   data = data_pca_plot_closest,
-  mapping = ggplot2::aes(x = x, y = y, color = Population, shape = Population)
+  mapping = ggplot2::aes(x = x, y = y, colour = Population, shape = Population)
 ) +
   ggplot2::geom_hline(yintercept = 0) +
   ggplot2::geom_vline(xintercept = 0) +
   ggplot2::geom_point(na.rm = TRUE) +
   ggforce::geom_mark_ellipse(
-    mapping = ggplot2::aes(fill = Population, color = Population),
+    mapping = ggplot2::aes(fill = Population, colour = Population),
     alpha = 0.1,
     con.cap = 0,
     con.border = "all",
@@ -1729,7 +1733,7 @@ p_pop <- ggplot2::ggplot(
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component",
-    color = NULL, # "Population", 
+    colour = NULL, # "Population", 
     shape = NULL, # "Population", 
     fill = NULL # "Population"
   ) +
@@ -1740,7 +1744,6 @@ p_pop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom",
-    legend.justification = c(0.5, 0.5), 
     legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
   )
 
@@ -1768,6 +1771,22 @@ ggpubr::ggarrange(
   ncol = 2, 
   labels = c("A", "")
 )
+```
+
+```{r population-03a, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by "super population" groups.')}
+p_superpop  +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(Cohort), 
+    cols = ggplot2::vars(is_kept)
+  )
+```
+
+```{r population-03b, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by "population" groups.')}
+p_pop +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(Cohort), 
+    cols = ggplot2::vars(is_kept)
+  )
 ```
 
 ```{r population-04, eval = !is.null(params[["population"]]) & nrow(not_target_population) > 0}
