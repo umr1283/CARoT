@@ -56,10 +56,10 @@ Currently *CARoT* includes the following functions:
     The function can be used in Rmarkdown chunk with `results="asis"` to
     render the report.
   - `qc_idats()` allows to compute quality-control of methylation array
-    from Illumina using a default [rmarkdown
+    from Illumina using a [rmarkdown
     template](inst/rmarkdown/qc_idats.Rmd).
   - `qc_plink()` allows to compute quality-control of genotyping array
-    (PLINK format) using a default [rmarkdown
+    (PLINK format) using a [rmarkdown
     template](inst/rmarkdown/qc_plink.Rmd).
 
 ## Getting help
