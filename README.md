@@ -39,7 +39,28 @@ devtools::install_github("mcanouil/CARoT")
 ## Overview
 
 *CARoT* (Centralised and Automated Reporting Tools) is an under
-development set of Quality-Control reporting tools.
+development set of Quality-Control reporting tools and some other
+functions.
+
+Currently *CARoT* includes the following functions:
+
+  - `estimate_ethnicity()` allows to compute the genomic component (and
+    some figures) for ethnicity based on VCF files.
+  - `ggheatmap()` allows to compute heatmap with dendrogram on x-axis
+    and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
+  - `read_idats()` allows to efficiently import idats files mostly using
+    [minfi](https://doi.org/doi:10.18129/B9.bioc.minfi) functions.
+  - `pca_report()` allows to compute an analysis report using principal
+    component analysis from
+    [flashpca](https://github.com/gabraham/flashpca) tool.  
+    The function can be used in Rmarkdown chunk with `results="asis"` to
+    render the report.
+  - `qc_idats()` allows to compute quality-control of methylation array
+    from Illumina using a default [rmarkdown
+    template](inst/rmarkdown/qc_idats.Rmd).
+  - `qc_plink()` allows to compute quality-control of genotyping array
+    (PLINK format) using a default [rmarkdown
+    template](inst/rmarkdown/qc_plink.Rmd).
 
 ## Getting help
 
