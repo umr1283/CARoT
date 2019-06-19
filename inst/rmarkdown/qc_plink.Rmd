@@ -1652,9 +1652,7 @@ p_superpop <- ggplot2::ggplot(
   ) +
   ggplot2::scale_colour_viridis_d(direction = -1) +
   ggplot2::scale_fill_viridis_d(direction = -1) +
-  ggplot2::scale_shape_manual(
-    values = rep(c(1:5), 3)
-  ) +
+  ggplot2::scale_shape_manual(values = rep(c(1:5), 3)) +
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component", 
@@ -1702,10 +1700,8 @@ p_pop <- ggplot2::ggplot(
     expand = ggplot2::unit(2, "mm")
   ) +
   ggplot2::scale_colour_viridis_d(direction = -1) +
-  ggplot2::scale_fill_viridis_d(direction = -1) + +
-  ggplot2::scale_shape_manual(
-    values = rep(c(1:5), 3)
-  ) +
+  ggplot2::scale_fill_viridis_d(direction = -1) +
+  ggplot2::scale_shape_manual(values = rep(c(1:5), 3)) +
   ggplot2::labs(
     x = "First Principal Component", 
     y = "Second Principal Component",
