@@ -18,6 +18,7 @@
     + add PCA plot with samples exclusion information.
     + multi-planes PCA plot now highlight outliers in all sub-plot.
     + decrease legend key size in PCA plots.
+    + add a exclusion and flag summary in the last table.
     + fix typos.
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
