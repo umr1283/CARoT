@@ -1883,7 +1883,7 @@ To assess the homogeneity of the **`r params[["cohort_name"]]`** cohort,
 a PCA was performed using only samples from the cohort.   
 **`r scales::comma(sum(eigenvec_pca[["extremes"]]))`** samples were labeled and flagged as being extreme 
 (greater than `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation 
-from the centroid of **`r params[["cohort_name"]]`** on the first two principal components), 
+from the centroid of **`r params[["cohort_name"]]`** on the first factorial plane), 
 this is illustrated in Figure \@ref(fig:population-06).
 
 ```{r population-06, fig.cap = paste("Within-samples outliers detected as samples having at least one coordinate", "in the first factorial plane larger than", qdap::replace_number(params[["pca_threshold"]]), "times the standard deviation of the principal component.")}
@@ -2039,7 +2039,7 @@ system(command = paste(
 # Variant-based QC
 
 After excluding sample-based QC failed samples, variant-based QC is performed on 
-`r scales::comma(nrow(data.table::fread(input = paste0(temp_directory, "/raw_data_good_samples.fam"), select = 1)))` samples.  
+**`r scales::comma(nrow(data.table::fread(input = paste0(temp_directory, "/raw_data_good_samples.fam"), select = 1)))`** samples.  
 
 ## Variant call rate evaluation
 
@@ -2055,10 +2055,6 @@ callrate_snps_raw <- data.table::fread(paste0(temp_directory, "/raw_data_good_sa
 ```
 
 Proportion of missing genotypes or call rate per variant was estimated using the `--missing` command in PLINK.  
-
-Figure \@ref(fig:variant-call-rate-02) shows the proportion of missing genotypes per variant. 
-In total, `r scales::comma(sum(callrate_snps_raw[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
-had a call rate < `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)` and were excluded.  
 
 ```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater than or equal to 99.9% are not shown.")}
 ggplot2::ggplot(
@@ -2145,8 +2141,11 @@ system(command = paste(
 
 lmendel_file_check <- file.exists(paste0(temp_directory, "/raw_data_good_samples.lmendel"))
 
-cat("The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.\n\n")
-cat("The per-variant error rate threshold is `", params[["mendelian_snp"]], "`.\n\n", sep = "")
+cat(
+  "The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.  \n",
+  "The per-variant error rate threshold is `", params[["mendelian_snp"]], "`.\n\n", 
+  sep = ""
+)
 
 if (!lmendel_file_check) {
   cat("Mendel error rates check was not performed due to missing informations.\n\n")
@@ -2197,8 +2196,6 @@ if (lmendel_file_check) {
 
 The MAF were computed using the `--freq` command in PLINK.
 
-The observed MAF distribution is shown in Figure \@ref(fig:maf-02).  
-
 ```{r maf-01, include = FALSE}
 system(command = paste(
   params[["bin_path"]][["plink"]], 
@@ -2247,11 +2244,8 @@ hwe_significant <- hwe_complete %>%
 
 Hardy-Weinberg Equilibrium (HWE) p-value was computed using the `--hardy` command in PLINK.
 
-Figure \@ref(fig:hwe-02) shows variants with 
-a HWE p-value below `r scales::scientific(params[["hwe_pvalue"]] * 10)`.
-
-In total, `r  scales::comma(sum(hwe_complete[, "P"] < params[["hwe_pvalue"]]))` variants 
-had a HWE p-value < `r scales::scientific(params[["hwe_pvalue"]])` and were excluded.  
+In total, **`r scales::comma(sum(hwe_complete[, "P"] < params[["hwe_pvalue"]]))`** variants 
+had a HWE p-value below `r scales::scientific(params[["hwe_pvalue"]])` and were excluded.  
 
 ```{r hwe-02, fig.cap = paste0("The distribution of Hardy-Weinberg Equilibrium (HWE) p-values ",  "for variants with HWE p-value < ", scales::scientific(params[["hwe_pvalue"]] * 10), ". ", "The horizontal red line denotes the ", scales::scientific(params[["hwe_pvalue"]]), " cut-off.")}
 ggplot2::ggplot(data = hwe_significant) +
@@ -2440,20 +2434,20 @@ final_samples_number <- nrow(data.table::fread(
 ```
 
 * Samples previously characterised in Section [Sample-based QC](#sample-qc) (Table \@ref(tab:qc-summary-table)):
-    + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`
+    + **`r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`**
         samples excluded due to failures in the call rate and/or the heterozygosity check.
-    + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`
+    + **`r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`**
         samples flagged. 
-        Those samples need to be checked in order to determine whether or not they have to be excluded later.
+        Those samples need to be checked in order to determine whether or not they have to be excluded.
 * Variant call rate at `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)`.
 * Duplicated variants based on chromosome and position
-* Per-variant Mendelian error rate (when applicable) at `r params[["mendelian_snp"]]`
 * Hardy-Weinberg Equilibrium p-value at `r scales::scientific(params[["hwe_pvalue"]])`
+`r if (params[["includes_relatives"]] & lmendel_file_check) cat("* Per-variant Mendelian error rate (when applicable) at", params[["mendelian_snp"]])`
 
-The initial dataset contained `r scales::comma(initial_samples_number)` samples 
-and `r scales::comma(initial_snps_number)` variants.  
+The initial dataset contained **`r scales::comma(initial_samples_number)`** samples 
+and **`r scales::comma(initial_snps_number)`** variants.  
 The final dataset contains `r scales::comma(final_samples_number)` samples 
-and `r scales::comma(final_snps_number)` variants.
+and **`r scales::comma(final_snps_number)`** variants.
 
 ```{r qc-summary-table}
 recruit_centre %>%
@@ -2474,9 +2468,16 @@ recruit_centre %>%
     Check_pct = scales::percent(Check / Total, accuracy = 0.01), 
     Exclude_pct = scales::percent(Exclude / Total, accuracy = 0.01),
     Check = paste0(Check, "/", Total, "(", Check_pct, ")") %>% gsub("NaN", "0", .),
-    Exclude = paste0(Exclude, "/", Total, "(", Exclude_pct, ")") %>% gsub("NaN", "0", .)
+    Exclude = paste0(Exclude, "/", Total, "(", Exclude_pct, ")") %>% gsub("NaN", "0", .),
+    ExcludeorCheck_pct = scales::percent(Exclude + Check / Total, accuracy = 0.01),
+    ExcludeorCheck = paste0(Exclude + Check, "/", Total, "(", ExcludeorCheck_pct, ")") %>% gsub("NaN", "0", .)
   ) %>%
-  dplyr::select(Cohort, Excluded = Exclude, `to be checked` = Check) %>%
+  dplyr::select(
+    Cohort, 
+    Excluded = Exclude, 
+    Flagged = Check, 
+    `Excluded or Flagged` = ExcludeorCheck
+  ) %>%
   pretty_kable(
     align = "c", 
     table.attr = "style='width:65%;'",
