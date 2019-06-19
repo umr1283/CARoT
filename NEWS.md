@@ -14,6 +14,7 @@
     + replace underscore with dash in chunk names for cross-referencing.
     + fix column names in `exclusion` chunk.
     + make cross-cohort check only if multiple cohorts.
+    + the studied population is now plotted in last in PCA.
     + fix typos.
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
