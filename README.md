@@ -53,8 +53,8 @@ Currently *CARoT* includes the following functions:
   - `pca_report()` allows to compute an analysis report using principal
     component analysis from
     [flashpca](https://github.com/gabraham/flashpca) tool.  
-    The function can be used in Rmarkdown chunk with `results="asis"` to
-    render the report.
+    The function can be used in a chunk within a Rmarkdown
+    document/script with `results="asis"` to render the report.
   - `qc_idats()` allows to compute quality-control of methylation array
     from Illumina using a [rmarkdown
     template](inst/rmarkdown/qc_idats.Rmd).

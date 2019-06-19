@@ -50,7 +50,7 @@ Currently *CARoT* includes the following functions:
 * `ggheatmap()` allows to compute heatmap with dendrogram on x-axis and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
 * `read_idats()` allows to efficiently import idats files mostly using [minfi](https://doi.org/doi:10.18129/B9.bioc.minfi) functions.
 * `pca_report()` allows to compute an analysis report using principal component analysis from [flashpca](https://github.com/gabraham/flashpca) tool.  
-  The function can be used in Rmarkdown chunk with `results="asis"` to render the report.
+  The function can be used in a chunk within a Rmarkdown document/script with `results="asis"` to render the report.
 * `qc_idats()` allows to compute quality-control of methylation array from Illumina using a [rmarkdown template](inst/rmarkdown/qc_idats.Rmd).
 * `qc_plink()` allows to compute quality-control of genotyping array (PLINK format) using a [rmarkdown template](inst/rmarkdown/qc_plink.Rmd).
 
