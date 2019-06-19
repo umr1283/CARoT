@@ -1547,7 +1547,7 @@ inertia_pca <- data.table::fread(paste0(temp_directory, "/raw_data_1kgenome.eige
   dplyr::mutate(y = V1 / sum(V1))
 ```
 
-The data from the studied population (*i.e.*, **`r params[["cohort_name"]]`**)  pruned using the following cut-offs:
+The data from the **`r params[["cohort_name"]]`** cohort was pruned using the following cut-offs:
 
 * variants call rate > 90.00 %
 * MAF ≥ `r params[["maf_threshold"]]`
@@ -1633,12 +1633,7 @@ data_pca_plot <- data_pca %>%
   dplyr::mutate(
     Population = relevel(x = factor(Population), ref = params[["cohort_name"]]),
     Population = factor(Population, levels = rev(levels(Population)))
-  ) %>% 
-  dplyr::left_join(
-    y = samples_toexclude,
-    by = c("FID", "IID")
-  ) %>% 
-  dplyr::mutate(is_kept = ifelse(is.na(QC), "KEPT", "EXCLUDED"))
+  )
 
 get_lims <- dplyr::filter(data_pca_plot, Population %in% params[["cohort_name"]])
 
@@ -1646,8 +1641,8 @@ p_superpop <- ggplot2::ggplot(
   data = data_pca_plot, 
   mapping = ggplot2::aes(x = x, y = y, colour = SUPER_POP, shape = SUPER_POP, fill = SUPER_POP)
 ) +
-  ggplot2::geom_hline(ggplot2::aes(yintercept = 0)) +
-  ggplot2::geom_vline(ggplot2::aes(xintercept = 0)) +
+  ggplot2::geom_hline(yintercept = 0, linetype = 2) +
+  ggplot2::geom_vline(xintercept = 0, linetype = 2) +
   ggplot2::geom_point(na.rm = TRUE) +
   ggforce::geom_mark_ellipse(
     alpha = 0.1, 
@@ -1706,8 +1701,8 @@ p_pop <- ggplot2::ggplot(
   data = data_pca_plot_closest,
   mapping = ggplot2::aes(x = x, y = y, colour = Population, shape = Population)
 ) +
-  ggplot2::geom_hline(yintercept = 0) +
-  ggplot2::geom_vline(xintercept = 0) +
+  ggplot2::geom_hline(yintercept = 0, linetype = 2) +
+  ggplot2::geom_vline(xintercept = 0, linetype = 2) +
   ggplot2::geom_point(na.rm = TRUE) +
   ggforce::geom_mark_ellipse(
     mapping = ggplot2::aes(fill = Population, colour = Population),
@@ -1775,21 +1770,17 @@ ggpubr::ggarrange(
 )
 ```
 
-```{r population-03a, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by "super population" groups.')}
-p_superpop  +
-  ggplot2::facet_grid(
-    rows = ggplot2::vars(Cohort), 
-    cols = ggplot2::vars(is_kept)
-  )
+```{r population-03-bis, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by **A** "super population" and **B** "population" groups.')}
+ggpubr::ggarrange(
+  p_superpop  +
+    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)),
+  p_pop +
+    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)), 
+  nrow = 2, 
+  labels = LETTERS
+)
 ```
 
-```{r population-03b, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by "population" groups.')}
-p_pop +
-  ggplot2::facet_grid(
-    rows = ggplot2::vars(Cohort), 
-    cols = ggplot2::vars(is_kept)
-  )
-```
 
 ```{r population-04, eval = !is.null(params[["population"]]) & nrow(not_target_population) > 0}
 samples_toexclude <- dplyr::bind_rows(
@@ -1888,10 +1879,12 @@ recruit_centre_pca <- eigenvec_pca %>%
   dplyr::mutate(Cohort = as.factor(Cohort))
 ```
 
-While performing a PCA using only samples from the cohort data, 
-`r scales::comma(sum(eigenvec_pca[["extremes"]]))` samples were labeled at as being extreme 
-(loadings > `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation on 
-the first two principal components), this is illustrated in Figure \@ref(fig:population-06).
+To assess the homogeneity of the **`r params[["cohort_name"]]`** cohort, 
+a PCA was performed using only samples from the cohort.   
+**`r scales::comma(sum(eigenvec_pca[["extremes"]]))`** samples were labeled and flagged as being extreme 
+(greater than `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation 
+from the centroid of **`r params[["cohort_name"]]`** on the first two principal components), 
+this is illustrated in Figure \@ref(fig:population-06).
 
 ```{r population-06, fig.cap = paste("Within-samples outliers detected as samples having at least one coordinate", "in the first factorial plane larger than", qdap::replace_number(params[["pca_threshold"]]), "times the standard deviation of the principal component.")}
 p_within <- ggplot2::ggplot(
@@ -1900,17 +1893,14 @@ p_within <- ggplot2::ggplot(
     labs = ifelse(Extremes, IID, NA),
     Extremes = factor(Extremes)
   ),
-  mapping = ggplot2::aes(
-    x = PC1, 
-    y = PC2
-  )
+  mapping = ggplot2::aes(x = PC1, y = PC2)
 ) +
+  ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
+  ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(colour = Extremes, shape = Extremes), 
     na.rm = TRUE
   ) +
-  ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
-  ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
   ggrepel::geom_label_repel(
     mapping = ggplot2::aes(label = labs), 
     min.segment.length = ggplot2::unit(0, 'lines'),
@@ -1952,30 +1942,32 @@ ggpubr::ggarrange(p_within, p_inertia_within, ncol = 2, labels = LETTERS, widths
 pca_threshold <- which(abs(diff(inertia_within[["y"]])) < 0.01)
 ```
 
-According to the eigenvalues, the first factorial plane explains 
+<!--According to the eigenvalues, the first factorial plane explains 
 `r scales::percent(sum(inertia_within[c(1, 2), "y"]), accuracy = 0.01)` of the variance among samples. 
 The principal components after `r qdap::replace_number(pca_threshold[1])` explain on average 
 `r scales::percent(mean(inertia_within[pca_threshold[1]:nrow(inertia_within), "y"]), accuracy = 0.01)` 
 [`r paste(scales::percent(range(inertia_within[pca_threshold[1]:nrow(inertia_within), "y"]), accuracy = 0.01), collapse = "; ")`] of 
-the variance (principal components up to `r  scales::comma(nrow(inertia_within))`).  
+the variance (principal components up to `r  scales::comma(nrow(inertia_within))`).-->
 
 ```{r population-07, fig.cap = "PCA plot for components from two to five."}
 pca_planes <- utils::combn(seq_len(min(params[["pca_components"]], 5))[-1], 2)
 
 pca_planes_list <- lapply(seq(ncol(pca_planes)), function(iComb) {
   ggplot2::ggplot(data = recruit_centre_pca) +
+    ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
+    ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data[[paste0("PC", pca_planes[1, iComb])]], 
         y = .data[[paste0("PC", pca_planes[2, iComb])]], 
-        colour = Cohort
+        colour = Extremes, 
+        shape = Extremes
       ), 
       shape = 1, 
       na.rm = TRUE
     ) +
-    ggplot2::geom_hline(yintercept = 0, colour = "black", linetype = 2) +
-    ggplot2::geom_vline(xintercept = 0, colour = "black", linetype = 2) +
-    ggplot2::scale_colour_viridis_d(begin = 0.2, end = 0.8) +
+    ggplot2::scale_shape_manual(values = c(1, 3)) +
+    ggplot2::scale_colour_manual(values = c(scales::viridis_pal(begin = 0.5, end = 0.5)(1), "firebrick2")) +
     ggplot2::theme(legend.position = "none") +
     ggplot2::labs(
       x = paste0("PC", pca_planes[1, iComb]),

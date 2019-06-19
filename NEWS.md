@@ -16,6 +16,7 @@
     + make cross-cohort check only if multiple cohorts.
     + the studied population is now plotted in last in PCA.
     + add PCA plot with samples exclusion information.
+    + multi-planes PCA plot now highlight outliers in all sub-plot.
     + decrease legend key size in PCA plots.
     + fix typos.
 * In `R/qc_plink.R`,
