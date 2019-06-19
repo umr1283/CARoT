@@ -64,6 +64,7 @@
 #' @param gg_fontsize A `numeric`. Value for the font size. Default is `12`.
 #' @param encoding A `character`. The encoding to be used for the html report.
 #'     Default is `"UTF-8"`.
+#' @param ... Parameters to pass to `rmarkdown::render()`.
 #'
 #' @return NULL
 #' @export
@@ -106,7 +107,8 @@ qc_plink <- function(
   n_cores = 22,
   dpi = 120,
   gg_fontsize = 12,
-  encoding = "UTF-8"
+  encoding = "UTF-8",
+  ...
 ) {
   file.copy(
     from = system.file("rmarkdown", "qc_plink.Rmd", package = "CARoT"),
@@ -151,6 +153,7 @@ qc_plink <- function(
       n_cores = n_cores,
       dpi = dpi,
       gg_fontsize = gg_fontsize
-    )
+    ),
+    ...
   )
 }
