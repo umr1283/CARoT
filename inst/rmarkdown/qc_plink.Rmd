@@ -2441,8 +2441,8 @@ recruit_centre %>%
   ) %>%
   dplyr::rowwise() %>% 
   dplyr::mutate(
-    ExcludeorCheck_pct = scales::percent(Exclude + Check / Total, accuracy = 0.01),
-    ExcludeorCheck = paste0(Exclude + Check, "/", Total, "(", ExcludeorCheck_pct, ")") %>% gsub("NaN", "0", .),
+    ExcludeorCheck_pct = scales::percent((Exclude + Check) / Total, accuracy = 0.01),
+    ExcludeorCheck = paste0((Exclude + Check), "/", Total, "(", ExcludeorCheck_pct, ")") %>% gsub("NaN", "0", .),
     Check_pct = scales::percent(Check / Total, accuracy = 0.01), 
     Exclude_pct = scales::percent(Exclude / Total, accuracy = 0.01),
     Check = paste0(Check, "/", Total, "(", Check_pct, ")") %>% gsub("NaN", "0", .),
