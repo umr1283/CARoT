@@ -816,7 +816,7 @@ if (is_maf_lower) {
 }
 ```
 
-```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denotes the", qdap::replace_number(params[["heterozygosity_treshold"]]), "times standard deviations (SD) from the mean heterozygosity rate", "that was used to define outlying heterozygosity.", "SD was computed only on samples with a call rate greater or equal to ", params[["callrate_samples"]], ".")}
+```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", params[["callrate_samples"]], ".")}
 ggpubr::ggarrange(
   p_heteR + 
     ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 0.01)) +
@@ -2050,7 +2050,7 @@ Figure \@ref(fig:variant-call-rate-02) shows the proportion of missing genotypes
 In total, `r scales::comma(sum(callrate_snps_raw[["F_MISS"]] > 1 - params[["callrate_snps"]]))` variants 
 had a call rate < `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)` and were excluded.  
 
-```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater or equal to 99.9% are not shown.")}
+```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater than or equal to 99.9% are not shown.")}
 ggplot2::ggplot(
   data = callrate_snps_raw %>%
     dplyr::arrange(F_MISS) %>%
