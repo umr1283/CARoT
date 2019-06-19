@@ -1556,11 +1556,9 @@ The data from our studied population were pruned using the following cut-offs:
 * MAF ≥ `r params[["maf_threshold"]]`, 
 * HWE > `r scales::scientific(params[["hwe_pvalue"]])`, 
 * samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`, 
-* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from 
-    the mean heterozygosity rate (`r scales::comma(n_samples-n_samples_1kg)` samples and 
-    `r scales::comma(n_good_snp)` variants retained in analysis).
+* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate.
     
-The resulting "clean" dataset were merged with the data from the publicly available 1,000 Genomes project database, 
+The resulting "clean" dataset (`r scales::comma(n_samples-n_samples_1kg)` samples and `r scales::comma(n_good_snp)` variants retained) were merged with the data from the publicly available 1,000 Genomes project database, 
 and thinned down to only contain variants that were present in both dataset and were not palindromic. 
 
 We performed a principal component analysis (PCA) on the merged dataset 
