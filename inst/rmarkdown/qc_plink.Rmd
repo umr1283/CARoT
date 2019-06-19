@@ -388,8 +388,8 @@ callrate_thresholds_table <- cbind(
   dplyr::mutate(callrate_thresholds = scales::percent(callrate_thresholds, accuracy = 0.01)) %>%
   `colnames<-`(c(
     "Call rate threshold", 
-    "Samples to exclude (all variants)", 
-    paste0("Samples to exclude (variants with MAF ≥ ", params[["maf_threshold"]],")")
+    "Samples to exclude<br/>(all variants)", 
+    paste0("Samples to exclude<br/>(variants with MAF ≥ ", params[["maf_threshold"]],")")
   ))
 
 callrate_samples_toexclude <- callrate_samples %>%
