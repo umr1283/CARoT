@@ -2435,7 +2435,6 @@ final_samples_number <- nrow(data.table::fread(
         Those samples need to be checked in order to determine whether or not they have to be excluded later.
 * Variant call rate at `r scales::percent(params[["callrate_snps"]], accuracy = 0.01)`.
 * Duplicated variants based on chromosome and position
-* Palindromic variants
 * Per-variant Mendelian error rate (when applicable) at `r params[["mendelian_snp"]]`
 * Hardy-Weinberg Equilibrium p-value at `r scales::scientific(params[["hwe_pvalue"]])`
 
