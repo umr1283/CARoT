@@ -24,9 +24,16 @@
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
     + complete roxygen documentation.
     + add start/end messages.
+    + add prefix for messages.
 * In `R/qc_idats.R`,
     + add start/end messages.
-* In `R/pca_report.R`, fix a typo in roxygen documentation.
+    + add prefix for messages.
+* In `R/pca_report.R`, 
+    + fix a typo in roxygen documentation.
+    + add start/end messages.
+    + add prefix for messages.
+* In `R/estimate_ethnicity.R`, 
+    + add prefix for messages.
 
 # CARoT 0.2.0 (development version)
 
