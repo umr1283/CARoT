@@ -13,6 +13,7 @@
     + fix `tidyr::separate()` in `relatedness_03` chunk by setting a more complex separator, i.e., `"_-_"`.
     + replace underscore with dash in chunk names for cross-referencing.
     + fix column names in `exclusion` chunk.
+    + make cross-cohort check only if multiple cohorts.
     + fix typos.
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
