@@ -254,7 +254,7 @@ recruit_centre_table <- recruit_centre %>%
 
 PLINK files contain:
 
-* `r scales::comma(nrow(recruit_centre))` samples (Table \@ref(tab:cohort-overview-table))  
+* `r scales::comma(nrow(recruit_centre))` samples  
     + Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates
 * `r scales::comma(snps_number)` variants
 
@@ -388,8 +388,8 @@ callrate_thresholds_table <- cbind(
   dplyr::mutate(callrate_thresholds = scales::percent(callrate_thresholds, accuracy = 0.01)) %>%
   `colnames<-`(c(
     "Call rate threshold", 
-    "Samples to exclude<br/>(all variants)", 
-    paste0("Samples to exclude<br/>(variants with MAF ≥ ", params[["maf_threshold"]],")")
+    "Samples to exclude\n(all variants)", 
+    paste0("Samples to exclude\n(variants with MAF ≥ ", params[["maf_threshold"]],")")
   ))
 
 callrate_samples_toexclude <- callrate_samples %>%
@@ -558,6 +558,18 @@ ggplot2::ggplot(
     fill = "grey95",
     colour = "transparent"
   ) +
+  ggplot2::geom_rect(
+    mapping = ggplot2::aes(xmin = -0.2, xmax = 0.2, ymin = -Inf, ymax = params[["callrate_samples"]]), 
+    fill = "firebrick2",
+    alpha = 0.5,
+    colour = "transparent"
+  ) +
+  ggplot2::geom_rect(
+    mapping = ggplot2::aes(xmin = 0.8, xmax = 1, ymin = -Inf, ymax = params[["callrate_samples"]]), 
+    fill = "dodgerblue",
+    alpha = 0.5,
+    colour = "transparent"
+  ) +
   ggplot2::geom_point(na.rm = TRUE) +
   ggplot2::geom_hline(yintercept = params[["callrate_samples"]], colour = "firebrick2", linetype = 2) +
   ggrepel::geom_label_repel(
@@ -653,8 +665,7 @@ if (is_maf_lower) {
 ```
 
 The observed heterozygosity rate per sample was computed using the formula 
-(Number of non-missing genotypes N(NM) - Number of homozygous genotypes O(Hom)) / N(NM) 
-(Figure \@ref(fig:heterozygosity-05)).
+(Number of non-missing genotypes N(NM) - Number of homozygous genotypes O(Hom)) / N(NM).
 
 N(NM) and O(Hom) were obtained using the `--het` command in PLINK.
 
@@ -812,7 +823,7 @@ if (is_maf_lower) {
 }
 ```
 
-```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", params[["callrate_samples"]], ".")}
+```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", scales::percent(params[["callrate_samples"]], accuracy = 0.01), ".")}
 ggpubr::ggarrange(
   p_heteR + 
     ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 0.01)) +
@@ -931,7 +942,7 @@ Prior to the analysis, the dataset was pruned to exclude high-LD-regions,
 that is no variants with MAF < `r params[["maf_threshold"]]` and no pair of variants within 50 Kb have an r² > 0.2.
 
 If samples in the cohort **`r params[["cohort_name"]]`** are not supposed to be related, 
-the expected pairwise pi-hat should be less than **`r params[["IBD_threshold"]]`**.  
+the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`.  
 Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
 (Table \@ref(tab:relatedness-03)).
 
@@ -1555,12 +1566,12 @@ The data from the **`r params[["cohort_name"]]`** cohort was pruned using the fo
 * samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`
 * heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate
     
-The resulting "clean" dataset (*i.e.*, `r scales::comma(n_samples-n_samples_1kg)` samples and `r scales::comma(n_good_snp)` variants) were merged with the data from the publicly available *1,000 Genomes project* database, 
+The resulting "clean" dataset (*i.e.*, **`r scales::comma(n_samples-n_samples_1kg)`** samples and **`r scales::comma(n_good_snp)`** variants) were merged with the data from the publicly available *1,000 Genomes project* database, 
 and thinned down to only include not palindromic variants that were present in both dataset. 
 
 A principal component analysis (PCA) was performed on the merged dataset 
-(*i.e.*, `r scales::comma(n_samples)` samples and `r scales::comma(n_good_snp_1kg)` variants, 
-including `r scales::comma(n_samples_1kg)` from the *1,000 Genomes project*)
+(*i.e.*, **`r scales::comma(n_samples)`** samples and **`r scales::comma(n_good_snp_1kg)`** variants, 
+including **`r scales::comma(n_samples_1kg)`** from the *1,000 Genomes project*)
 
 ```{r population-02, include = FALSE}
 centre_pca <- data_pca %>%
@@ -1601,7 +1612,7 @@ if (is.null(params[["population"]])) {
 not_target_population <- dplyr::mutate(not_target_population, QC = "Ethnicity")
 ```
 
-```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples in **A** were coloured by "super population" groups,', 'whereas samples in **B** were coloured by "population" groups', "and focused on the PCA area of the **", params[["cohort_name"]], "** cohort.")}
+```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples in **A** were coloured by "super population" groups,', 'whereas samples in **B** were coloured by "population" groups', "and focused on the PCA area of the ", paste0("**", params[["cohort_name"]], "**"), "cohort.")}
 data_pca_plot <- data_pca %>%
   dplyr::left_join(
     y = check_ethnicity %>%
@@ -1625,12 +1636,8 @@ data_pca_plot <- data_pca %>%
   dplyr::left_join(pop1kg_description, by = c("Population" = "POP")) %>% 
   dplyr::mutate(
     SUPER_POP = ifelse(is.na(SUPER_POP), Population, SUPER_POP),
-    SUPER_POP = factor(
-      x = SUPER_POP, 
-      levels = c(params[["cohort_name"]], setdiff(sort(unique(SUPER_POP)), params[["cohort_name"]]))
-    )
-  ) %>% 
-  dplyr::mutate(
+    SUPER_POP = relevel(x = factor(SUPER_POP), ref = params[["cohort_name"]]),
+    SUPER_POP = factor(SUPER_POP, levels = rev(levels(SUPER_POP))),
     Population = relevel(x = factor(Population), ref = params[["cohort_name"]]),
     Population = factor(Population, levels = rev(levels(Population)))
   )
@@ -1749,9 +1756,11 @@ ggpubr::ggarrange(
 ```{r population-03-bis, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by **A** "super population" and **B** "population" groups.')}
 ggpubr::ggarrange(
   p_superpop  +
-    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)),
+    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)) +
+    ggplot2::theme(legend.position = "top"),
   p_pop +
-    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)), 
+    ggplot2::facet_grid(cols = ggplot2::vars(Cohort)) +
+    ggplot2::theme(legend.position = "top"), 
   nrow = 2, 
   labels = LETTERS
 )
@@ -1784,7 +1793,7 @@ if (nrow(not_target_population) > 15) {
       table.attr = "style='width:65%;'",
       caption = paste0(
         "Samples determined as non-", pop_name, "(s) based on PCA ", 
-        "(N=", scales::comma(nrow(not_target_population)), ")."
+        "(N = ", scales::comma(nrow(not_target_population)), ")."
       )
     )
 }
@@ -2094,7 +2103,7 @@ several variants with two or more identical copies were found in the dataset.
 For each variant with multiple copies, 
 we included the variant with the highest call rate or arbitrarily if call rate was equal.  
 
-In total, we removed `r scales::comma(nrow(callrate_snps) - nrow(uniq_snps))` variants 
+In total, we removed **`r scales::comma(nrow(callrate_snps) - nrow(uniq_snps))`** variants 
 that possibly existed in multiple copies in the dataset (same chromosome and position), 
 and kept only the most successfully genotyped variant.  
 
@@ -2422,7 +2431,7 @@ final_samples_number <- nrow(data.table::fread(
 
 The initial dataset contained **`r scales::comma(initial_samples_number)`** samples 
 and **`r scales::comma(initial_snps_number)`** variants.  
-The final dataset contains `r scales::comma(final_samples_number)` samples 
+The final dataset contains **`r scales::comma(final_samples_number)`** samples 
 and **`r scales::comma(final_snps_number)`** variants.
 
 ```{r qc-summary-table}
