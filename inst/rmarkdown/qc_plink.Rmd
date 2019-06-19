@@ -1547,20 +1547,20 @@ inertia_pca <- data.table::fread(paste0(temp_directory, "/raw_data_1kgenome.eige
   dplyr::mutate(y = V1 / sum(V1))
 ```
 
-The data from our studied population were pruned using the following cut-offs:
+The data from the studied population (*i.e.*, **`r params[["cohort_name"]]`**)  pruned using the following cut-offs:
 
-* variants call rate > 90 %, 
-* MAF ≥ `r params[["maf_threshold"]]`, 
-* HWE > `r scales::scientific(params[["hwe_pvalue"]])`, 
-* samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`, 
-* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate.
+* variants call rate > 90.00 %
+* MAF ≥ `r params[["maf_threshold"]]`
+* HWE > `r scales::scientific(params[["hwe_pvalue"]])`
+* samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`
+* heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate
     
-The resulting "clean" dataset (`r scales::comma(n_samples-n_samples_1kg)` samples and `r scales::comma(n_good_snp)` variants retained) were merged with the data from the publicly available 1,000 Genomes project database, 
-and thinned down to only contain variants that were present in both dataset and were not palindromic. 
+The resulting "clean" dataset (*i.e.*, `r scales::comma(n_samples-n_samples_1kg)` samples and `r scales::comma(n_good_snp)` variants) were merged with the data from the publicly available *1,000 Genomes project* database, 
+and thinned down to only include not palindromic variants that were present in both dataset. 
 
-We performed a principal component analysis (PCA) on the merged dataset 
-(`r scales::comma(n_good_snp_1kg)` variants and `r scales::comma(n_samples)` samples, including `r scales::comma(n_samples-n_samples_1kg)` from the studied population 
-and `r scales::comma(n_samples_1kg)` from the 1,000 Genomes project)
+A principal component analysis (PCA) was performed on the merged dataset 
+(*i.e.*, `r scales::comma(n_samples)` samples and `r scales::comma(n_good_snp_1kg)` variants, 
+including `r scales::comma(n_samples_1kg)` from the *1,000 Genomes project*)
 
 ```{r population-02, include = FALSE}
 centre_pca <- data_pca %>%
@@ -1601,7 +1601,7 @@ if (is.null(params[["population"]])) {
 not_target_population <- dplyr::mutate(not_target_population, QC = "Ethnicity")
 ```
 
-```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in A were colored by super population groups,", "whereas samples in B were colored by population groups", "and focused on the PCA area of studied cohort.")}
+```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in **A** were colored by super population groups,", "whereas samples in **B** were colored by population groups", "and focused on the PCA area of the **, params[["cohort_name"]], "** cohort.")}
 data_pca_plot <- data_pca %>%
   dplyr::left_join(
     y = check_ethnicity %>%
@@ -1631,7 +1631,8 @@ data_pca_plot <- data_pca %>%
     )
   ) %>% 
   dplyr::mutate(
-    Population = relevel(x = factor(Population), ref = params[["cohort_name"]])
+    Population = relevel(x = factor(Population), ref = params[["cohort_name"]]),
+    Population = factor(Population, levels = rev(levels(Population)))
   )
 
 get_lims <- dplyr::filter(data_pca_plot, Population %in% params[["cohort_name"]])
@@ -1692,7 +1693,8 @@ data_pca_plot_closest <- data_pca_plot %>%
   ) %>% 
   dplyr::mutate_if(.predicate = is.factor, .funs = as.character) %>% 
   dplyr::mutate(
-    Population = relevel(x = factor(Population), ref = params[["cohort_name"]])
+    Population = relevel(x = factor(Population), ref = params[["cohort_name"]]),
+    Population = factor(Population, levels = rev(levels(Population)))
   )
 
 p_pop <- ggplot2::ggplot(
