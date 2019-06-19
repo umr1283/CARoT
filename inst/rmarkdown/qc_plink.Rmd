@@ -1601,7 +1601,7 @@ if (is.null(params[["population"]])) {
 not_target_population <- dplyr::mutate(not_target_population, QC = "Ethnicity")
 ```
 
-```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", "Samples in **A** were coloured by super population groups,", "whereas samples in **B** were coloured by population groups", "and focused on the PCA area of the **, params[["cohort_name"]], "** cohort.")}
+```{r population-03, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples in **A** were coloured by "super population" groups,', 'whereas samples in **B** were coloured by "population" groups', "and focused on the PCA area of the **", params[["cohort_name"]], "** cohort.")}
 data_pca_plot <- data_pca %>%
   dplyr::left_join(
     y = check_ethnicity %>%
