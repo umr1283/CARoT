@@ -2133,6 +2133,9 @@ system(command = paste(
 
 lmendel_file_check <- file.exists(paste0(temp_directory, "/raw_data_good_samples.lmendel"))
 
+cat("The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.\n\n")
+cat("The per-variant error rate threshold is `", params[["mendelian_snp"]], "`.\n\n", sep = "")
+
 if (!lmendel_file_check) {
   cat("Mendel error rates check was not performed due to missing informations.\n\n")
 } else {
@@ -2141,9 +2144,6 @@ if (!lmendel_file_check) {
     dplyr::arrange(percentage)
 }
 ```
-
-The variant-wise Mendel error was estimated using the `--mendel` command in PLINK.  
-The per-variant error rate threshold is `r params[["mendelian_snp"]]`.
 
 ```{r lmendel-error-02, eval = params[["includes_relatives"]] & lmendel_file_check, fig.cap = paste("Mendel error rate per variant.", scales::comma(sum(mendel_error_snps[["percentage"]] > params[["mendelian_snp"]])), "variants with more than", scales::percent(x = params[["mendelian_snp"]], accuracy = 0.01), "Mendel errors rate were excluded.")}
 ggplot2::ggplot(
