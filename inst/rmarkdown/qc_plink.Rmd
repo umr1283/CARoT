@@ -201,7 +201,7 @@ system(command = paste(
 
 # Cohort overview
 
-Genotyped using `r params[["array"]]`.
+Genotyped using `r if (is.null(params[["array"]])) "unspecified" else params[["array"]]` array.
 
 ```{r cohort_overview, include = FALSE}
 samples <- dplyr::mutate_at(
