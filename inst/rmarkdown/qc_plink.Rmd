@@ -1685,7 +1685,8 @@ p_superpop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom", 
-    legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
+    # legend.text = ggplot2::element_text(size = ggplot2::rel(0.5)),
+    legend.key.size = ggplot2::unit(0.5, units = "lines")
   )
 
 data_pca_plot_closest <- data_pca_plot %>% 
@@ -1744,7 +1745,8 @@ p_pop <- ggplot2::ggplot(
   ) +
   ggplot2::theme(
     legend.position = "bottom",
-    legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))
+    # legend.text = ggplot2::element_text(size = ggplot2::rel(0.5)),
+    legend.key.size = ggplot2::unit(0.5, units = "lines")
   )
 
 p_inertia <- inertia_pca %>%

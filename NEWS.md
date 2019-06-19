@@ -16,6 +16,7 @@
     + make cross-cohort check only if multiple cohorts.
     + the studied population is now plotted in last in PCA.
     + add PCA plot with samples exclusion information.
+    + decrease legend key size in PCA plots.
     + fix typos.
 * In `R/qc_plink.R`,
     + fix params not declared in YAML header of `inst/rmarkdown/qc_plink.Rmd`.
