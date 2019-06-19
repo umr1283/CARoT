@@ -2427,7 +2427,7 @@ final_samples_number <- nrow(data.table::fread(
 ))
 ```
 
-* Samples previously characterised in Section \@ref(sec:sample-qc) (Table \@ref(tab:qc-summary-table)):
+* Samples previously characterised in section [Sample-based QC](#sample_qc) (Table \@ref(tab:qc-summary-table)):
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`
         samples excluded due to failures in the call rate and/or the heterozygosity check.
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`
