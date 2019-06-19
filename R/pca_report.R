@@ -23,6 +23,9 @@ pca_report <- function(
   outliers_threshold = 3,
   title_level = 2
 ) {
+  message_prefix <- "[CARoT] "
+  message(message_prefix, "Quality-Control started ...")
+
   if (!methods::is(design, "data.frame")) {
     design <- as.data.frame(design)
   }
@@ -41,7 +44,7 @@ pca_report <- function(
 
   if (length(setdiff(technical_vars, keep_technical))!=0) {
     variables_excluded <- setdiff(technical_vars, keep_technical)
-    message(
+    message(message_prefix,
       "The following variables have been excluded (null variances or confounding with samples): ",
       if (length(variables_excluded) > 1) {
         c(
@@ -200,6 +203,8 @@ pca_report <- function(
     #   dplyr::select(-dplyr::starts_with("PC")) %>%
     #   dplyr::filter(bad_samples == "BAD")
   }
+
+  message(message_prefix, "Quality-Control ended.")
 
   invisible(pca_dfxy)
 }

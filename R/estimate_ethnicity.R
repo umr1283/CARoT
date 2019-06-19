@@ -36,22 +36,24 @@ estimate_ethnicity <- function(
     plink1.9 = "/usr/bin/plink1.9"
   )
 ) {
+  message_prefix <- "[CARoT] "
+
   list_input <- check_input(input = input_vcfs)
   list_ref <- check_input(input = ref1kg_vcfs)
 
   if (!input_type%in%c("array", "sequencing")) {
-    stop('[CARoT] "input_type" must be either "array" or "sequencing"!')
+    stop(message_prefix, '"input_type" must be either "array" or "sequencing"!')
   }
 
   if (input_type=="sequencing" & length(list_ref)!=1) {
     stop(
-      '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
+      message_prefix, 'A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "sequencing"`!'
     )
   }
   if (input_type=="array" & splitted_by_chr & length(list_ref)!=1) {
     stop(
-      '[CARoT] A unique vcf file ("ref1kg_vcfs") must be provided ',
+      message_prefix, 'A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "array"` & `splitted_by_chr = FALSE`!'
     )
   }
@@ -59,7 +61,7 @@ estimate_ethnicity <- function(
   ######################
   ### Formating VCFs ###
   ######################
-  message("[CARoT] Formating VCFs ...")
+  message(message_prefix, "Formating VCFs ...")
   switch(
     EXPR = input_type,
     "array" = {
@@ -120,10 +122,12 @@ estimate_ethnicity <- function(
 #'
 #' @keywords internal
 check_input <- function(input) {
+  message_prefix <- "[CARoT] "
+
   name <- deparse(substitute(input))
   if (!fs::is_dir(input) & !fs::is_file(input)) {
     stop(
-      '[CARoT] A valid "', name, '" must be provided, ',
+      message_prefix, 'A valid "', name, '" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
     )
   }
@@ -133,11 +137,11 @@ check_input <- function(input) {
     list_input <- input
   }
   if (!all(grepl(".vcf.gz$", list_input))) {
-    stop('[CARoT] VCF files must be compressed using bgzip!')
+    stop(message_prefix, 'VCF files must be compressed using bgzip!')
   }
   if (length(list_input)==0) {
     stop(
-      '[CARoT] A valid "', name, '" must be provided, ',
+      message_prefix, 'A valid "', name, '" must be provided, ',
       'either a directory (with VCF files) or a vcf file!'
     )
   }
@@ -475,10 +479,12 @@ format_sequencing <- function(
 #'
 #' @keywords internal
 compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_population) {
+  message_prefix <- "[CARoT] "
+
   ######################
   ### Performing PCA ###
   ######################
-  message("[CARoT] Performing PCA ...")
+  message(message_prefix, "Performing PCA ...")
 
   res_pca <- flashpcaR::flashpca(input_plink, ndim = 10)
 
@@ -591,7 +597,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   #################
   ### Exporting ###
   #################
-  message("[CARoT] Exporting ...")
+  message(message_prefix, "Exporting ...")
   ggplot2::ggsave(
     filename = paste0(output_directory, "/", cohort_name, "_ethnicity.tiff"),
     plot = p_ethni,

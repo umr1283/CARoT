@@ -109,10 +109,9 @@ qc_idats <- function(
   encoding = "UTF-8",
   ...
 ) {
-  message(
-    "[CARoT] Quality-Control started ...\n",
-    "[CARoT] Note: it can take from one to two hours."
-  )
+  message_prefix <- "[CARoT] "
+
+  message(message_prefix, "Quality-Control started ...")
 
   file.copy(
     from = system.file("rmarkdown", "qc_idats.Rmd", package = "CARoT"),
@@ -162,7 +161,8 @@ qc_idats <- function(
     ...
   )
 
-  message("[CARoT] Quality-Control ended.")
+  message(message_prefix, "Quality-Control ended.")
+
   message(
     paste(
       paste("  ",

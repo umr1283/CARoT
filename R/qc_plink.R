@@ -110,10 +110,10 @@ qc_plink <- function(
   encoding = "UTF-8",
   ...
 ) {
-  message(
-    "[CARoT] Quality-Control started ...\n",
-    "[CARoT] Note: it can take from one to two hours."
-  )
+  message_prefix <- "[CARoT] "
+
+  message(message_prefix, "Quality-Control started ...")
+  message(message_prefix, "Note: it can take from one to two hours.")
 
   file.copy(
     from = system.file("rmarkdown", "qc_plink.Rmd", package = "CARoT"),
@@ -163,7 +163,8 @@ qc_plink <- function(
     ...
   )
 
-  message("[CARoT] Quality-Control ended.")
+  message(message_prefix, "Quality-Control ended.")
+
   message(
     paste(
       paste("  ",
