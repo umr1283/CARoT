@@ -254,16 +254,16 @@ recruit_centre_table <- recruit_centre %>%
 
 PLINK files contain:
 
-* `r scales::comma(nrow(recruit_centre))` samples (Table \@ref(tab:cohort-overview-table)).  
-    Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates.
-* `r scales::comma(snps_number)` variants.
+* `r scales::comma(nrow(recruit_centre))` samples (Table \@ref(tab:cohort-overview-table))  
+    + Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates
+* `r scales::comma(snps_number)` variants
 
 ```{r cohort-overview-table}
 pretty_kable(
   data = recruit_centre_table,
   align = "c", 
   table.attr = "style='width:65%;'",
-  caption = "Number of samples per recruitment centers / cohorts.", 
+  caption = "Number of samples per cohorts.", 
   echo = FALSE
 ) %>%
   kableExtra::row_spec(row = nrow(recruit_centre_table), bold = TRUE) %>%
@@ -272,7 +272,7 @@ pretty_kable(
 
 
 
-# Sample-based QC {#sec:sample-qc}
+# Sample-based QC {#sample-qc}
 
 
 ## Sample call rate evaluation
@@ -377,7 +377,7 @@ if (is_maf_lower) {
   prop_diff_maf_lower <- NA
 }
 
-callrate_thresholds <- sort(unique(c(params[["callrate_samples"]], 0.95, 0.97, 0.98, 0.99)), decreasing = TRUE)
+callrate_thresholds <- sort(unique(c(params[["callrate_samples"]], 0.90, 0.95, 0.97, 0.98, 0.99)), decreasing = TRUE)
 
 callrate_thresholds_table <- cbind(
   callrate_thresholds,
@@ -401,9 +401,8 @@ callrate_samples_toexclude <- callrate_samples %>%
 
 Call rate was computed using the `--missing` command in PLINK. 
 
-Figure \@ref(fig:sample-call-rate-05) shows the call rate per sample.  
-`r scales::comma(nrow(callrate_samples_toexclude))` samples had a call rate lower than 
-`r scales::percent(params[["callrate_samples"]], accuracy = 0.01)` and were excluded.
+**`r scales::comma(nrow(callrate_samples_toexclude))`** samples had a call rate lower than 
+**`r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`** and were excluded.
 
 ```{r sample-call-rate-02, eval = !is.na(prop_diff_maf_lower) & prop_diff_maf_lower}
 cat(
@@ -473,7 +472,7 @@ callrate_samples_toexclude %>%
     align = "c", 
     table.attr = "style='width:65%;'",
     caption = paste0(
-      "Samples to be excluded for call rate threshold of ", 
+      "Samples to be excluded for a call rate threshold of ", 
       scales::percent(params[["callrate_samples"]], accuracy = 0.01), 
       "."
     )
@@ -536,14 +535,11 @@ samples_toexclude <- dplyr::bind_rows(
 
 The mean homozygosity rate across the X-chromosome was computed using the `--check-sex` command in PLINK.
 
-For `r scales::comma(nrow(sexcheck_problem))` samples 
-(including `r scales::comma(sum(sexcheck_problem[, "Gender"] == 0))`, 
-with unspecified sex and `r scales::comma(sum(sexcheck_problem[, "SNPSEX"] == 0))`
+For **`r scales::comma(nrow(sexcheck_problem))`** samples 
+(including **`r scales::comma(sum(sexcheck_problem[, "Gender"] == 0))`**, 
+with unspecified sex and **`r scales::comma(sum(sexcheck_problem[, "SNPSEX"] == 0))`**
 samples with undetermined genotypic sex), the gender discrepancy between
 genotyping data and reported gender could not be resolved, and have been flagged.
-
-Figure \@ref(fig:gender-check-03) illustrates the homozygosity estimate against 
-sample call rate, and highlights the discordant samples.
 
 `r if (!file.exists(cohort_details)) cat("Note: Gender phenotype was read from PLINK files.\n")`
 
@@ -927,16 +923,15 @@ relatedness <- data.table::fread(paste0(temp_directory, "/raw_data_pruned_Fast.g
   )
 ```
 
-In order to find pairs of samples (N = `r scales::comma(nrow(raw_data_pruned))`, 
+In order to identify pairs of samples (N = `r scales::comma(nrow(raw_data_pruned))`, 
 Pairs = `r scales::comma(max_n_pairs)`) who look too similar to each other, 
-using the `--genome` command in PLINK, pairwise IBD (identity by descent) are computed.
+pairwise IBD (identity by descent) are computed, using the `--genome` command in PLINK.
 
 Prior to the analysis, the dataset was pruned to exclude high-LD-regions, 
 that is no variants with MAF < `r params[["maf_threshold"]]` and no pair of variants within 50 Kb have an r² > 0.2.
 
-Table \@ref(tab:relatedness-02) shows the distribution of pi-hat (proportion of IBD) for related samples. 
-A priori, samples in cohort *`r params[["cohort_name"]]`* are not supposed to be related, 
-the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`. 
+If samples in the cohort **`r params[["cohort_name"]]`** are not supposed to be related, 
+the expected pairwise pi-hat should be less than **`r params[["IBD_threshold"]]`**.  
 Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
 (Table \@ref(tab:relatedness-03)).
 
@@ -957,8 +952,8 @@ data.frame(table(cut(
     align = "c", 
     table.attr = "style='width:65%;'",
     caption = paste0(
-      "The distribution of PI-HAT (proportion of IBD) for related samples in the dataset ",
-      "(IBD≥", params[["IBD_threshold"]], ")."
+      'The distribution of "PI_HAT" (proportion of IBD) for related samples in the dataset ',
+      "(IBD ≥ ", params[["IBD_threshold"]], ")."
     )
   )
 ```
@@ -997,34 +992,36 @@ if (nrow(related_samples) != 0) {
     )
 }
 
-cross_cohorts_IBD <- relatedness %>%
-  dplyr::select(FID1, IID1, FID2, IID2, PI_HAT) %>%
-  dplyr::left_join(
-    y = dplyr::select(recruit_centre, -Gender),
-    by = c("IID1" = "Sample.Name")
-  ) %>%
-  dplyr::left_join(
-    y = dplyr::select(recruit_centre, -Gender),
-    by = c("IID2" = "Sample.Name"),
-    suffix = c("1", "2")
-  ) %>%
-  dplyr::filter(Cohort1 != Cohort2) %>%
-  dplyr::arrange(dplyr::desc(PI_HAT))
-
-if (nrow(cross_cohorts_IBD) > 0) {
-  cat(
-    Hmisc::capitalize(qdap::replace_number(nrow(cross_cohorts_IBD))), 
-    "cross-cohort IBDs was found in the dataset.\n\n"
-  )
+if (dplyr::n_distinct(dplyr::select(recruit_centre, Cohort)) > 1) {
+  cross_cohorts_IBD <- relatedness %>%
+    dplyr::select(FID1, IID1, FID2, IID2, PI_HAT) %>%
+    dplyr::left_join(
+      y = dplyr::select(recruit_centre, -Gender),
+      by = c("IID1" = "Sample.Name")
+    ) %>%
+    dplyr::left_join(
+      y = dplyr::select(recruit_centre, -Gender),
+      by = c("IID2" = "Sample.Name"),
+      suffix = c("1", "2")
+    ) %>%
+    dplyr::filter(Cohort1 != Cohort2) %>%
+    dplyr::arrange(dplyr::desc(PI_HAT))
   
-  pretty_kable(
-    data = cross_cohorts_IBD, 
-    align = "c", 
-    table.attr = "style='width:65%;'",
-    caption = "Cross cohort related sample pairs."
-  )
-} else {
-  cat("No cross-cohort IBDs was found in the dataset.\n\n")
+  if (nrow(cross_cohorts_IBD) > 0) {
+    cat(
+      Hmisc::capitalize(qdap::replace_number(nrow(cross_cohorts_IBD))), 
+      "cross-cohort IBDs was found in the dataset.\n\n"
+    )
+    
+    pretty_kable(
+      data = cross_cohorts_IBD, 
+      align = "c", 
+      table.attr = "style='width:65%;'",
+      caption = "Cross cohort related sample pairs."
+    )
+  } else {
+    cat("No cross-cohort IBDs was found in the dataset.\n\n")
+  }
 }
 
 samples_toexclude <- dplyr::bind_rows(
@@ -2427,7 +2424,7 @@ final_samples_number <- nrow(data.table::fread(
 ))
 ```
 
-* Samples previously characterised in section [Sample-based QC](#sample_qc) (Table \@ref(tab:qc-summary-table)):
+* Samples previously characterised in Section [Sample-based QC](#sample-qc) (Table \@ref(tab:qc-summary-table)):
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`
         samples excluded due to failures in the call rate and/or the heterozygosity check.
     + `r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`
