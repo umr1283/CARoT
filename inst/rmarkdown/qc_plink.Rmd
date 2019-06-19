@@ -174,7 +174,7 @@ system(command = paste(
 * 1,000 Genomes files: 
     `` `r params[["ref1kg_genotypes"]]` ``
 * Reference population: 
-    `` `r params[["population"]]` ``
+    `` `r if (is.null(params[["population"]])) "unspecified" else params[["population"]]` ``
 * Sample-based call rate threshold: 
     `` `r params[["callrate_samples"]]` ``
 * Variant-based call rate threshold: 
