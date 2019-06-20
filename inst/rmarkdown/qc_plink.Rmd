@@ -252,10 +252,10 @@ recruit_centre_table <- recruit_centre %>%
   )
 ```
 
-PLINK files contain:
+PLINK files includes:
 
 * **`r scales::comma(nrow(recruit_centre))`** samples  
-    + Note: **`r scales::comma(samples_duplicated)`** samples seems to have duplicates
+    + Note: **`r scales::comma(samples_duplicated)`** samples seemed to have duplicates
 * **`r scales::comma(snps_number)`** variants
 
 ```{r cohort-overview-table}
@@ -557,22 +557,25 @@ ggplot2::ggplot(
     fill = "grey95",
     colour = "transparent"
   ) +
-  ggplot2::geom_rect(
-    mapping = ggplot2::aes(xmin = -Inf, xmax = -0.2, ymin = -Inf, ymax = Inf), 
+  ggplot2::annotate(
+    geom = "rect",
+    xmin = -Inf, xmax = -0.2, ymin = -Inf, ymax = Inf, 
     fill = "firebrick2",
     alpha = 0.10,
     colour = "transparent"
   ) +
-  ggplot2::geom_rect(
-    mapping = ggplot2::aes(xmin = -0.2, xmax = 0.2, ymin = -Inf, ymax = Inf), 
+  ggplot2::annotate(
+    geom = "rect",
+    xmin = -0.2, xmax = 0.2, ymin = -Inf, ymax = Inf, 
     fill = "firebrick2",
-    alpha = 0.25,
+    alpha = 0.2,
     colour = "transparent"
   ) +
-  ggplot2::geom_rect(
-    mapping = ggplot2::aes(xmin = 0.8, xmax = 1, ymin = -Inf, ymax = Inf), 
+  ggplot2::annotate(
+    geom = "rect",
+    xmin = 0.8, xmax = 1, ymin = -Inf, ymax = Inf, 
     fill = "dodgerblue",
-    alpha = 0.25,
+    alpha = 0.2,
     colour = "transparent"
   ) +
   ggplot2::geom_point(na.rm = TRUE) +
@@ -669,7 +672,7 @@ if (is_maf_lower) {
 }
 ```
 
-The observed heterozygosity rate per sample was computed using the formula 
+The observed heterozygosity rate per sample was computed using the formula  
 (Number of non-missing genotypes N(NM) - Number of homozygous genotypes O(Hom)) / N(NM).
 
 N(NM) and O(Hom) were obtained using the `--het` command in PLINK.
@@ -941,14 +944,14 @@ relatedness <- data.table::fread(paste0(temp_directory, "/raw_data_pruned_Fast.g
 
 In order to identify pairs of samples (N = `r scales::comma(nrow(raw_data_pruned))`, 
 Pairs = `r scales::comma(max_n_pairs)`) who look too similar to each other, 
-pairwise IBD (identity by descent) are computed, using the `--genome` command in PLINK.
+pairwise IBD (identity by descent) was computed, using the `--genome` command in PLINK.
 
 Prior to the analysis, the dataset was pruned to exclude high-LD-regions, 
 that is no variants with MAF < `r params[["maf_threshold"]]` and no pair of variants within 50 Kb have an r² > 0.2.
 
 If samples in the cohort **`r params[["cohort_name"]]`** are not supposed to be related, 
-the expected pairwise pi-hat should be less than `r params[["IBD_threshold"]]`.  
-Pairs of sample with pi-hat greater than `r params[["IBD_threshold"]]` were flagged 
+the expected pairwise $\hat{\pi}$ ("PI_HAT") should be less than `r params[["IBD_threshold"]]`.  
+Pairs of sample with $\hat{\pi}$ ("PI_HAT") greater than `r params[["IBD_threshold"]]` were flagged 
 (Table \@ref(tab:relatedness-03)).
 
 ```{r relatedness-02, eval = !params[["includes_relatives"]]}
@@ -1059,7 +1062,7 @@ samples_toexclude <- dplyr::bind_rows(
 ## Sample Mendel errors
 
 ```{r imendel-error-00}
-if (!params[["includes_relatives"]]) cat("not applicable.\n\n")
+if (!params[["includes_relatives"]]) cat("Not applicable.\n\n")
 
 imendel_file_check <- params[["includes_relatives"]]
 ```
@@ -1575,7 +1578,7 @@ The data from the **`r params[["cohort_name"]]`** cohort was pruned using the fo
 * samples call rate > `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`
 * heterozygosity rate within `r qdap::replace_number(params[["heterozygosity_treshold"]])` times SD from the mean heterozygosity rate
     
-The resulting "clean" dataset (*i.e.*, **`r scales::comma(n_samples-n_samples_1kg)`** samples and **`r scales::comma(n_good_snp)`** variants) were merged with the data from the publicly available *1,000 Genomes project* database, 
+The resulting "clean" dataset (*i.e.*, **`r scales::comma(n_samples-n_samples_1kg)`** samples and **`r scales::comma(n_good_snp)`** variants) was merged with the data from the publicly available *1,000 Genomes project* database, 
 and thinned down to only include not palindromic variants that were present in both dataset. 
 
 A principal component analysis (PCA) was performed on the merged dataset 
@@ -1877,14 +1880,13 @@ recruit_centre_pca <- eigenvec_pca %>%
 ### Within **`r params[["cohort_name"]]`** structure
 
 To assess the homogeneity of the **`r params[["cohort_name"]]`** cohort, 
-a PCA was performed using only samples from the cohort.   
-**`r scales::comma(sum(eigenvec_pca[["extremes"]]))`**
+a PCA was performed using only samples from the cohort.  
 Samples were labeled and flagged as being extreme when the distance from
 the **`r params[["cohort_name"]]`** cohort centroid was greater than
 `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation 
 of all distances (Figure \@ref(fig:population-06)).
 
-Samples labeled and flagged as extreme: **`r params[["cohort_name"]]`**.
+Samples labeled and flagged as extreme: **`r scales::comma(sum(eigenvec_pca[["extremes"]]))`**
 
 ```{r population-06, fig.cap = paste("Within-samples outliers detected as samples having at least one coordinate", "in the first factorial plane larger than", qdap::replace_number(params[["pca_threshold"]]), "times the standard deviation of the principal component.")}
 p_within <- ggplot2::ggplot(
@@ -2038,7 +2040,7 @@ system(command = paste(
 
 # Variant-based QC
 
-After excluding sample-based QC failed samples, variant-based QC is performed on 
+After excluding sample-based QC failed samples, variant-based QC was performed on 
 **`r scales::comma(nrow(data.table::fread(input = paste0(temp_directory, "/raw_data_good_samples.fam"), select = 1)))`** samples.  
 
 
@@ -2118,11 +2120,10 @@ if (nrow(duplicated_snps) == 0) {
 Due to some variants having several different names, 
 several variants with two or more identical copies were found in the dataset. 
 For each variant with multiple copies, 
-we included the variant with the highest call rate or arbitrarily if call rate was equal.  
+only the variant with the highest call rate (or arbitrarily if call rate was equal) was included.  
 
-In total, we removed **`r scales::comma(nrow(callrate_snps) - nrow(uniq_snps))`** variants 
-that possibly existed in multiple copies in the dataset (same chromosome and position), 
-and kept only the most successfully genotyped variant.  
+In total, **`r scales::comma(nrow(callrate_snps) - nrow(uniq_snps))`** variants 
+that possibly existed in multiple copies in the dataset (same chromosome and position) were removed.  
 
 
 ## Variant Mendel errors
@@ -2208,7 +2209,7 @@ system(command = paste(
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 ```
 
-```{r maf-02, fig.cap = "Distribution of variants number per class of Minor Allele Frequency (MAF)"}
+```{r maf-02, fig.cap = "Distribution of variants number per class of minor allele frequency (MAF)"}
 data.table::fread(paste0(temp_directory, "/raw_data_good_samples.frq")) %>%
   dplyr::mutate(
     maf_dist = cut(MAF, breaks = c(0, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), include.lowest = TRUE)
@@ -2439,7 +2440,7 @@ final_samples_number <- nrow(data.table::fread(
 
 * Samples previously characterised in Section [Sample-based QC](#sample-qc) (Table \@ref(tab:qc-summary-table)):
     + **`r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Exclude")[["IID"]]))`**
-        samples excluded due to failures in the call rate and/or the heterozygosity check.
+        samples excluded due to failures in the call rate and/or the heterozygosity checks.
     + **`r scales::comma(dplyr::n_distinct(dplyr::filter(samples_toexclude_export, Status=="Check")[["IID"]]))`**
         samples flagged. 
         Those samples need to be checked in order to determine whether or not they have to be excluded.
@@ -2448,9 +2449,9 @@ final_samples_number <- nrow(data.table::fread(
 * Hardy-Weinberg Equilibrium p-value at `r scales::scientific(params[["hwe_pvalue"]])`
 `r if (params[["includes_relatives"]] & lmendel_file_check) cat("* Per-variant Mendelian error rate (when applicable) at", params[["mendelian_snp"]])`
 
-The initial dataset contained **`r scales::comma(initial_samples_number)`** samples 
+The initial dataset included **`r scales::comma(initial_samples_number)`** samples 
 and **`r scales::comma(initial_snps_number)`** variants.  
-The final dataset contains **`r scales::comma(final_samples_number)`** samples 
+The final dataset includes **`r scales::comma(final_samples_number)`** samples 
 and **`r scales::comma(final_snps_number)`** variants.
 
 ```{r qc-summary-table}
