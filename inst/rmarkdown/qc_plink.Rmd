@@ -254,9 +254,9 @@ recruit_centre_table <- recruit_centre %>%
 
 PLINK files contain:
 
-* `r scales::comma(nrow(recruit_centre))` samples  
-    + Note: `r scales::comma(samples_duplicated)` samples seems to have duplicates
-* `r scales::comma(snps_number)` variants
+* **`r scales::comma(nrow(recruit_centre))`** samples  
+    + Note: **`r scales::comma(samples_duplicated)`** samples seems to have duplicates
+* **`r scales::comma(snps_number)`** variants
 
 ```{r cohort-overview-table}
 pretty_kable(
@@ -275,7 +275,7 @@ pretty_kable(
 # Sample-based QC {#sample-qc}
 
 
-## Sample call rate evaluation
+## Sample call rate
 
 ```{r sample-call-rate-01, include = FALSE}
 system(command = paste(
@@ -401,8 +401,7 @@ callrate_samples_toexclude <- callrate_samples %>%
 
 Call rate was computed using the `--missing` command in PLINK. 
 
-**`r scales::comma(nrow(callrate_samples_toexclude))`** samples had a call rate lower than 
-**`r scales::percent(params[["callrate_samples"]], accuracy = 0.01)`** and were excluded.
+A call rate lower than `r scales::percent(params[["callrate_samples"]], accuracy = 0.01)` was observed for **`r scales::comma(nrow(callrate_samples_toexclude))`** samples, leading to their exclusion.
 
 ```{r sample-call-rate-02, eval = !is.na(prop_diff_maf_lower) & prop_diff_maf_lower}
 cat(
@@ -480,7 +479,7 @@ callrate_samples_toexclude %>%
 ```
 
 
-## Gender check
+## Gender
 
 ```{r gender-check-01}
 system(command = paste(
@@ -559,15 +558,21 @@ ggplot2::ggplot(
     colour = "transparent"
   ) +
   ggplot2::geom_rect(
-    mapping = ggplot2::aes(xmin = -0.2, xmax = 0.2, ymin = -Inf, ymax = params[["callrate_samples"]]), 
+    mapping = ggplot2::aes(xmin = -Inf, xmax = -0.2, ymin = -Inf, ymax = Inf), 
     fill = "firebrick2",
-    alpha = 0.5,
+    alpha = 0.10,
     colour = "transparent"
   ) +
   ggplot2::geom_rect(
-    mapping = ggplot2::aes(xmin = 0.8, xmax = 1, ymin = -Inf, ymax = params[["callrate_samples"]]), 
+    mapping = ggplot2::aes(xmin = -0.2, xmax = 0.2, ymin = -Inf, ymax = Inf), 
+    fill = "firebrick2",
+    alpha = 0.25,
+    colour = "transparent"
+  ) +
+  ggplot2::geom_rect(
+    mapping = ggplot2::aes(xmin = 0.8, xmax = 1, ymin = -Inf, ymax = Inf), 
     fill = "dodgerblue",
-    alpha = 0.5,
+    alpha = 0.25,
     colour = "transparent"
   ) +
   ggplot2::geom_point(na.rm = TRUE) +
@@ -589,7 +594,7 @@ ggplot2::ggplot(
 ```
 
 
-## Heterozygosity check
+## Heterozygosity
 
 ```{r heterozygosity-01, include = FALSE}
 system(command = paste(
@@ -1050,7 +1055,8 @@ samples_toexclude <- dplyr::bind_rows(
 )
 ```
 
-## Sample Mendel Errors
+
+## Sample Mendel errors
 
 ```{r imendel-error-00}
 if (!params[["includes_relatives"]]) cat("not applicable.\n\n")
@@ -1239,7 +1245,10 @@ samples_toexclude <- dplyr::bind_rows(
 ```
 
 
-## Population structure
+## Principal Component Analysis
+
+
+### Population structure
 
 ```{r population-01, include = FALSE}
 ## Get Autosomal variants
@@ -1864,12 +1873,18 @@ recruit_centre_pca <- eigenvec_pca %>%
   dplyr::mutate(Cohort = as.factor(Cohort))
 ```
 
+
+### Within **`r params[["cohort_name"]]`** structure
+
 To assess the homogeneity of the **`r params[["cohort_name"]]`** cohort, 
 a PCA was performed using only samples from the cohort.   
-**`r scales::comma(sum(eigenvec_pca[["extremes"]]))`** samples were labeled and flagged as being extreme 
-(greater than `r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation 
-from the centroid of **`r params[["cohort_name"]]`** on the first factorial plane), 
-this is illustrated in Figure \@ref(fig:population-06).
+**`r scales::comma(sum(eigenvec_pca[["extremes"]]))`**
+Samples were labeled and flagged as being extreme when the distance from
+the **`r params[["cohort_name"]]`** cohort centroid was greater than
+`r qdap::replace_number(params[["pca_threshold"]])` times the standard deviation 
+of all distances (Figure \@ref(fig:population-06)).
+
+Samples labeled and flagged as extreme: **`r params[["cohort_name"]]`**.
 
 ```{r population-06, fig.cap = paste("Within-samples outliers detected as samples having at least one coordinate", "in the first factorial plane larger than", qdap::replace_number(params[["pca_threshold"]]), "times the standard deviation of the principal component.")}
 p_within <- ggplot2::ggplot(
@@ -2026,7 +2041,8 @@ system(command = paste(
 After excluding sample-based QC failed samples, variant-based QC is performed on 
 **`r scales::comma(nrow(data.table::fread(input = paste0(temp_directory, "/raw_data_good_samples.fam"), select = 1)))`** samples.  
 
-## Variant call rate evaluation
+
+## Variant call rate
 
 ```{r variant-call-rate-01, include = FALSE}
 system(command = paste(
@@ -2064,7 +2080,8 @@ ggplot2::ggplot(
   ggplot2::labs(x = "Variants", y = "Call rate")
 ```
 
-## Duplicated or triplicated variants
+
+## Duplicated and/or triplicated variants
 
 ```{r duplicated-snps, include = FALSE}
 callrate_snps <- callrate_snps_raw %>%
@@ -2108,7 +2125,7 @@ that possibly existed in multiple copies in the dataset (same chromosome and pos
 and kept only the most successfully genotyped variant.  
 
 
-## Mendel Errors
+## Variant Mendel errors
 
 ```{r lmendel-error-00}
 if (!params[["includes_relatives"]]) cat("Not Applicable.\n\n")
@@ -2177,7 +2194,7 @@ if (lmendel_file_check) {
 ```
 
 
-## Minor allele frequency (MAF) distribution
+## Minor allele frequency distribution
 
 The MAF were computed using the `--freq` command in PLINK.
 
@@ -2209,7 +2226,7 @@ data.table::fread(paste0(temp_directory, "/raw_data_good_samples.frq")) %>%
 ```
 
 
-## Hardy-Weinberg Equilibrium
+## Hardy-Weinberg equilibrium
 
 ```{r hwe-01, include = FALSE}
 system(command = paste(
@@ -2227,7 +2244,7 @@ hwe_significant <- hwe_complete %>%
   dplyr::arrange(P)
 ```
 
-Hardy-Weinberg Equilibrium (HWE) p-value was computed using the `--hardy` command in PLINK.
+Hardy-Weinberg equilibrium (HWE) p-value was computed using the `--hardy` command in PLINK.
 
 In total, **`r scales::comma(sum(hwe_complete[, "P"] < params[["hwe_pvalue"]]))`** variants 
 had a HWE p-value below `r scales::scientific(params[["hwe_pvalue"]])` and were excluded.  
@@ -2394,6 +2411,8 @@ system(command = paste(
 ))
 ```
 
+
+
 # Final QC overview (with all filters)
 
 ```{r qc-summary, include = FALSE}
@@ -2451,11 +2470,11 @@ recruit_centre %>%
   dplyr::rowwise() %>% 
   dplyr::mutate(
     ExcludeorCheck_pct = scales::percent((Exclude + Check) / Total, accuracy = 0.01),
-    ExcludeorCheck = paste0((Exclude + Check), "/", Total, "(", ExcludeorCheck_pct, ")") %>% gsub("NaN", "0", .),
+    ExcludeorCheck = paste0((Exclude + Check), " / ", Total, " (", ExcludeorCheck_pct, ")") %>% gsub("NaN", "0", .),
     Check_pct = scales::percent(Check / Total, accuracy = 0.01), 
     Exclude_pct = scales::percent(Exclude / Total, accuracy = 0.01),
-    Check = paste0(Check, "/", Total, "(", Check_pct, ")") %>% gsub("NaN", "0", .),
-    Exclude = paste0(Exclude, "/", Total, "(", Exclude_pct, ")") %>% gsub("NaN", "0", .)
+    Check = paste0(Check, " / ", Total, " (", Check_pct, ")") %>% gsub("NaN", "0", .),
+    Exclude = paste0(Exclude, " / ", Total, " (", Exclude_pct, ")") %>% gsub("NaN", "0", .)
   ) %>%
   dplyr::select(
     Cohort, 
@@ -2515,7 +2534,10 @@ if (nrow(not_target_population) != 0) {
 writexl::write_xlsx(output_xlsx, path = paste0(params[["output_directory"]], "/QC_exclusion.xlsx"))
 ```
 
+
+
 # Technical information
+
 
 ## Softwares
 
@@ -2549,6 +2571,7 @@ check_bim_script_ver <- readLines(params[["check_bim_script"]], warn = FALSE) %>
 * bgzip `r bgzip_ver` ([http://www.htslib.org/](http://www.htslib.org/))
 * bcftools `r bcftools_ver` ([http://www.htslib.org/](http://www.htslib.org/))
 * `r basename(params[["check_bim_script"]])` `r check_bim_script_ver` (William Rayner, [https://www.well.ox.ac.uk/~wrayner/tools/](https://www.well.ox.ac.uk/~wrayner/tools/))
+
 
 ## R session information
 
