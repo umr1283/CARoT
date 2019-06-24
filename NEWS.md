@@ -1,3 +1,10 @@
+# CARoT 0.2.2 (development version)
+
+## Minor improvements and fixes
+
+* In `inst/rmarkdown/qc_plink.Rmd`,
+    + fix typos.
+
 # CARoT 0.2.1 (development version)
 
 ## Minor improvements and fixes

@@ -194,7 +194,7 @@ system(command = paste(
 * Mendelian error rate threshold:
     + Max per-trio error rate: 
         `` `r if (params[["includes_relatives"]]) params[["mendelian_samples"]] else "not applicable"` `` 
-    + Max per-variant error rate
+    + Max per-variant error rate: 
         `` `r if (params[["includes_relatives"]]) params[["mendelian_snp"]] else "not applicable"` `` 
 
 
@@ -831,7 +831,7 @@ if (is_maf_lower) {
 }
 ```
 
-```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF <", params[["maf_threshold"]], ".", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", scales::percent(params[["callrate_samples"]], accuracy = 0.01), ".")}
+```{r heterozygosity-05, fig.height = 4.7 * 1.5, fig.cap = paste0("Heterozygosity rate against the call rate per sample. ", "A and C, the heterozygosity rate computed based on all variants. ", "B and D, the heterozygosity estimated from variants with a MAF < ", params[["maf_threshold"]], ". ", "The horizontal red lines denote the ", qdap::replace_number(params[["heterozygosity_treshold"]]), " times standard deviations (SD) from the mean heterozygosity rate ", "and were used to define outlying heterozygosity.", " SD was computed only on samples with a call rate greater than or equal to ", scales::percent(params[["callrate_samples"]], accuracy = 0.01), ".")}
 ggpubr::ggarrange(
   p_heteR + 
     ggplot2::scale_x_continuous(labels = scales::percent_format(accuracy = 0.01)) +
