@@ -5,7 +5,8 @@
 \title{qc_idats}
 \usage{
 qc_idats(csv_file, data_directory, array = "EPIC",
-  annotation = "ilm10b4.hg19", output_file = paste0(array, "_QC.html"),
+  annotation = "ilm10b4.hg19", cohort_name = "CARoT",
+  output_file = paste(cohort_name, array, "QC.html", sep = "_"),
   output_directory = ".", filter_snps = TRUE, filter_non_cpg = TRUE,
   filter_xy = TRUE, filter_multihit = TRUE, filter_beads = TRUE,
   population = NULL, bead_cutoff = 0.05, detection_pvalues = 0.01,
@@ -16,7 +17,7 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
   "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
-  show_code = FALSE, n_cores = 22, dpi = 120, gg_fontsize = 12,
+  show_code = FALSE, n_cores = 1, dpi = 120, gg_fontsize = 12,
   encoding = "UTF-8", ...)
 }
 \arguments{
@@ -27,6 +28,8 @@ qc_idats(csv_file, data_directory, array = "EPIC",
 \item{array}{A \code{character}. The array name, i.e., \code{"EPIC"} or \code{"450k"}.}
 
 \item{annotation}{A \code{character}. The name and version of the annotation package to be used.}
+
+\item{cohort_name}{A \code{character}. The name of the studied cohort / population.}
 
 \item{output_file}{A \code{character}. The name of the html file produced.}
 
@@ -112,7 +115,7 @@ Default is \code{FALSE}.}
 Default is \code{FALSE}.}
 
 \item{n_cores}{A \code{numeric}. The number of CPUs to use to estimate the ethnicity.
-Default is \code{20}.}
+Default is \code{1}.}
 
 \item{dpi}{A \code{numeric}. The value for dpi when plotting the data.
 Default is \code{120}.}

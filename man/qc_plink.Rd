@@ -5,7 +5,7 @@
 \title{qc_plink}
 \usage{
 qc_plink(input_directory = NULL, output_directory = NULL,
-  cohort_name = NULL, output_file = paste0(cohort_name, "_QC.html"),
+  cohort_name = "CARoT", output_file = paste0(cohort_name, "_QC.html"),
   array = NULL, callrate_samples = 0.95, callrate_snps = 0.95,
   heterozygosity_treshold = 4, maf_threshold = 0.01,
   hwe_pvalue = 1e-04, includes_relatives = FALSE,
@@ -18,7 +18,7 @@ qc_plink(input_directory = NULL, output_directory = NULL,
   "/usr/bin/bgzip", plink = "/usr/bin/plink1.9", gcta = "/usr/bin/gcta64"),
   title = paste(array, "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
-  show_code = FALSE, n_cores = 22, dpi = 120, gg_fontsize = 12,
+  show_code = FALSE, n_cores = 1, dpi = 120, gg_fontsize = 12,
   encoding = "UTF-8", ...)
 }
 \arguments{
@@ -110,7 +110,7 @@ Default is \code{FALSE}.}
 Default is \code{FALSE}.}
 
 \item{n_cores}{A \code{numeric}. The number of CPUs to use to estimate the ethnicity.
-Default is \code{20}.}
+Default is \code{1}.}
 
 \item{dpi}{A \code{numeric}. The value for dpi when plotting the data.
 Default is \code{120}.}

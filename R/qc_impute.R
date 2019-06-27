@@ -1,4 +1,4 @@
-#' qc_plink
+#' qc_impute
 #'
 #' @param input_directory A `character`. The path to the VCF files.
 #' @param output_directory A `character`. The path to the output directory.
@@ -26,7 +26,7 @@
 #'
 #' @return NULL
 #' @export
-qc_plink <- function(
+qc_impute <- function(
   input_directory = NULL,
   output_directory = NULL,
   cohort_name = "CARoT",
