@@ -58,7 +58,7 @@
 #' @param show_code A `logical`. Should the R code be printed in the report?
 #'     Default is `FALSE`.
 #' @param n_cores A `numeric`. The number of CPUs to use to estimate the ethnicity.
-#'     Default is `20`.
+#'     Default is `1`.
 #' @param dpi A `numeric`. The value for dpi when plotting the data.
 #'     Default is `120`.
 #' @param gg_fontsize A `numeric`. Value for the font size. Default is `12`.
@@ -71,7 +71,7 @@
 qc_plink <- function(
   input_directory = NULL,
   output_directory = NULL,
-  cohort_name = NULL,
+  cohort_name = "CARoT",
   output_file = paste0(cohort_name, "_QC.html"),
   array = NULL,
   callrate_samples = 0.95,
@@ -104,7 +104,7 @@ qc_plink <- function(
   author_email = NULL,
   cache = FALSE,
   show_code = FALSE,
-  n_cores = 22,
+  n_cores = 1,
   dpi = 120,
   gg_fontsize = 12,
   encoding = "UTF-8",
