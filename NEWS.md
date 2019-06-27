@@ -6,7 +6,8 @@
     + fix typos.
 * In `R/estimate_ethnicity.R`, 
     + fix a wrong `if` statement when testing the parameters:
-        `input_type = "array"` and `splitted_by_chr = FALSE`
+        `input_type = "array"` and `splitted_by_chr = FALSE`.
+    + fix chromosome pattern recognition to allow VCF files to start with the chromosome id.
 
 # CARoT 0.2.1 (development version)
 
