@@ -61,6 +61,9 @@ Currently *CARoT* includes the following functions:
   - `qc_plink()` allows to compute quality-control of genotyping array
     (PLINK format) using a [rmarkdown
     template](inst/rmarkdown/qc_plink.Rmd).
+  - `qc_impute()` allows to compute post-imputation quality-control
+    report using a default [rmarkdown
+    template](inst/rmarkdown/qc_impute.Rmd).
 
 ## Getting help
 
