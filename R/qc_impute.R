@@ -49,8 +49,8 @@ qc_impute <- function(
   message(message_prefix, "Note: it can take from one to two hours.")
 
   file.copy(
-    from = system.file("rmarkdown", "qc_pimpute.Rmd", package = "CARoT"),
-    to = paste0(tempdir(), "/qc_pimpute.Rmd"),
+    from = system.file("rmarkdown", "qc_impute.Rmd", package = "CARoT"),
+    to = paste0(tempdir(), "/qc_impute.Rmd"),
     overwrite = TRUE
   )
 
