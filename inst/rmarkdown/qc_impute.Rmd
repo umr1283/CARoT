@@ -203,8 +203,9 @@ names(all_chrosomoses) <- gsub("^([^.]+)\\..*", "\\1", basename(list_vcf))
 
 ## Genome-Wide
 
-```{r genomewide}
-cat("### Variants binned by alternate allele frequency\n\n")
+### Variants binned by alternate allele frequency
+
+```{r genomewide-af}
 all_chrosomoses %>% 
   dplyr::bind_rows() %>% 
   dplyr::count(bin_af) %>% 
@@ -223,8 +224,11 @@ all_chrosomoses %>%
     align = "c", 
     table.attr = "style='width:65%;'"
   )
-cat("\n\n")
-cat("### Variants binned by imputation INFO score\n\n")
+```
+
+### Variants binned by imputation INFO score
+
+```{r genomewide-info}
 all_chrosomoses %>% 
   dplyr::bind_rows() %>% 
   dplyr::count(bin_info) %>% 
@@ -243,7 +247,6 @@ all_chrosomoses %>%
     align = "c", 
     table.attr = "style='width:65%;'"
   )
-cat("\n\n")
 ```
 
 ## Chromosome
