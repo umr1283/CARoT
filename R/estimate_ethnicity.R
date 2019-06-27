@@ -51,7 +51,7 @@ estimate_ethnicity <- function(
       'with `input_type = "sequencing"`!'
     )
   }
-  if (input_type=="array" & splitted_by_chr & length(list_ref)!=1) {
+  if (input_type=="array" & !splitted_by_chr & length(list_ref)!=1) {
     stop(
       message_prefix, 'A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "array"` & `splitted_by_chr = FALSE`!'

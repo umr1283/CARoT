@@ -4,6 +4,9 @@
 
 * In `inst/rmarkdown/qc_plink.Rmd`,
     + fix typos.
+* In `R/estimate_ethnicity.R`, 
+    + fix a wrong `if` statement when testing the parameters:
+        `input_type = "array"` and `splitted_by_chr = FALSE`
 
 # CARoT 0.2.1 (development version)
 
