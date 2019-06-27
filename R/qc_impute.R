@@ -62,7 +62,6 @@ qc_impute <- function(
     params = list(
       input_directory = input_directory,
       output_directory = output_directory,
-      cohort_name = cohort_name,
       title = title,
       author_name = author_name,
       author_affiliation = author_affiliation,
