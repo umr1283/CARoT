@@ -4,6 +4,7 @@
 #' @param data_directory A `character`. The path to the data directory.
 #' @param array A `character`. The array name, i.e., `"EPIC"` or `"450k"`.
 #' @param annotation A `character`. The name and version of the annotation package to be used.
+#' @param cohort_name A `character`. The name of the studied cohort / population.
 #' @param output_file A `character`. The name of the html file produced.
 #' @param output_directory A `character`. The path to the output directory.
 #' @param filter_snps A `logical`. Should the probes in which the probed CpG falls near a SNP
@@ -62,7 +63,7 @@
 #' @param show_code A `logical`. Should the R code be printed in the report?
 #'     Default is `FALSE`.
 #' @param n_cores A `numeric`. The number of CPUs to use to estimate the ethnicity.
-#'     Default is `20`.
+#'     Default is `1`.
 #' @param dpi A `numeric`. The value for dpi when plotting the data.
 #'     Default is `120`.
 #' @param gg_fontsize A `numeric`. Value for the font size. Default is `12`.
@@ -77,7 +78,8 @@ qc_idats <- function(
   data_directory,
   array = "EPIC",
   annotation = "ilm10b4.hg19",
-  output_file = paste0(array, "_QC.html"),
+  cohort_name = "CARoT",
+  output_file = paste(cohort_name, array, "QC.html", sep = "_"),
   output_directory = ".",
   filter_snps = TRUE,
   filter_non_cpg = TRUE,
@@ -103,7 +105,7 @@ qc_idats <- function(
   author_email = NULL,
   cache = FALSE,
   show_code = FALSE,
-  n_cores = 22,
+  n_cores = 1,
   dpi = 120,
   gg_fontsize = 12,
   encoding = "UTF-8",
