@@ -38,6 +38,24 @@ estimate_ethnicity <- function(
 ) {
   message_prefix <- "[CARoT] "
 
+  if (!all(sapply(bin_path, file.exists))) {
+    stop(
+      message_prefix,
+      paste0(
+        "No binary found for the following tools: ",
+        glue::glue_collapse(
+          x = paste0(
+            names(bin_path[!sapply(bin_path, file.exists)]),
+            ' ("', bin_path[!sapply(bin_path, file.exists)], '")'
+          ),
+          sep = ", ",
+          last = " and "
+        ),
+        "!"
+      )
+    )
+  }
+
   list_input <- check_input(input = input_vcfs)
   list_ref <- check_input(input = ref1kg_vcfs)
 
@@ -180,7 +198,7 @@ format_vcf <- function(
   }
 
   out_cmd <- system(
-    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    ignore.stdout = FALSE, intern = TRUE, wait = TRUE, ignore.stderr = FALSE,
     command = paste(
       if (!is.null(quality_tag)) {
         paste(bin_path[["vcftools"]],

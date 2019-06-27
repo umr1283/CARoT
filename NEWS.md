@@ -8,6 +8,7 @@
     + fix a wrong `if` statement when testing the parameters:
         `input_type = "array"` and `splitted_by_chr = FALSE`.
     + fix chromosome pattern recognition to allow VCF files to start with the chromosome id.
+    + now check if binary exists at the path prodived in `bin_path` argument.
 
 # CARoT 0.2.1 (development version)
 
