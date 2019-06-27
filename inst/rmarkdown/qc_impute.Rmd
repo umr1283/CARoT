@@ -172,7 +172,7 @@ See the VCF header lines for the dbSNP version used.
 # Imputation report
 
 ```{r read, include = FALSE}
-list_vcf <- list.files(path = params[["data_directory"]], pattern = "vcf.gz$", full.names = TRUE)
+list_vcf <- list.files(path = params[["input_directory"]], pattern = "vcf.gz$", full.names = TRUE)
 all_chrosomoses <- lapply(
   X = list_vcf,
   FUN = function(ichr) {
