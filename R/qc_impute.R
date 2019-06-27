@@ -4,7 +4,7 @@
 #' @param output_directory A `character`. The path to the output directory.
 #' @param cohort_name A `character`. The name of the studied cohort / population.
 #' @param output_file A `character`. The name of the html file produced.
-#' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
+#' @param title A `character`. The report's title. Default is `"Post-Imputation Quality-Control"`.
 #' @param author_name A `character`. The author's name to be printed in the report.
 #'     Default is `CARoT`.
 #' @param author_affiliation A `character`. The affiliation to be printed in the report.
