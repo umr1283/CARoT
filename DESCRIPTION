@@ -27,6 +27,7 @@ Imports:
     ggdendro,
     ggforce,
     ggplot2,
+    glue,
     IlluminaHumanMethylation450kmanifest,
     IlluminaHumanMethylationEPICmanifest,
     illuminaio,
