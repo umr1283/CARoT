@@ -21,7 +21,7 @@ qc_impute(input_directory = NULL, output_directory = NULL,
 
 \item{output_file}{A \code{character}. The name of the html file produced.}
 
-\item{title}{A \code{character}. The report's title. Default is \code{paste(array, "Array Quality-Control")}.}
+\item{title}{A \code{character}. The report's title. Default is \code{"Post-Imputation Quality-Control"}.}
 
 \item{author_name}{A \code{character}. The author's name to be printed in the report.
 Default is \code{CARoT}.}
