@@ -326,7 +326,7 @@ format_array_chr <- function(
       mc_quality_threshold,
       mc_output_directory
     ) {
-      ipattern <- paste0("[^0-9]*chr", ichr, "[^0-9]+.*vcf.gz$")
+      ipattern <- paste0("^[^0-9]*chr", ichr, "[^0-9]+.*vcf.gz$")
       iinput_vcfs <- mc_input_vcfs[grep(pattern = gsub("chr", "", ipattern), x = basename(mc_input_vcfs))]
       iref1kg_vcfs <- mc_ref1kg_vcfs[grep(pattern = ipattern, x = basename(mc_ref1kg_vcfs))]
 
