@@ -1,5 +1,9 @@
 # CARoT 0.2.2 (development version)
 
+## New features
+
+* New `qc_impute()`, it allows to compute post-imputation quality-control report using a default rmarkdown template (`inst/rmarkdown/qc_impute.Rmd`).
+
 ## Minor improvements and fixes
 
 * In `inst/rmarkdown/qc_plink.Rmd`,
@@ -9,6 +13,14 @@
         `input_type = "array"` and `splitted_by_chr = FALSE`.
     + fix chromosome pattern recognition to allow VCF files to start with the chromosome id.
     + now check if binary exists at the path prodived in `bin_path` argument.
+* In `R/qc_plink.R`,
+    + fix roxygen doc for parameter `n_cores` to make it consistent with the current default values.
+    + add `cohort_name` parameter.
+* In `R/qc_idats.R`,
+    + change default parameter value for `cohort_name`.
+    + fix roxygen doc for parameter `n_cores` to make it consistent with the current default values.
+* In `inst/rmarkdown/qc_plink.Rmd`,
+    + replace signle quote with double quotes.
 
 # CARoT 0.2.1 (development version)
 
