@@ -38,22 +38,10 @@ estimate_ethnicity <- function(
 ) {
   message_prefix <- "[CARoT] "
 
-  if (!all(sapply(bin_path, file.exists))) {
-    stop(
-      message_prefix,
-      paste0(
-        "No binary found for the following tools: ",
-        glue::glue_collapse(
-          x = paste0(
-            names(bin_path[!sapply(bin_path, file.exists)]),
-            ' ("', bin_path[!sapply(bin_path, file.exists)], '")'
-          ),
-          sep = ", ",
-          last = " and "
-        ),
-        "!"
-      )
-    )
+  check_bin(bin_path)
+
+  if (!is_ethnicity_done(output_directory)) {
+    stop(message_prefix, '"estimate_ethnicity" has been canceled by the user!')
   }
 
   list_input <- check_input(input = input_vcfs)
@@ -133,6 +121,61 @@ estimate_ethnicity <- function(
 
 }
 
+
+#' is_ethnicity_done
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+is_ethnicity_done <- function(output_directory) {
+  message_prefix <- "[CARoT] "
+
+  plink_files_exists <- all(file.exists(paste0(output_directory, "/all", c(".bim", ".fam", ".bed"))))
+
+  if (plink_files_exists & interactive()) {
+    message(paste0(
+      message_prefix,
+      "bim/bed/fam files already exist!\n",
+      "  (y) to format (again) the VCF files and to perform the PCA.\n",
+      "  (n) to cancel and call `compute_pca`.\n",
+      "  Please choose (y) or (n): "
+    ))
+    answer <- readline(
+      prompt = ""
+    )
+
+    out <- grepl("y", answer, ignore.case = TRUE)
+  } else {
+    out <- TRUE
+  }
+}
+
+
+#' check_bin
+#'
+#' @inheritParams estimate_ethnicity
+#'
+#' @keywords internal
+check_bin <- function(bin_path) {
+  if (!all(sapply(bin_path, file.exists))) {
+    message_prefix <- "[CARoT] "
+    stop(
+      message_prefix,
+      paste0(
+        "No binary found for the following tools: ",
+        glue::glue_collapse(
+          x = paste0(
+            names(bin_path[!sapply(bin_path, file.exists)]),
+            ' ("', bin_path[!sapply(bin_path, file.exists)], '")'
+          ),
+          sep = ", ",
+          last = " and "
+        ),
+        "!"
+      )
+    )
+  }
+}
 
 #' check_input
 #'
@@ -498,7 +541,8 @@ format_sequencing <- function(
 #' @inheritParams estimate_ethnicity
 #' @param input_plink A `character`. The path to plink format files (i.e., `.bed`, `.bim` and `.fam` files).
 #'
-#' @keywords internal
+#' @return A `data.frame`.
+#' @export
 compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_population) {
   message_prefix <- "[CARoT] "
 
