@@ -1531,17 +1531,20 @@ data_pca <- dplyr::bind_rows(
   data.table::fread(paste0(temp_directory, "/clean_data_tmp.fam")) %>%
     dplyr::mutate(POP = "raw_data") %>%
     dplyr::select(V2, POP) %>%
-    dplyr::rename(IID = "V2"),
+    dplyr::rename(IID = "V2") %>% 
+    dplyr::mutate(IID = as.character(IID)),
   data.table::fread(params[["ref1kg_panel"]], fill = TRUE, header = TRUE) %>%
     dplyr::select(sample, pop) %>%
-    dplyr::rename(IID = "sample", POP = "pop")
+    dplyr::rename(IID = "sample", POP = "pop") %>% 
+    dplyr::mutate(IID = as.character(IID))
 ) %>%
   dplyr::filter(
-    IID %in% data.table::fread(paste0(temp_directory, "/raw_data_1kgenome.fam"))[["V2"]]
+    IID %in% as.character(data.table::fread(paste0(temp_directory, "/raw_data_1kgenome.fam"))[["V2"]])
   ) %>%
   dplyr::left_join(
     y = data.table::fread(paste0(temp_directory, "/raw_data_1kgenome.eigenvec")) %>%
-      `colnames<-`(c("FID", "IID", paste0("PC", seq_len(params[["pca_components"]])))),
+      `colnames<-`(c("FID", "IID", paste0("PC", seq_len(params[["pca_components"]])))) %>% 
+      dplyr::mutate(IID = as.character(IID)),
     by = "IID"
   ) %>%
   dplyr::mutate(
