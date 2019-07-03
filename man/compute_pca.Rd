@@ -15,7 +15,9 @@ compute_pca(cohort_name, input_plink, output_directory, ref1kg_population)
 
 \item{ref1kg_population}{A \code{character}. A file which describe samples and their ethnicity.}
 }
+\value{
+A \code{data.frame}.
+}
 \description{
 compute_pca
 }
-\keyword{internal}
