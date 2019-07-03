@@ -7,6 +7,7 @@
 ## Minor improvements and fixes
 
 * In `inst/rmarkdown/qc_plink.Rmd`,
+    + convert IID to character when reading files.
     + fix typos.
 * In `R/estimate_ethnicity.R`, 
     + fix a wrong `if` statement when testing the parameters:
