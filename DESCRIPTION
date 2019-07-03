@@ -1,4 +1,5 @@
 Package: CARoT
+Type: Package
 Title: Centralised and Automated Reporting Tools
 Version: 0.3.0.9000
 Authors@R: c(
