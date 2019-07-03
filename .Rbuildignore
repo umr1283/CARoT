@@ -12,3 +12,4 @@
 ^appveyor\.yml$
 ^codecov\.yml$
 ^\.github$
+^_build.sh$
