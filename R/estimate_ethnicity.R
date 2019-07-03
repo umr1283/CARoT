@@ -273,7 +273,7 @@ merge_vcf <- function(input_vcfs, bin_path) {
     vcf_list <- paste0(tempdir(), "/samples_merged.txt")
     cat(input_vcfs, sep = "\n", file = vcf_list)
     system(
-      ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+      intern = TRUE, wait = TRUE,
       command = paste(
         bin_path[["bcftools"]], "merge --merge none",
         " --file-list", vcf_list,
@@ -350,7 +350,7 @@ format_array_chr <- function(
     file = temp_file
   )
   system(
-    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    intern = TRUE, wait = TRUE,
     command = paste(
       bin_path[["bcftools"]], "concat",
       "--file-list", temp_file,
@@ -363,15 +363,16 @@ format_array_chr <- function(
 
 
   system(
-    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    intern = TRUE, wait = TRUE,
     command = paste(
       bin_path[["plink1.9"]],
       "--vcf", paste0(output_directory, "/all.vcf.gz"),
       "--snps-only",
-      "--maf", ref1kg_maf,
+      "--maf", 0.01,
       "--hwe 0.0001",
       "--geno 0.1",
       "--make-bed",
+      "--double-id",
       "--out", paste0(output_directory, "/all")
     )
   )
@@ -416,7 +417,7 @@ format_array_all <- function(
   )
 
   system(
-    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    intern = TRUE, wait = TRUE,
     command = paste(
       bin_path[["plink1.9"]],
       "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
@@ -425,6 +426,7 @@ format_array_all <- function(
       "--hwe 0.0001",
       "--geno 0.1",
       "--make-bed",
+      "--double-id",
       "--out", paste0(output_directory, "/all")
     )
   )
@@ -468,7 +470,7 @@ format_sequencing <- function(
   )
 
   system(
-    ignore.stdout = TRUE, intern = TRUE, wait = TRUE, ignore.stderr = TRUE,
+    intern = TRUE, wait = TRUE,
     command = paste(
       bin_path[["plink1.9"]],
       "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
@@ -477,6 +479,7 @@ format_sequencing <- function(
       "--hwe 0.0001",
       "--geno 0.1",
       "--make-bed",
+      "--double-id",
       "--out", paste0(output_directory, "/all")
     )
   )
