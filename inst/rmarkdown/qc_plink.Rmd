@@ -2536,6 +2536,12 @@ if (nrow(not_target_population) != 0) {
 }
 
 writexl::write_xlsx(output_xlsx, path = paste0(params[["output_directory"]], "/QC_exclusion.xlsx"))
+
+save(
+  list = list("samples_toexclude_export", "related_samples", "not_target_population", "mendel_errors_samples"),
+  file = paste0(params[["output_directory"]], "/QC_exclusion.Rdata"), 
+  compress = FALSE
+)
 ```
 
 
