@@ -2507,10 +2507,10 @@ output_xlsx[["exclude_flag"]] <- samples_toexclude_export %>%
     "Ethnicity" = "PCA Outliers",
     "Cohort PCA outliers" = "Within Cohort PCA outliers"
   ) %>%
-  dplyr::select(FID, IID, Gender, Cohort, Status, dplyr::everything(-c(1:4))) %>% 
+  dplyr::select(FID, IID, Gender, Cohort, Status, dplyr::everything()) %>% 
   dplyr::arrange(dplyr::desc(!!as.symbol(colnames(.)[-c(1:4)])))
 
-if (exists("related")) {
+if (exists("related_samples")) {
   output_xlsx[["relatedness"]] <- related_samples %>%
     dplyr::left_join(
       y = dplyr::select(recruit_centre, Sample.Name, Cohort),

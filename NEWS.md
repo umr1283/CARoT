@@ -8,6 +8,7 @@
 
 * In `inst/rmarkdown/qc_plink.Rmd`,
     + convert IID to character when reading files.
+    + fix missing sheets in Excel exclusion file.
     + fix typos.
 * In `R/estimate_ethnicity.R`, 
     + fix a wrong `if` statement when testing the parameters:
