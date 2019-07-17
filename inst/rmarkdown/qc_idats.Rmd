@@ -148,7 +148,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     * `filter_multihit` ([Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105))  
         => should probes which align to multiple locations be removed?
     * `filter_beads`  
-        => should probes with a beadcount less than 3 be removed?
+        => should probes with a beadcount less than 3 be removed (for at least 5 % of the samples)?
     * __Call Rate__  
         => should probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
 1. Filtering Samples
