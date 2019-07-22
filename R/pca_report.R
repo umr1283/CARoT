@@ -66,7 +66,7 @@ pca_report <- function(
 
   pca_dfxy <- as.data.frame(pca_res[["projection"]])
   colnames(pca_dfxy) <- paste0("PC", seq_len(ncol(pca_dfxy)))
-  pca_dfxy <- dplyr::mutate(.data = pca_dfxy, Sample_ID = as.character(colnames(data)))
+  pca_dfxy <- dplyr::mutate(.data = pca_dfxy, !!id_var := as.character(colnames(data)))
   pca_dfxy <- as.data.frame(dplyr::left_join(x = design, y = pca_dfxy, by = id_var))
 
 
