@@ -26,7 +26,7 @@
     + fix roxygen doc for parameter `n_cores` to make it consistent with the current default values.
 * In `inst/rmarkdown/qc_plink.Rmd`,
     + replace signle quote with double quotes.
-* In `R/pca_report.R`, fix #2 (@mboissel).
+* In `R/pca_report.R`, fix merge issue when the selected column was not `"Sample_ID"` (@mboissel, #2).
 
 # CARoT 0.2.1 (development version)
 
