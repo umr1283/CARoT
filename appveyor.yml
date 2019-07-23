@@ -28,10 +28,12 @@ build_script:
   - travis-tool.sh install_bioc_deps
   - travis-tool.sh install_deps
   - Rscript -e "install.packages('remotes', repos = 'http://cran.us.r-project.org');"
-  - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR', upgrade = 'never')"
+  - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR')"
 
 test_script:
-  - travis-tool.sh run_tests
+#  - travis-tool.sh run_tests
+  - Rscript -e "install.packages('remotes', repos = 'http://cran.us.r-project.org');"
+  - Rscript -e "remotes::install_github(repo = 'mcanouil/CARoT')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
