@@ -16,7 +16,6 @@ before_install:
   - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev
   - Rscript -e 'update.packages(ask = FALSE)'
   - Rscript -e 'install.packages("remotes", ask = FALSE)'
-  - Rscript -e 'remotes::install_version(package = "RSpectra", version = "0.13-1", upgrade = "never")'
 
 r_github_packages:
   - r-lib/covr
@@ -36,7 +35,6 @@ matrix:
       provider: script
       script: Rscript -e 'pkgdown::deploy_site_github()'
       skip_cleanup: true
-  - r: 3.5
   - r: 3.6
 
 after_success:
