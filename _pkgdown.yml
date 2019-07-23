@@ -4,3 +4,9 @@ template:
 
 development:
   mode: auto
+
+authors:
+  Mickaël Canouil:
+    href: http://mickael.canouil.fr
+  Mathilde Boissel:
+    href: https://mboissel.github.io
