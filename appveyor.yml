@@ -34,7 +34,7 @@ test_script:
 #  - travis-tool.sh run_tests
   - Rscript -e "install.packages('devtools', repos = 'http://cran.us.r-project.org');"
   - Rscript -e "remotes::install_github(repo = 'mcanouil/CARoT')"
-  - Rscript -e "devtools::check()"
+  - Rscript -e "devtools::check('CARoT')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
