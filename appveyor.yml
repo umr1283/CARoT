@@ -23,18 +23,18 @@ environment:
     NOT_CRAN: true
 
 build_script:
-  - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest
-  - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
+#  - travis-tool.sh install_bioc IlluminaHumanMethylation450kmanifest
+#  - travis-tool.sh install_bioc IlluminaHumanMethylationEPICmanifest
   - travis-tool.sh install_bioc_deps
   - travis-tool.sh install_deps
   - Rscript -e "install.packages('remotes', repos = 'http://cran.us.r-project.org');"
   - Rscript -e "remotes::install_github(repo = 'gabraham/flashpca/flashpcaR')"
 
 test_script:
-#  - travis-tool.sh run_tests
-  - Rscript -e "install.packages('devtools', repos = 'http://cran.us.r-project.org');"
-  - Rscript -e "remotes::install_github(repo = 'mcanouil/CARoT')"
-  - Rscript -e "devtools::check('CARoT')"
+  - travis-tool.sh run_tests
+  # - Rscript -e "install.packages('devtools', repos = 'http://cran.us.r-project.org');"
+  # - Rscript -e "remotes::install_github(repo = 'mcanouil/CARoT')"
+  # - Rscript -e "devtools::check('CARoT')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
