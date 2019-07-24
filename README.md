@@ -13,16 +13,14 @@ tag](https://img.shields.io/github/tag/mcanouil/CARoT.svg?label=%22latest%20tag%
 Status](https://travis-ci.org/mcanouil/CARoT.svg?branch=master)](https://travis-ci.org/mcanouil/CARoT)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/mcanouil/CARoT?branch=master&svg=true)](https://ci.appveyor.com/project/mcanouil/CARoT)
-[![Coverage Status
-(codecov)](https://codecov.io/gh/mcanouil/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/mcanouil/CARoT)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/CARoT)](https://cran.r-project.org/package=CARoT)
-[![cran
-checks\_worst](https://cranchecks.info/badges/worst/CARoT)](https://cran.r-project.org/web/checks/check_results_CARoT.html)
-[![CRAN\_Download\_total](http://cranlogs.r-pkg.org/badges/grand-total/CARoT)](https://cran.r-project.org/package=CARoT)
-<!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2719/badge)](https://bestpractices.coreinfrastructure.org/projects/2719)-->
-<!--[![cran checks_summary](https://cranchecks.info/badges/summary/CARoT)](https://cran.r-project.org/web/checks/check_results_CARoT.html)-->
-<!--[![CRAN_Download_month](http://cranlogs.r-pkg.org/badges/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT)-->
-<!--[![Coverage Status (coveralls)](https://coveralls.io/repos/github/mcanouil/CARoT/badge.svg?branch=master)](https://coveralls.io/github/mcanouil/CARoT?branch=master)-->
+<!--[![Coverage Status (codecov)](https://codecov.io/gh/mcanouil/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/mcanouil/CARoT) -->
+<!--[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-ago/CARoT)](https://cran.r-project.org/package=CARoT) -->
+<!--[![cran checks_worst](https://cranchecks.info/badges/worst/CARoT)](https://cran.r-project.org/web/checks/check_results_CARoT.html) -->
+<!--[![CRAN_Download_total](http://cranlogs.r-pkg.org/badges/grand-total/CARoT)](https://cran.r-project.org/package=CARoT) -->
+<!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2719/badge)](https://bestpractices.coreinfrastructure.org/projects/2719) -->
+<!--[![cran checks_summary](https://cranchecks.info/badges/summary/CARoT)](https://cran.r-project.org/web/checks/check_results_CARoT.html) -->
+<!--[![CRAN_Download_month](http://cranlogs.r-pkg.org/badges/CARoT?color=brightgreen)](https://cran.r-project.org/package=CARoT) -->
+<!--[![Coverage Status (coveralls)](https://coveralls.io/repos/github/mcanouil/CARoT/badge.svg?branch=master)](https://coveralls.io/github/mcanouil/CARoT?branch=master) -->
 <!-- badges: end -->
 
 ## Installation
