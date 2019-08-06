@@ -10,6 +10,7 @@
 #' @param splitted_by_chr A `logical`. Is the VCFs files splitted by chromosome?
 #' @param quality_tag A `character`. Name of the imputation quality tag for `"array"`.
 #' @param quality_threshold A `numeric`. The threshold to keep/discard SNPs based on their imputation quality.
+#' @param recode A `character`. Which VCF should be filtered and recode, either `"all"` or `"input"`.
 #' @param n_cores An `integer`. The number of CPUs to use to estimate the ethnicity.
 #' @param bin_path A `list(character)`. A list giving the binary path of
 #'   `vcftools`, `bcftools`, `bgzip`, `tabix` and `plink1.9`.
@@ -27,6 +28,7 @@ estimate_ethnicity <- function(
   splitted_by_chr = TRUE,
   quality_tag = "INFO",
   quality_threshold = 0.9,
+  recode = "all",
   n_cores = 6,
   bin_path = list(
     vcftools = "/usr/bin/vcftools",
@@ -80,6 +82,7 @@ estimate_ethnicity <- function(
           ref1kg_maf = ref1kg_maf,
           quality_tag = quality_tag,
           quality_threshold = quality_threshold,
+          recode = recode,
           n_cores = n_cores,
           bin_path = bin_path
         )
@@ -103,6 +106,7 @@ estimate_ethnicity <- function(
         output_directory = output_directory,
         ref1kg_vcfs = list_ref,
         ref1kg_maf = ref1kg_maf,
+        recode = recode,
         bin_path = bin_path
       )
     }
@@ -227,6 +231,7 @@ format_vcf <- function(
   quality_tag,
   quality_threshold,
   output_directory,
+  recode,
   bin_path
 ) {
   temp_directory <- paste0(tempdir(), "/chr", ichr)
@@ -243,8 +248,28 @@ format_vcf <- function(
     output_merge <- paste0(output_directory, sprintf("/chr%02d_merged.vcf.gz", ichr))
   }
 
+  switch(
+    EXPR = recode,
+    "all" = {
+      out_cmd <- system(
+        intern = TRUE, wait = TRUE,
+        command = paste(
+          bin_path[["vcftools"]],
+          "--gzvcf", ref1kg_vcfs,
+          "--maf", ref1kg_maf,
+          "--recode",
+          "--stdout",
+          "|", bin_path[["bgzip"]], "-c >", output_ref,
+          "&&",
+          bin_path[["tabix"]], "-p vcf", output_ref
+        )
+      )
+    },
+    "input" = { output_ref <- ref1kg_vcfs }
+  )
+
   out_cmd <- system(
-    ignore.stdout = FALSE, intern = TRUE, wait = TRUE, ignore.stderr = FALSE,
+    intern = TRUE, wait = TRUE,
     command = paste(
       if (!is.null(quality_tag)) {
         paste(bin_path[["vcftools"]],
@@ -274,15 +299,6 @@ format_vcf <- function(
       "|", bin_path[["bgzip"]], "-c >", output_study,
       "&&",
       bin_path[["tabix"]], "-p vcf", output_study,
-      "&&",
-      bin_path[["vcftools"]],
-      "--gzvcf", ref1kg_vcfs,
-      "--maf", ref1kg_maf,
-      "--recode",
-      "--stdout",
-      "|", bin_path[["bgzip"]], "-c >", output_ref,
-      "&&",
-      bin_path[["tabix"]], "-p vcf", output_ref,
       "&&",
       bin_path[["bcftools"]], "isec",
       "--collapse none",
@@ -350,6 +366,7 @@ format_array_chr <- function(
   ref1kg_maf,
   quality_tag,
   quality_threshold,
+  recode,
   n_cores,
   bin_path
 ) {
@@ -384,6 +401,7 @@ format_array_chr <- function(
         quality_tag = mc_quality_tag,
         quality_threshold = mc_quality_threshold,
         output_directory = mc_output_directory,
+        recode = recode,
         bin_path = bin_path
       )
   })
@@ -449,6 +467,7 @@ format_array_all <- function(
   ref1kg_maf,
   quality_tag,
   quality_threshold,
+  recode,
   bin_path
 ) {
   format_vcf(
@@ -459,6 +478,7 @@ format_array_all <- function(
     quality_tag = quality_tag,
     quality_threshold = quality_threshold,
     output_directory = output_directory,
+    recode,
     bin_path = bin_path
   )
 
@@ -497,6 +517,7 @@ format_sequencing <- function(
   output_directory,
   ref1kg_vcfs,
   ref1kg_maf,
+  recode,
   bin_path
 ) {
   merged_vcfs <- merge_vcf(
@@ -512,6 +533,7 @@ format_sequencing <- function(
     quality_tag = NULL,
     quality_threshold = NULL,
     output_directory = output_directory,
+    recode = recode,
     bin_path = bin_path
   )
 
