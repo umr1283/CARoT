@@ -5,7 +5,7 @@
 \title{format_sequencing}
 \usage{
 format_sequencing(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
-  ref1kg_maf, bin_path)
+  ref1kg_maf, recode, bin_path)
 }
 \arguments{
 \item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
@@ -17,6 +17,8 @@ format_sequencing(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
 \item{ref1kg_vcfs}{A \code{character}. A path to the reference VCFs files (i.e., 1,000 Genomes sequencing data).}
 
 \item{ref1kg_maf}{A \code{numeric}. MAF threshold for SNPs in 1,000 Genomes}
+
+\item{recode}{A \code{character}. Which VCF should be filtered and recode, either \code{"all"} or \code{"input"}.}
 
 \item{bin_path}{A \code{list(character)}. A list giving the binary path of
 \code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}

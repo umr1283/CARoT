@@ -5,7 +5,7 @@
 \title{format_array_all}
 \usage{
 format_array_all(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
-  ref1kg_maf, quality_tag, quality_threshold, bin_path)
+  ref1kg_maf, quality_tag, quality_threshold, recode, bin_path)
 }
 \arguments{
 \item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
@@ -18,9 +18,12 @@ format_array_all(cohort_name, input_vcfs, output_directory, ref1kg_vcfs,
 
 \item{ref1kg_maf}{A \code{numeric}. MAF threshold for SNPs in 1,000 Genomes}
 
-\item{quality_tag}{A \code{character}. Name of the imputation quality tag for \code{"array"}.}
+\item{quality_tag}{A \code{character}. Name of the imputation quality tag for \code{"array"},
+\emph{e.g.}, \code{"INFO"} or \code{"R2"}. Default is \code{NULL}.}
 
 \item{quality_threshold}{A \code{numeric}. The threshold to keep/discard SNPs based on their imputation quality.}
+
+\item{recode}{A \code{character}. Which VCF should be filtered and recode, either \code{"all"} or \code{"input"}.}
 
 \item{bin_path}{A \code{list(character)}. A list giving the binary path of
 \code{vcftools}, \code{bcftools}, \code{bgzip}, \code{tabix} and \code{plink1.9}.}
