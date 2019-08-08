@@ -249,8 +249,10 @@ format_vcf <- function(
   output_study_final <- paste0(temp_directory, "/study/final_", basename(input_vcfs))
   output_ref <- paste0(temp_directory, "/ref/filtered_", basename(ref1kg_vcfs))
   if (is.character(ichr)) {
+    output_merge_temp <- paste0(temp_directory, "/chr", ichr, "_merged.vcf.gz")
     output_merge <- paste0(output_directory, "/chr", ichr, "_merged.vcf.gz")
   } else {
+    output_merge_temp <- paste0(temp_directory, sprintf("/chr%02d_merged.vcf.gz", ichr))
     output_merge <- paste0(output_directory, sprintf("/chr%02d_merged.vcf.gz", ichr))
   }
 
@@ -337,7 +339,11 @@ format_vcf <- function(
       paste0(temp_directory, "/isec/0000.vcf.gz"),
       paste0(temp_directory, "/isec/0001.vcf.gz"),
       "--output-type z",
-      "--output", output_merge,
+      "--output", output_merge_temp,
+      "&&",
+      bin_path[["tabix"]], "-p vcf", output_merge_temp,
+      "&&",
+      bin_path[["bcftools"]], "annotate", "-x INFO,^FORMAT/GT", output_merge,
       "&&",
       bin_path[["tabix"]], "-p vcf", output_merge
     )
@@ -569,8 +575,8 @@ format_sequencing <- function(
       "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
       "--snps-only",
       "--maf", ref1kg_maf,
-      # "--hwe 0.0001",
-      # "--geno 0.1",
+      "--hwe 0.0001",
+      "--geno 0.1",
       "--make-bed",
       "--double-id",
       "--out", paste0(output_directory, "/all")
