@@ -20,14 +20,14 @@ paste0("https://svgsilh.com/svg/144965-", carot_colour, ".svg") %>%
     s_height = 1.806,
     package = "CARoT",
     p_color = paste0("#", carot_colour),
-    p_size = 7,
+    p_size = 7 * 2.5,
     p_x = 0.6,
     p_y = 1.3,
     p_family = "cf",
     spotlight = FALSE,
     h_fill = "#F87217",
     h_color = "#FFB85D",
-    dpi = 120,
+    dpi = 120 * 2.5,
     filename = "./man/figures/carot_hex.png"
   )
 
