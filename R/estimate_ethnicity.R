@@ -8,7 +8,8 @@
 #' @param ref1kg_population A `character`. A file which describe samples and their ethnicity.
 #' @param ref1kg_maf A `numeric`. MAF threshold for SNPs in 1,000 Genomes
 #' @param splitted_by_chr A `logical`. Is the VCFs files splitted by chromosome?
-#' @param quality_tag A `character`. Name of the imputation quality tag for `"array"`.
+#' @param quality_tag A `character`. Name of the imputation quality tag for `"array"`,
+#'   *e.g.*, `"INFO"` or `"R2"`. Default is `NULL`.
 #' @param quality_threshold A `numeric`. The threshold to keep/discard SNPs based on their imputation quality.
 #' @param recode A `character`. Which VCF should be filtered and recode, either `"all"` or `"input"`.
 #' @param n_cores An `integer`. The number of CPUs to use to estimate the ethnicity.
@@ -26,7 +27,7 @@ estimate_ethnicity <- function(
   ref1kg_population,
   ref1kg_maf = 0.05,
   splitted_by_chr = TRUE,
-  quality_tag = "INFO",
+  quality_tag = NULL,
   quality_threshold = 0.9,
   recode = "all",
   n_cores = 6,
@@ -64,6 +65,10 @@ estimate_ethnicity <- function(
       message_prefix, 'A unique vcf file ("ref1kg_vcfs") must be provided ',
       'with `input_type = "array"` & `splitted_by_chr = FALSE`!'
     )
+  }
+
+  if (input_type=="sequencing") {
+    quality_tag <- NULL
   }
 
   ######################
@@ -318,7 +323,7 @@ format_vcf <- function(
     )
   )
 
-  unlink(x = temp_directory, recursive = TRUE)
+  # unlink(x = temp_directory, recursive = TRUE)
 
   invisible()
 }
@@ -552,10 +557,10 @@ format_sequencing <- function(
     )
   )
 
-  unlink(
-    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
-    recursive = TRUE
-  )
+  # unlink(
+  #   x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+  #   recursive = TRUE
+  # )
 
   invisible()
 }
