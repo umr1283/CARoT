@@ -313,7 +313,7 @@ format_vcf <- function(
       "--remove-filtered-all",
       "--max-missing-count 1",
       "--recode",
-      "--recode-INFO-all", # recode or not ?
+      # "--recode-INFO-all", # recode or not ?
       "--stdout",
       "|", bin_path[["bgzip"]], "-c >", output_study_temp,
       "&&",
