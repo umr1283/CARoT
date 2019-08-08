@@ -275,7 +275,7 @@ format_vcf <- function(
   )
 
   chr_conv_file <- tempfile(fileext = ".conv")
-  write.table(
+  utils::write.table(
     x = rbind(
       matrix(paste0(c("chr", ""), rep(c(1:22, "X", "Y"), each = 2)), byrow = TRUE, ncol = 2),
       matrix(rep(c(1:22, "X", "Y"), each = 2), byrow = TRUE, ncol = 2)
