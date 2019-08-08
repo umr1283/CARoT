@@ -245,7 +245,8 @@ format_vcf <- function(
     FUN = dir.create,
     recursive = TRUE, showWarnings = FALSE, mode = '0777'
   ))
-  output_study <- paste0(temp_directory, "/study/filtered_", basename(input_vcfs))
+  output_study_temp <- paste0(temp_directory, "/study/filtered_", basename(input_vcfs))
+  output_study_final <- paste0(temp_directory, "/study/final_", basename(input_vcfs))
   output_ref <- paste0(temp_directory, "/ref/filtered_", basename(ref1kg_vcfs))
   if (is.character(ichr)) {
     output_merge <- paste0(output_directory, "/chr", ichr, "_merged.vcf.gz")
@@ -273,6 +274,19 @@ format_vcf <- function(
     "input" = { output_ref <- ref1kg_vcfs }
   )
 
+  chr_conv_file <- tempfile(fileext = ".conv")
+  write.table(
+    x = rbind(
+      matrix(paste0(c("chr", ""), rep(c(1:22, "X", "Y"), each = 2)), byrow = TRUE, ncol = 2),
+      matrix(rep(c(1:22, "X", "Y"), each = 2), byrow = TRUE, ncol = 2)
+    ),
+    file = chr_conv_file,
+    quote = FALSE,
+    sep = " ",
+    row.names = FALSE,
+    col.names = FALSE
+  )
+
   out_cmd <- system(
     intern = TRUE, wait = TRUE,
     command = paste(
@@ -280,11 +294,11 @@ format_vcf <- function(
         paste(bin_path[["vcftools"]],
           "--gzvcf", input_vcfs,
           "--get-INFO", quality_tag,
-          "--out", gsub("filtered_", "excluded_", output_study),
+          "--out", gsub("filtered_", "excluded_", output_study_temp),
           "&&",
           'awk \'{if($5<', quality_threshold, ') print $1"\t"$2}\'',
-          paste0(gsub("filtered_", "excluded_", output_study), ".INFO"),
-          ">", paste0(gsub("filtered_", "excluded_", output_study), ".exclude"),
+          paste0(gsub("filtered_", "excluded_", output_study_temp), ".INFO"),
+          ">", paste0(gsub("filtered_", "excluded_", output_study_temp), ".exclude"),
           "&&"
         )
       },
@@ -292,23 +306,29 @@ format_vcf <- function(
       "--gzvcf", input_vcfs,
       if (!is.null(quality_tag)) {
         paste0(
-          "--exclude-positions ", gsub("filtered_", "excluded_", output_study), ".exclude"
+          "--exclude-positions ", gsub("filtered_", "excluded_", output_study_temp), ".exclude"
         )
       },
       "--remove-indels",
       "--remove-filtered-all",
       "--max-missing-count 1",
       "--recode",
-      "--recode-INFO-all",
+      "--recode-INFO-all", # recode or not ?
       "--stdout",
-      "|", bin_path[["bgzip"]], "-c >", output_study,
+      "|", bin_path[["bgzip"]], "-c >", output_study_temp,
       "&&",
-      bin_path[["tabix"]], "-p vcf", output_study,
+      bin_path[["tabix"]], "-p vcf", output_study_temp,
+      "&&",
+      bin_path[["bcftools"]], "annotate",
+      "--rename-chrs", chr_conv_file, output_study_temp,
+      "|", bin_path[["bgzip"]], "-c >", output_study_final,
+      "&&",
+      bin_path[["tabix"]], "-p vcf", output_study_final,
       "&&",
       bin_path[["bcftools"]], "isec",
       "--collapse none",
       "--nfiles=2",
-      output_study,
+      output_study_final,
       output_ref,
       "--output-type z",
       "--prefix", paste0(temp_directory, "/isec"),
@@ -549,8 +569,8 @@ format_sequencing <- function(
       "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
       "--snps-only",
       "--maf", ref1kg_maf,
-      "--hwe 0.0001",
-      "--geno 0.1",
+      # "--hwe 0.0001",
+      # "--geno 0.1",
       "--make-bed",
       "--double-id",
       "--out", paste0(output_directory, "/all")
