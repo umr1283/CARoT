@@ -6,28 +6,28 @@ library(showtext)
 font_add_google("Lemon", "cf")
 showtext_auto()
 
-paste0("https://svgsilh.com/svg/144965-FFB85D.svg") %>%
-  image_read_svg() %>%
-  image_background(color = "transparent") %>%
-  image_rotate(degrees = -24) %>%
-  sticker(
-    subplot = .,
-    s_x = 1.21,
-    s_y = 0.88,
-    s_width = 1.580,
-    s_height = 1.806,
-    package = "CARoT",
-    p_color = "#FFB85D",
-    p_size = 7 * 2.5,
-    p_x = 0.6,
-    p_y = 1.3,
-    p_family = "cf",
-    spotlight = FALSE,
-    h_fill = "#F87217",
-    h_color = "#FFB85D",
-    dpi = 120 * 2.5,
-    filename = "./man/figures/carot_hex.png"
-  )
+# paste0("https://svgsilh.com/svg/144965-FFB85D.svg") %>%
+#   image_read_svg() %>%
+#   image_background(color = "transparent") %>%
+#   image_rotate(degrees = -24) %>%
+#   sticker(
+#     subplot = .,
+#     s_x = 1.21,
+#     s_y = 0.88,
+#     s_width = 1.580,
+#     s_height = 1.806,
+#     package = "CARoT",
+#     p_color = "#FFB85D",
+#     p_size = 7 * 2.5,
+#     p_x = 0.6,
+#     p_y = 1.3,
+#     p_family = "cf",
+#     spotlight = FALSE,
+#     h_fill = "#F87217",
+#     h_color = "#FFB85D",
+#     dpi = 120 * 2.5,
+#     filename = "./man/figures/carot_hex.png"
+#   )
 
 ## move SVG position and different colours set
 for (icolour in 1:4) {
@@ -111,3 +111,5 @@ for (icolour in 1:4) {
     )
   # image_read(paste0("./man/figures/carot_hex", icolour, "c.png"))
 }
+
+file.copy(paste0("./man/figures/carot_hex2b.png"), paste0("./man/figures/carot_hex.png"), overwrite = TRUE)
