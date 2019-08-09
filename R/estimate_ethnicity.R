@@ -240,6 +240,7 @@ format_vcf <- function(
   bin_path
 ) {
   temp_directory <- paste0(tempdir(), "/chr", ichr)
+  # temp_directory <- paste0("/disks/PROJECT/MGSD_MartineVaxillaire/Data/01-ethnicity", "/chr", ichr)
   invisible(sapply(
     X = paste0(temp_directory, c("/study", "/ref", "/isec")),
     FUN = dir.create,
@@ -343,7 +344,9 @@ format_vcf <- function(
       "&&",
       bin_path[["tabix"]], "-p vcf", output_merge_temp,
       "&&",
-      bin_path[["bcftools"]], "annotate", "-x INFO,^FORMAT/GT", output_merge,
+      bin_path[["bcftools"]], "annotate", "-x INFO,^FORMAT/GT", output_merge_temp,
+      "--output-type z",
+      "--output", output_merge,
       "&&",
       bin_path[["tabix"]], "-p vcf", output_merge
     )
@@ -579,6 +582,7 @@ format_sequencing <- function(
       "--geno 0.1",
       "--make-bed",
       "--double-id",
+      "--vcf-half-call 'missing'",
       "--out", paste0(output_directory, "/all")
     )
   )
