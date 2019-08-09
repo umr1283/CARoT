@@ -16,6 +16,7 @@
     + fix chromosome pattern recognition to allow VCF files to start with the chromosome id.
     + now check if binary exists at the path prodived in `bin_path` argument.
     + fix when IDs contains "_".
+    + fix when chromosome id in VCF includes "chr".
     + add `check_*` functions.
     + export `compute_pca()`.
 * In `R/qc_plink.R`,
