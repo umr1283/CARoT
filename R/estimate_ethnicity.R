@@ -240,7 +240,6 @@ format_vcf <- function(
   bin_path
 ) {
   temp_directory <- paste0(tempdir(), "/chr", ichr)
-  # temp_directory <- paste0("/disks/PROJECT/MGSD_MartineVaxillaire/Data/01-ethnicity", "/chr", ichr)
   invisible(sapply(
     X = paste0(temp_directory, c("/study", "/ref", "/isec")),
     FUN = dir.create,
@@ -316,7 +315,6 @@ format_vcf <- function(
       "--remove-filtered-all",
       "--max-missing-count 1",
       "--recode",
-      # "--recode-INFO-all", # recode or not ?
       "--stdout",
       "|", bin_path[["bgzip"]], "-c >", output_study_temp,
       "&&",
@@ -352,7 +350,7 @@ format_vcf <- function(
     )
   )
 
-  # unlink(x = temp_directory, recursive = TRUE)
+  unlink(x = temp_directory, recursive = TRUE)
 
   invisible()
 }
@@ -587,10 +585,10 @@ format_sequencing <- function(
     )
   )
 
-  # unlink(
-  #   x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
-  #   recursive = TRUE
-  # )
+  unlink(
+    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+    recursive = TRUE
+  )
 
   invisible()
 }
@@ -724,7 +722,8 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   #################
   message(message_prefix, "Exporting ...")
   ggplot2::ggsave(
-    filename = paste0(output_directory, "/", cohort_name, "_ethnicity.tiff"),
+    filename = paste0(output_directory, "/", cohort_name, "_ethnicity"),
+    device = "png",
     plot = p_ethni,
     width = 6.3,
     height = 4.7 * 1.5,
