@@ -30,8 +30,8 @@ Status](https://ci.appveyor.com/api/projects/status/github/mcanouil/CARoT?branch
 install.packages("CARoT")
 
 # Or the the development version from GitHub:
-# install.packages("devtools")
-devtools::install_github("mcanouil/CARoT")
+# install.packages("remotes")
+remotes::install_github("mcanouil/CARoT")
 ```
 
 ## Overview
