@@ -6,11 +6,7 @@ library(showtext)
 font_add_google("Lemon", "cf")
 showtext_auto()
 
-icolour <- 1
-
-carot_colour <- c("FFB85D", "00ee76")[icolour]
-
-paste0("https://svgsilh.com/svg/144965-", carot_colour, ".svg") %>%
+paste0("https://svgsilh.com/svg/144965-FFB85D.svg") %>%
   image_read_svg() %>%
   image_background(color = "transparent") %>%
   image_rotate(degrees = -24) %>%
@@ -21,14 +17,14 @@ paste0("https://svgsilh.com/svg/144965-", carot_colour, ".svg") %>%
     s_width = 1.580,
     s_height = 1.806,
     package = "CARoT",
-    p_color = paste0("#", carot_colour),
+    p_color = "#FFB85D",
     p_size = 7 * 2.5,
     p_x = 0.6,
     p_y = 1.3,
     p_family = "cf",
     spotlight = FALSE,
-    h_fill = c("#F87217", "#008b45")[icolour],
-    h_color = c("#FFB85D", "#00ee76")[icolour],
+    h_fill = "#F87217",
+    h_color = "#FFB85D",
     dpi = 120 * 2.5,
     filename = "./man/figures/carot_hex.png"
   )
