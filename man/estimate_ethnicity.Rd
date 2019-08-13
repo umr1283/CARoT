@@ -7,10 +7,10 @@
 estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
   ref1kg_vcfs, ref1kg_population, ref1kg_maf = 0.05,
   splitted_by_chr = TRUE, quality_tag = NULL,
-  quality_threshold = 0.9, recode = "all", n_cores = 6,
-  bin_path = list(vcftools = "/usr/bin/vcftools", bcftools =
-  "/usr/bin/bcftools", bgzip = "/usr/bin/bgzip", tabix = "/usr/bin/tabix",
-  plink1.9 = "/usr/bin/plink1.9"))
+  quality_threshold = 0.9, recode = "all", vcf_half_call = "missing",
+  n_cores = 6, bin_path = list(vcftools = "/usr/bin/vcftools", bcftools
+  = "/usr/bin/bcftools", bgzip = "/usr/bin/bgzip", tabix =
+  "/usr/bin/tabix", plink1.9 = "/usr/bin/plink1.9"))
 }
 \arguments{
 \item{cohort_name}{A \code{character}. A name to describe the studied population compared to 1,000 Genomes.}
@@ -35,6 +35,11 @@ estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
 \item{quality_threshold}{A \code{numeric}. The threshold to keep/discard SNPs based on their imputation quality.}
 
 \item{recode}{A \code{character}. Which VCF should be filtered and recode, either \code{"all"} or \code{"input"}.}
+
+\item{vcf_half_call}{A \code{character}. The mode to handle half-call.
++ 'haploid'/'h': Treat half-calls as haploid/homozygous (the PLINK 1 file format does not distinguish between the two). This maximizes similarity between the VCF and BCF2 parsers.
++ 'missing'/'m': Treat half-calls as missing (default).
++ 'reference'/'r': Treat the missing part as reference.}
 
 \item{n_cores}{An \code{integer}. The number of CPUs to use to estimate the ethnicity.}
 
