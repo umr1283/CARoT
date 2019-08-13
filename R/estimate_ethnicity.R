@@ -12,6 +12,10 @@
 #'   *e.g.*, `"INFO"` or `"R2"`. Default is `NULL`.
 #' @param quality_threshold A `numeric`. The threshold to keep/discard SNPs based on their imputation quality.
 #' @param recode A `character`. Which VCF should be filtered and recode, either `"all"` or `"input"`.
+#' @param vcf_half_call A `character`. The mode to handle half-call.
+#'     + 'haploid'/'h': Treat half-calls as haploid/homozygous (the PLINK 1 file format does not distinguish between the two). This maximizes similarity between the VCF and BCF2 parsers.
+#'     + 'missing'/'m': Treat half-calls as missing (default).
+#'     + 'reference'/'r': Treat the missing part as reference.
 #' @param n_cores An `integer`. The number of CPUs to use to estimate the ethnicity.
 #' @param bin_path A `list(character)`. A list giving the binary path of
 #'   `vcftools`, `bcftools`, `bgzip`, `tabix` and `plink1.9`.
@@ -30,6 +34,7 @@ estimate_ethnicity <- function(
   quality_tag = NULL,
   quality_threshold = 0.9,
   recode = "all",
+  vcf_half_call = "missing",
   n_cores = 6,
   bin_path = list(
     vcftools = "/usr/bin/vcftools",
@@ -550,6 +555,7 @@ format_sequencing <- function(
   ref1kg_vcfs,
   ref1kg_maf,
   recode,
+  vcf_half_call,
   bin_path
 ) {
   merged_vcfs <- merge_vcf(
@@ -580,7 +586,7 @@ format_sequencing <- function(
       "--geno 0.1",
       "--make-bed",
       "--double-id",
-      "--vcf-half-call 'missing'",
+      "--vcf-half-call", paste0("'", vcf_half_call, "'"),
       "--out", paste0(output_directory, "/all")
     )
   )

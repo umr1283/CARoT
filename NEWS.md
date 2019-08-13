@@ -19,6 +19,7 @@
     + fix when chromosome id in VCF includes "chr".
     + add `check_*` functions.
     + export `compute_pca()`.
+    + add a `vcf_half_call` parameter to handle half-call when converting VCF to PLINK format.
 * In `R/qc_plink.R`,
     + fix roxygen doc for parameter `n_cores` to make it consistent with the current default values.
     + add `cohort_name` parameter.
