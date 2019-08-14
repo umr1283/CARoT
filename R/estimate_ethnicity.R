@@ -117,6 +117,7 @@ estimate_ethnicity <- function(
         ref1kg_vcfs = list_ref,
         ref1kg_maf = ref1kg_maf,
         recode = recode,
+        vcf_half_call = vcf_half_call,
         bin_path = bin_path
       )
     }
@@ -469,7 +470,7 @@ format_array_chr <- function(
       bin_path[["plink1.9"]],
       "--vcf", paste0(output_directory, "/all.vcf.gz"),
       "--snps-only",
-      "--maf", 0.01,
+      "--maf", ref1kg_maf,
       "--hwe 0.0001",
       "--geno 0.1",
       "--make-bed",
@@ -582,7 +583,7 @@ format_sequencing <- function(
       "--vcf", list.files(path = output_directory, pattern = "_merged.vcf.gz$", full.names = TRUE),
       "--snps-only",
       "--maf", ref1kg_maf,
-      "--hwe 0.0001",
+      # "--hwe 0.0001",
       "--geno 0.1",
       "--make-bed",
       "--double-id",
@@ -591,10 +592,10 @@ format_sequencing <- function(
     )
   )
 
-  unlink(
-    x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
-    recursive = TRUE
-  )
+  # unlink(
+  #   x = list.files(path = output_directory, pattern = "_merged.vcf.gz", full.names = TRUE),
+  #   recursive = TRUE
+  # )
 
   invisible()
 }
@@ -728,8 +729,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   #################
   message(message_prefix, "Exporting ...")
   ggplot2::ggsave(
-    filename = paste0(output_directory, "/", cohort_name, "_ethnicity"),
-    device = "png",
+    filename = paste0(output_directory, "/", cohort_name, "_ethnicity.png"),
     plot = p_ethni,
     width = 6.3,
     height = 4.7 * 1.5,
