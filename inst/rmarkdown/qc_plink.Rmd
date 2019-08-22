@@ -1832,20 +1832,20 @@ system(command = paste(
   "--bfile", paste0(temp_directory, "/clean_data_tmp"), 
   "--remove", paste0(temp_directory, "/samples_toexclude_pca_within.txt"), 
   "--make-bed", 
-  "--out", paste0(temp_directory, "/clean_data_tmp_within")
+  "--out", paste0(temp_directory, "/clean_data_tmp_within_a")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
 system(command = paste(
   params[["bin_path"]][["gcta"]], 
-  "--bfile", paste0(temp_directory, "/clean_data_tmp_within"), 
+  "--bfile", paste0(temp_directory, "/clean_data_tmp_within_a"), 
   "--make-grm-bin", 
   "--thread-num", params[["n_cores"]],
-  "--out", paste0(temp_directory, "/clean_data_tmp_within")
+  "--out", paste0(temp_directory, "/clean_data_tmp_within_b")
 ), ignore.stdout = TRUE, ignore.stderr = TRUE)
 
 system(command = paste(
   params[["bin_path"]][["gcta"]], 
-  "--grm", paste0(temp_directory, "/clean_data_tmp_within"), 
+  "--grm", paste0(temp_directory, "/clean_data_tmp_within_b"), 
   "--pca", params[["pca_components"]],
   "--thread-num", params[["n_cores"]],
   "--out", paste0(temp_directory, "/clean_data_tmp_within")
