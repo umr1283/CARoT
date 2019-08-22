@@ -1,3 +1,11 @@
+# CARoT 0.3.1 (development version)
+
+## Minor improvements and fixes
+
+* In `inst/rmarkdown/qc_plink.Rmd`,
+    + in `file-management`chunk, each plink steps to prepare files for imputation now 
+        generate different files to avoid names conflicts.
+
 # CARoT 0.3.0 (development version)
 
 ## New features
