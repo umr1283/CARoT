@@ -2288,20 +2288,20 @@ if (file.exists(paste0(imputation_filename, "_tmp1.hh"))) {
     "--bfile", paste0(imputation_filename, "_tmp1"), 
     "--exclude", paste0(imputation_filename, "_tmp1.hh"), 
     "--make-bed", 
-    "--out", paste0(imputation_filename, "_tmp2")
+    "--out", imputation_filename
   ))
 } else {
   system(command = paste(
     params[["bin_path"]][["plink"]], 
     "--bfile", paste0(imputation_filename, "_tmp1"), 
     "--make-bed", 
-    "--out", paste0(imputation_filename, "_tmp2")
+    "--out", imputation_filename
   ))
 }
 
 system(command = paste(
   params[["bin_path"]][["plink"]], 
-  "--bfile", paste0(imputation_filename, "_tmp2"), 
+  "--bfile", imputation_filename, 
   "--freq", 
   "--out", imputation_filename
 ))
