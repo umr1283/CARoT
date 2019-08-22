@@ -2279,29 +2279,29 @@ system(command = paste(
   "--extract", paste0(temp_directory, "/uniq_snps_list.txt"), 
   "--hwe", params[["hwe_pvalue"]],
   "--make-bed", 
-  "--out", imputation_filename
+  "--out", paste0(imputation_filename, "_tmp1")
 ))
 
-if (file.exists(paste0(imputation_filename, ".hh"))) {
+if (file.exists(paste0(imputation_filename, "_tmp1.hh"))) {
   system(command = paste(
     params[["bin_path"]][["plink"]], 
-    "--bfile", imputation_filename, 
-    "--exclude", paste0(imputation_filename, ".hh"), 
+    "--bfile", paste0(imputation_filename, "_tmp1"), 
+    "--exclude", paste0(imputation_filename, "_tmp1.hh"), 
     "--make-bed", 
-    "--out", imputation_filename
+    "--out", paste0(imputation_filename, "_tmp2")
   ))
 } else {
   system(command = paste(
     params[["bin_path"]][["plink"]], 
-    "--bfile", imputation_filename, 
+    "--bfile", paste0(imputation_filename, "_tmp1"), 
     "--make-bed", 
-    "--out", imputation_filename
+    "--out", paste0(imputation_filename, "_tmp2")
   ))
 }
 
 system(command = paste(
   params[["bin_path"]][["plink"]], 
-  "--bfile", imputation_filename, 
+  "--bfile", paste0(imputation_filename, "_tmp2"), 
   "--freq", 
   "--out", imputation_filename
 ))
