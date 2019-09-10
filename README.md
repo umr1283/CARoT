@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![GitHub
-tag](https://img.shields.io/github/tag/mcanouil/CARoT.svg?label=%22latest%20tag%22)](https://github.com/mcanouil/CARoT)
+tag](https://img.shields.io/github/tag/mcanouil/CARoT.svg?label=latest%20tag)](https://github.com/mcanouil/CARoT)
 [![Travis-CI Build
 Status](https://travis-ci.org/mcanouil/CARoT.svg?branch=master)](https://travis-ci.org/mcanouil/CARoT)
 [![AppVeyor Build
