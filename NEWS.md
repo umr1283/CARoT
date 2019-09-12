@@ -5,6 +5,9 @@
 * In `inst/rmarkdown/qc_plink.Rmd`,
     + in `file-management`chunk, each plink steps to prepare files for imputation now 
         generate different files to avoid names conflicts.
+* In `R/qc_idats.R`,
+    + fix wrong annotation package for Illumina 450k methylation array.
+    + change `"MethPipe"` with `"CARoT"` in messages.
 
 # CARoT 0.3.0 (development version)
 

@@ -68,24 +68,24 @@ read_idats <- function(
   ))
 
   message(
-    "=================================", "\n",
-    "[MethPipe] ", "Reading IDAT files ...", "\n",
-    "================================="
+    "==============================", "\n",
+    "[CARoT] ", "Reading IDAT files ...", "\n",
+    "=============================="
   )
   sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
   rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
 
   rgSet@annotation <- switch(
     EXPR = array_name,
-    "450k" = c(array = "IlluminaHumanMethylation450kanno", annotation = annotation_version),
+    "450k" = c(array = "IlluminaHumanMethylation450k", annotation = annotation_version),
     "EPIC" = c(array = "IlluminaHumanMethylationEPIC", annotation = annotation_version)
   )
 
   message(
     "\n", "\n",
-    "=======================================", "\n",
-    "[MethPipe] ", "Preprocessing IDAT files ...", "\n",
-    "======================================="
+    "====================================", "\n",
+    "[CARoT] ", "Preprocessing IDAT files ...", "\n",
+    "===================================="
   )
   minfi::sampleNames(rgSet) <- rgSet[[1]]
 
@@ -142,9 +142,9 @@ read_idats <- function(
 
   message(
     "\n",
-    "===================================", "\n",
-    "[MethPipe] ", "Filtering IDAT files ...", "\n",
-    "==================================="
+    "================================", "\n",
+    "[CARoT] ", "Filtering IDAT files ...", "\n",
+    "================================"
   )
 
   if (filter_beads) {
@@ -249,9 +249,9 @@ read_idats <- function(
 
   message(
     "\n",
-    "===================================", "\n",
-    "[MethPipe] ", "Exporting IDAT files ...", "\n",
-    "==================================="
+    "================================", "\n",
+    "[CARoT] ", "Exporting IDAT files ...", "\n",
+    "================================"
   )
 
   message(
@@ -305,9 +305,9 @@ read_sample_sheet <- function(
       recursive = recursive
     )
     if (length(list_files)>1) {
-      warnings("[MethPipe] ", "More than one CSV file have been found!")
+      warnings("[CARoT] ", "More than one CSV file have been found!")
       list_files <- list.files[1]
-      message("[MethPipe] ", "File '", list.files, "' will be used.")
+      message("[CARoT] ", "File '", list.files, "' will be used.")
     }
   }
 
@@ -321,7 +321,7 @@ read_sample_sheet <- function(
   cols_missing <- default_cols[!default_cols%in%col_names]
   if (length(cols_missing)!=0) {
     stop(
-      "[MethPipe] ",
+      "[CARoT] ",
       "Sample Sheet must contains the following missing columns:\n",
       "  - ", paste(cols_missing, collapse = "\n  - ")
     )
@@ -368,7 +368,7 @@ read_metharray <- function(basenames, n_cores = 1) {
       i_filesgz_exists <- file.exists(paste0(i_files, ".gz"))
       if (!all(i_filesgz_exists)) {
         stop(
-          # "[MethPipe] ",
+          # "[CARoT] ",
           "The following specified files do not exist:\n",
           "  - ", paste(i_files[!i_files_exists], collapse = "\n  - ")
         )
@@ -483,7 +483,7 @@ read_metharray_exp <- function(
 
     if (length(Grn_files) == 0 || length(Red_files) == 0) {
       stop(
-        # "[MethPipe] ",
+        # "[CARoT] ",
         "IDAT files must be provided."
       )
     }
@@ -495,7 +495,7 @@ read_metharray_exp <- function(
 
     if (length(commonFiles) == 0) {
       stop(
-        # "[MethPipe] ",
+        # "[CARoT] ",
         '"Grn" and "Red" idats files must be provided.'
       )
     }
@@ -503,7 +503,7 @@ read_metharray_exp <- function(
     commonFiles_Grn <- paste0(commonFiles, "_Grn.idat")
     if (!setequal(commonFiles_Grn, Grn_files)) {
       warning(
-        # "[MethPipe] ",
+        # "[CARoT] ",
         "The following files only exists for the green channel:\n",
         "  - ", paste(setdiff(Grn_files, commonFiles_Grn), collapse = "\n  - ")
       )
@@ -512,7 +512,7 @@ read_metharray_exp <- function(
     commonFiles_Red <- paste0(commonFiles, "_Red.idat")
     if (!setequal(commonFiles_Red, Red_files)) {
        warning(
-        # "[MethPipe] ",
+        # "[CARoT] ",
         "The following files only exists for the red channel:\n",
         "  - ", paste(setdiff(Red_files, commonFiles_Red), collapse = "\n  - ")
       )
@@ -522,7 +522,7 @@ read_metharray_exp <- function(
   } else {
     if (!"Basename" %in% names(sample_sheet)) {
       stop(
-        # "[MethPipe] ",
+        # "[CARoT] ",
         '"Basename" must be provided as a column of "sample_sheet".'
       )
     }
