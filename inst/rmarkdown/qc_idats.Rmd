@@ -312,7 +312,7 @@ if (!do_cell_composition) {
 cell_comp <- switch(
   EXPR = params[["cell_tissue"]],
   "Blood" = {
-    FlowSorted.Blood.EPIC::estimateCellCounts2(
+    out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_mset, 
       compositeCellType = "Blood",
       processMethod = "preprocessQuantile", 
@@ -325,6 +325,8 @@ cell_comp <- switch(
       meanPlot = TRUE, 
       verbose = FALSE
     )$counts
+    colnames(out) <- paste0("CellT_", colnames(out))
+    out
   }, 
   "Chord" = {
     cat("No method defined yet")
