@@ -463,6 +463,8 @@ sex_predicted <- minfi::getSex(minfi::mapToGenome(data_mset), cutoff = params[["
 gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
 gender_threshold <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
 
+if (length(gender_threshold) > 1) gender_threshold <- median(gender_threshold)
+
 phenotypes <- phenotypes %>% 
   as.data.frame() %>% 
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
