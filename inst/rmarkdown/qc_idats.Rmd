@@ -240,7 +240,7 @@ output <- utils::capture.output({
     n_cores = params[["n_cores"]]
   )
 }, type = "message")
-output <- output[grep(pattern = "[MethPipe] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
+output <- output[grep(pattern = "[CARoT] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
 output <- output[!grepl(pattern = "^[=[]", x = output)]
 cat(output, sep = "\n\n")
 phenotypes <- data_mset@metadata[["phenotypes"]]
@@ -314,11 +314,11 @@ cell_comp <- switch(
   "Blood" = {
     FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_mset, 
-      compositeCellType = cell_tissue,
+      compositeCellType = "Blood",
       processMethod = "preprocessQuantile", 
-      probeSelect = cell_probes,
-      cellTypes = cell_types,
-      referencePlatform = paste0('IlluminaHumanMethylation', array),
+      # probeSelect = cell_probes,
+      # cellTypes = cell_types,
+      referencePlatform = paste0('IlluminaHumanMethylation', params[["array"]]),
       referenceset = NULL, 
       IDOLOptimizedCpGs = NULL, 
       returnAll = FALSE,
