@@ -54,7 +54,14 @@ Imports:
     utils
 Suggests:
     covr,
-    testthat
+    testthat,
+    ChAMPdata,
+    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    FlowSorted.Blood.450k,
+    FlowSorted.CordBlood.450k,
+    IlluminaHumanMethylationEPICanno.ilm10b4.hg19,
+    FlowSorted.Blood.EPIC,
+    FlowSorted.CordBlood.EPIC
 Remotes: github::gabraham/flashpca/flashpcaR
 LazyData: true
 RoxygenNote: 6.1.1
