@@ -92,6 +92,13 @@ read_idats <- function(
   data_detP <- minfi::detectionP(rgSet)
   data_detP[is.na(data_detP)] <- 1
 
+  message(
+    "\n",
+    "================================", "\n",
+    "[CARoT] ", "Filtering IDAT files ...", "\n",
+    "================================"
+  )
+
   if (filter_callrate) {
     good_detection <- data_detP < detection_pvalues
 
@@ -139,13 +146,6 @@ read_idats <- function(
   		call_rate = (colSums(data_detP < detection_pvalues) / nrow(data_detP))[get("Sample_ID")]
   	) %>%
     S4Vectors::DataFrame()
-
-  message(
-    "\n",
-    "================================", "\n",
-    "[CARoT] ", "Filtering IDAT files ...", "\n",
-    "================================"
-  )
 
   if (filter_beads) {
     bc <- get_beadcount(rgSet)
