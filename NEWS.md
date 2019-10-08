@@ -9,7 +9,7 @@
     + fix wrong annotation package for Illumina 450k methylation array.
     + change `"MethPipe"` with `"CARoT"` in messages.
 
-# CARoT 0.3.0 (development version)
+# CARoT 0.3.0
 
 ## New features
 
@@ -41,7 +41,7 @@
     + replace signle quote with double quotes.
 * In `R/pca_report.R`, fix merge issue when the selected column was not `"Sample_ID"` (@mboissel, #2).
 
-# CARoT 0.2.1 (development version)
+# CARoT 0.2.1
 
 ## Minor improvements and fixes
 
@@ -78,7 +78,7 @@
 * In `R/estimate_ethnicity.R`, 
     + add prefix for messages.
 
-# CARoT 0.2.0 (development version)
+# CARoT 0.2.0
 
 ## New features
 
@@ -89,7 +89,7 @@
 * In `DESCRIPTION`, add *RSpectra (<= 0.13-1)* for *flashpcaR* to `Imports`.
 * In `DESCRIPTION`, add *data.table* and *qdap* to `Imports`.
 
-# CARoT 0.1.7 (development version)
+# CARoT 0.1.7
 
 ## Minor improvements and fixes
 
@@ -98,7 +98,7 @@
 * In `inst/rmarkdown/qc_idats.Rmd`, now includes a section with the parameters used.
 * In `R/qc_idats.R`, fix a typo in the `detection_pvalues` parameter's documentation.
 
-# CARoT 0.1.6 (development version)
+# CARoT 0.1.6
 
 ## Minor improvements and fixes
 
@@ -108,26 +108,26 @@
 * In `R/qc_idats.R`, add roxygen2 documentation for `qc_idats()`.
 * In `man`, add roxygen2 documentation for `estimate_ethnicity()`, `ggheatmap()`, `pca_report()` and `qc_idats()`.
 
-# CARoT 0.1.5 (development version)
+# CARoT 0.1.5
 
 ## Minor improvements and fixes
 
 * In `inst/rmarkdown/qc_idats.Rmd`, fix markdown typos.
 
-# CARoT 0.1.4 (development version)
+# CARoT 0.1.4
 
 ## Minor improvements and fixes
 
 * In `inst/rmarkdown/qc_idats.Rmd`, fix __Methods__ section describing what `filter_` parameters do.
 
-# CARoT 0.1.3 (development version)
+# CARoT 0.1.3
 
 ## Minor improvements and fixes
 
 * In `R/qc_idats.R`, decrease default dpi value from `300` to `120`.
 * In `inst/rmarkdown/qc_idats.Rmd`, fix the bullet list in gender check section.
 
-# CARoT 0.1.2 (development version)
+# CARoT 0.1.2
 
 ## Minor improvements and fixes
 
@@ -136,7 +136,7 @@
 * In `inst/rmarkdown/qc_idats.Rmd` and `R/qc_idats.R`, `qc_idats()` has a new `cache` parameter.
 
 
-# CARoT 0.1.1 (development version)
+# CARoT 0.1.1
 
 ## Minor improvements and fixes
 
@@ -146,7 +146,7 @@
 * In `R/qc_idats.R`, remove `cat()` messages from `ENmix` functions.
 
 
-# CARoT 0.1.0 (development version)
+# CARoT 0.1.0
 
 ## New features
 
