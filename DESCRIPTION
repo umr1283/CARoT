@@ -63,6 +63,14 @@ Suggests:
     FlowSorted.Blood.EPIC,
     FlowSorted.CordBlood.EPIC
 Remotes: github::gabraham/flashpca/flashpcaR
+SystemRequirements: 
+    pandoc (>= 1.12.3) - http://pandoc.org,
+    bcftools,
+    vcftools,
+    bgzip,
+    tabix,
+    plink1.9,
+    gcta64,
 LazyData: true
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
