@@ -1,8 +1,8 @@
 #' qc_idats
 #'
-#' @param csv_file A `character`. The path to a CSV file, i.e., a sample sheet describing the data.
+#' @param csv_file A `character`. The path to a CSV file, *i.e.*, a sample sheet describing the data.
 #' @param data_directory A `character`. The path to the data directory.
-#' @param array A `character`. The array name, i.e., `"EPIC"` or `"450k"`.
+#' @param array A `character`. The array name, *i.e.*, `"EPIC"` or `"450k"`.
 #' @param annotation A `character`. The name and version of the annotation package to be used.
 #' @param cohort_name A `character`. The name of the studied cohort / population.
 #' @param output_file A `character`. The name of the html file produced.
@@ -37,17 +37,17 @@
 #'     in the file provided in `csv_file`.
 #'     Default is `NULL`.
 #' @param norm_background A `character`. Optional method to estimate background normal distribution parameters.
-#'     This must be one of "oob", "est" or "neg".
+#'     This must be one of `"oob"`, `"est"` or `"neg"`.
 #'     Default is `"oob"`.
 #' @param norm_dye A `character`. Dye bias correction, "mean": correction based on averaged red/green ratio;
-#'     or "RELIC": correction with RELIC method;
-#'     or "none": no dye bias correction.
+#'     or `"RELIC"`: correction with RELIC method;
+#'     or `"none"`: no dye bias correction.
 #'     Default is `"RELIC"`.
 #' @param norm_quantile A `character`. The quantile normalisation to be used.
-#'     This should be one of "quantile1", "quantile2", or "quantile3".
-#'     Default is `quantile1`.
+#'     This should be one of `"quantile1"`, `"quantile2"`, or `"quantile3"`.
+#'     Default is `"quantile1"`.
 #' @param cell_tissue A `character`. The cell tissue to be used for cell composition estimation,
-#'     using a reference panel (i.e., blood or chord blood) or a mathematical deconvolution.
+#'     using a reference panel (*i.e.*, `"blood"` or `"cordblood"`) or a mathematical deconvolution.
 #'     Default is `NULL`.
 #' @param pca_vars A `vector(character)`. Variables to be used with factorial planes.
 #'     Default is `c("Sample_Plate", "Sentrix_ID")`.
