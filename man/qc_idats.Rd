@@ -21,11 +21,11 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   encoding = "UTF-8", ...)
 }
 \arguments{
-\item{csv_file}{A \code{character}. The path to a CSV file, i.e., a sample sheet describing the data.}
+\item{csv_file}{A \code{character}. The path to a CSV file, \emph{i.e.}, a sample sheet describing the data.}
 
 \item{data_directory}{A \code{character}. The path to the data directory.}
 
-\item{array}{A \code{character}. The array name, i.e., \code{"EPIC"} or \code{"450k"}.}
+\item{array}{A \code{character}. The array name, \emph{i.e.}, \code{"EPIC"} or \code{"450k"}.}
 
 \item{annotation}{A \code{character}. The name and version of the annotation package to be used.}
 
@@ -78,20 +78,20 @@ in the file provided in \code{csv_file}.
 Default is \code{NULL}.}
 
 \item{norm_background}{A \code{character}. Optional method to estimate background normal distribution parameters.
-This must be one of "oob", "est" or "neg".
+This must be one of \code{"oob"}, \code{"est"} or \code{"neg"}.
 Default is \code{"oob"}.}
 
 \item{norm_dye}{A \code{character}. Dye bias correction, "mean": correction based on averaged red/green ratio;
-or "RELIC": correction with RELIC method;
-or "none": no dye bias correction.
+or \code{"RELIC"}: correction with RELIC method;
+or \code{"none"}: no dye bias correction.
 Default is \code{"RELIC"}.}
 
 \item{norm_quantile}{A \code{character}. The quantile normalisation to be used.
-This should be one of "quantile1", "quantile2", or "quantile3".
-Default is \code{quantile1}.}
+This should be one of \code{"quantile1"}, \code{"quantile2"}, or \code{"quantile3"}.
+Default is \code{"quantile1"}.}
 
 \item{cell_tissue}{A \code{character}. The cell tissue to be used for cell composition estimation,
-using a reference panel (i.e., blood or chord blood) or a mathematical deconvolution.
+using a reference panel (\emph{i.e.}, \code{"blood"} or \code{"cordblood"}) or a mathematical deconvolution.
 Default is \code{NULL}.}
 
 \item{pca_vars}{A \code{vector(character)}. Variables to be used with factorial planes.
