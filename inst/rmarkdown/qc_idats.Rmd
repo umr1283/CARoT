@@ -329,7 +329,7 @@ cell_comp <- switch(
     out
   }, 
   "cordblood" = {
-    out <- minfi::estimateCellCounts(
+    out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
         rgSet = data_mset,
         compositeCellType = "CordBlood",
         processMethod = "preprocessQuantile", 
