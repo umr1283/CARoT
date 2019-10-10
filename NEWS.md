@@ -8,6 +8,8 @@
 * In `R/qc_idats.R`,
     + fix wrong annotation package for Illumina 450k methylation array.
     + change `"MethPipe"` with `"CARoT"` in messages.
+* In `inst/rmarkdown/qc_idats.Rmd`,
+    + add cord blood panel for cell composition (only 450k).
 
 # CARoT 0.3.0
 
