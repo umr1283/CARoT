@@ -310,8 +310,8 @@ if (!do_cell_composition) {
 
 ```{r cell_composition, eval = do_cell_composition}
 cell_comp <- switch(
-  EXPR = params[["cell_tissue"]],
-  "Blood" = {
+  EXPR = tolower(params[["cell_tissue"]]),
+  "blood" = {
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_mset, 
       compositeCellType = "Blood",
@@ -328,8 +328,20 @@ cell_comp <- switch(
     colnames(out) <- paste0("CellT_", colnames(out))
     out
   }, 
-  "Chord" = {
-    cat("No method defined yet")
+  "cordblood" = {
+    out <- minfi::estimateCellCounts(
+        rgSet = data_mset,
+        compositeCellType = "CordBlood",
+        processMethod = "preprocessQuantile", 
+        # probeSelect = cell_probes,
+        # cellTypes = cell_types,
+        referencePlatform = "IlluminaHumanMethylation450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
+        referenceset = NULL, 
+        IDOLOptimizedCpGs = NULL, 
+        returnAll = FALSE,
+        meanPlot = TRUE, 
+        verbose = FALSE
+      )
   },
   {
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
