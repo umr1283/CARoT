@@ -342,6 +342,8 @@ cell_comp <- switch(
         meanPlot = TRUE, 
         verbose = FALSE
       )
+    colnames(out) <- paste0("CellT_", colnames(out))
+    out
   },
   {
     estimate_k_cluster <- function(Rmat, max_k = 25, n_cores = 1) {
