@@ -60,8 +60,7 @@ Suggests:
     FlowSorted.Blood.450k,
     FlowSorted.CordBlood.450k,
     IlluminaHumanMethylationEPICanno.ilm10b4.hg19,
-    FlowSorted.Blood.EPIC,
-    FlowSorted.CordBlood.EPIC
+    FlowSorted.Blood.EPIC
 Remotes: github::gabraham/flashpca/flashpcaR
 SystemRequirements: 
     pandoc (>= 1.12.3) - http://pandoc.org,
