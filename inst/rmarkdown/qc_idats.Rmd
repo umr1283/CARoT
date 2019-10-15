@@ -341,7 +341,7 @@ cell_comp <- switch(
         returnAll = FALSE,
         meanPlot = TRUE, 
         verbose = FALSE
-      )
+      )$counts
     colnames(out) <- paste0("CellT_", colnames(out))
     out
   },
