@@ -330,18 +330,18 @@ cell_comp <- switch(
   }, 
   "cordblood" = {
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
-        rgSet = data_mset,
-        compositeCellType = "CordBlood",
-        processMethod = "preprocessQuantile", 
-        probeSelect = "auto",
-        cellTypes = c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran"),
-        referencePlatform = "IlluminaHumanMethylation450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
-        referenceset = NULL, 
-        IDOLOptimizedCpGs = NULL, 
-        returnAll = FALSE,
-        meanPlot = TRUE, 
-        verbose = FALSE
-      )$counts
+      rgSet = data_mset,
+      compositeCellType = "CordBlood",
+      processMethod = "preprocessQuantile", 
+      probeSelect = "auto",
+      cellTypes = c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran", "nRBC"),
+      referencePlatform = "IlluminaHumanMethylation450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
+      referenceset = NULL, 
+      IDOLOptimizedCpGs = NULL, 
+      returnAll = FALSE,
+      meanPlot = TRUE, 
+      verbose = FALSE
+    )$counts
     colnames(out) <- paste0("CellT_", colnames(out))
     out
   },
@@ -479,7 +479,11 @@ if (is.null(params[["gender_threshold"]])) {
   gender_threshold <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
   
   if (length(gender_threshold) > 1) gender_threshold <- median(gender_threshold)
+} else {
+  gender_threshold <- params[["gender_threshold"]]
 }
+
+cat("\nThe gender threshold used for prediction was:", gender_threshold, "\n\n")
 
 phenotypes <- phenotypes %>% 
   as.data.frame() %>% 
