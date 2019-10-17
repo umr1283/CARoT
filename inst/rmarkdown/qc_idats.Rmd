@@ -474,14 +474,19 @@ if (!do_check_gender) {
 
 ```{r gender_check, eval = do_check_gender}
 if (is.null(params[["gender_threshold"]])) {
-  sex_predicted <- minfi::getSex(minfi::mapToGenome(data_mset), cutoff = -2)
+  sex_predicted <- suppressPackageStartupMessages({
+    minfi::getSex(minfi::mapToGenome(data_mset), cutoff = -2)
+  })
   gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
-  gender_threshold <- round(x = gender_density$x[which(diff(sign(diff(gender_density$y)))==2)], digits = 3)
-  
-  if (length(gender_threshold) > 1) gender_threshold <- median(gender_threshold)
+  min_diff_xy <- which(diff(sign(diff(gender_density$y))) == 2)
+  min_diff_xy <- min_diff_xy[which.min(gender_density$y[min_diff_xy])]
+  gender_threshold <- round(x = gender_density$x[min_diff_xy], digits = 3)
 } else {
   gender_threshold <- params[["gender_threshold"]]
 }
+sex_predicted <- suppressPackageStartupMessages({
+  minfi::getSex(minfi::mapToGenome(data_mset), cutoff = gender_threshold)
+})
 
 cat("\nThe gender threshold used for prediction was:", gender_threshold, "\n\n")
 
@@ -489,9 +494,7 @@ phenotypes <- phenotypes %>%
   as.data.frame() %>% 
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
   dplyr::left_join(
-    y = data_mset %>% 
-      minfi::mapToGenome() %>% 
-      minfi::getSex(cutoff = gender_threshold) %>% 
+    y = sex_predicted %>% 
       as.data.frame() %>% 
       dplyr::mutate(Sample_ID = minfi::sampleNames(data_mset)) %>% 
       dplyr::rename(
