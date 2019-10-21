@@ -129,68 +129,39 @@ do_check_gender <- !is.null(params[["gender_colname"]])
 do_cell_composition <- !is.null(params[["cell_tissue"]])
 ```
 
-# Methods
-
-1. Importing Data
-    * __File format__  
-        => IDAT files from Illumina
-    * __Import data__  
-        => (custom) `read_idats` based on [*minfi*](https://doi.org/doi:10.18129/B9.bioc.minfi)
-1. Filtering Probes
-    * `filter_snps` ([Zhou et al., 2016](https://www.doi.org/10.1093/nar/gkw967))  
-        => should probes in which the probed CpG falls near a SNP be removed?
-    * `filter_non_cpg`  
-        => should non-cg probes be removed?
-    * `filter_xy`  
-        => should probes from X and Y chromosomes be removed?
-
-1. Filtering Probes
-    * `filter_multihit` ([Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105))  
-        => should probes which align to multiple locations be removed?
-    * `filter_beads`  
-        => should probes with a beadcount less than 3 be removed (for at least 5 % of the samples)?
-    * __Call Rate__  
-        => should probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
-1. Filtering Samples
-    * __Call Rate__  
-        => should samples with less than the specified call rate (`r params[["callrate_samples"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
-    * __Gender~[Phenotype]~ $\neq$ Gender~[Probes]~__  
-        => flag samples with gender discrepancy
-1. Normalisation
-    * __Probe design type bias__  
-        => using `rcp` method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)  
-        *`rcp` = "Regression on Correlated Probes"*  
-        *Normalise __type II__ probes (with __type I__ as reference) using linear regression coefficients based on type I and type II probe pairs within specified distance*
-    * __Batch effect bias__  
-        => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)  
-        *Empirical Bayes framework is used to correct for batch effects using __batch/slide__ as covarariate*
-1. Additional Checks
-    * __Cell Composition__  
-        => using `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)  
-    * __Principal Component Analysis (PCA)__  
-        => using [FlashPCA](https://doi.org/10.1093/bioinformatics/btx299) for R on [GitHub](https://github.com/gabraham/flashpca/tree/master/flashpcaR)
-
-
 # Parameters
 
 * Array: `r params[["array"]]`
 * Annotation package from bioconductor: `r params[["annotation"]]`
-* `filter_snps`: `r params[["filter_snps"]]`
-* `filter_non_cpg`: `r params[["filter_non_cpg"]]`
-* `filter_xy`: `r params[["filter_xy"]]`
-* `filter_multihit`: `r params[["filter_multihit"]]`
-* `filter_beads`: `r params[["filter_beads"]]`
+* `filter_snps`: `r params[["filter_snps"]]`  
+    => should probes in which the probed CpG falls near a SNP be removed? ([Zhou et al., 2016](https://www.doi.org/10.1093/nar/gkw967))
+* `filter_non_cpg`: `r params[["filter_non_cpg"]]`  
+    => should non-cg probes be removed?
+* `filter_xy`: `r params[["filter_xy"]]`  
+    => should probes from X and Y chromosomes be removed?
+* `filter_multihit`: `r params[["filter_multihit"]]` ([Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105))  
+    => should probes which align to multiple locations be removed?
+* `filter_beads`: `r params[["filter_beads"]]`  
+    => should probes with a low beadcounts be removed?
 * Name of the ethnicity population: `r params[["population"]]`
 * The threshold for beadcount: `r params[["bead_cutoff"]]`
 * The threshold for the detection pvalues: `r params[["detection_pvalues"]]`
 * `filter_callrate`: `r params[["filter_callrate"]]`
-* The call rate threshold for samples: `r params[["callrate_samples"]]`
-* The call rate threshold for probes: `r params[["callrate_probes"]]`
-* The threshold value to discrimate gender: `r params[["gender_threshold"]]`
-* The method to estimate background normal distribution parameters: `r params[["norm_background"]]`
-* The dye bias correction: `r params[["norm_dye"]]`
+* The call rate threshold for samples: `r params[["callrate_samples"]]`  
+    => should samples with less than the specified call rate (`r params[["callrate_samples"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
+* The call rate threshold for probes: `r params[["callrate_probes"]]`  
+    => should probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?  
+* The threshold value to discrimate gender: `r params[["gender_threshold"]]`  
+    => flag samples with gender discrepancy.
+* The method to estimate background normal distribution parameters: `r params[["norm_background"]]`  
+    => methods from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
+* The dye bias correction: `r params[["norm_dye"]]`  
+    => methods from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
 * The quantile normalisation: `r params[["norm_quantile"]]`
-* The cell tissue: `r params[["cell_tissue"]]`
+* The cell tissue: `r params[["cell_tissue"]]`  
+    => using reference panel or `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)
+* Batch effect normalisation: `r "ComBat"`  
+    => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)
 
 
 # Quality Control
