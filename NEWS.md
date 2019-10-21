@@ -10,6 +10,7 @@
     + change `"MethPipe"` with `"CARoT"` in messages.
 * In `inst/rmarkdown/qc_idats.Rmd`,
     + add cord blood panel for cell composition (only 450k).
+    + ùerge methods and parameters sections.
 
 # CARoT 0.3.0
 
