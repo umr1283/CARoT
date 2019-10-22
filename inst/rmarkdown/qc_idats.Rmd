@@ -163,8 +163,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
 * `filter_multihit`: `r params[["filter_multihit"]]` ([Nordlund et al., 2013](https://www.doi.org/10.1186/gb-2013-14-9-r105))  
     => should probes which align to multiple locations be removed?
 * `filter_beads`: `r params[["filter_beads"]]`  
-    => should probes with a low beadcounts be removed?
-* The threshold for beadcount: `r params[["bead_cutoff"]]`
+    => should probes with less than three beadcount in at least `r scales::percent(params[["bead_cutoff"]])` of the samples be removed?
 
 ## Gender Check
 
