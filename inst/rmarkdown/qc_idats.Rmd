@@ -129,10 +129,30 @@ do_check_gender <- !is.null(params[["gender_colname"]])
 do_cell_composition <- !is.null(params[["cell_tissue"]])
 ```
 
-# Parameters
+# Methods and Parameters
 
 * Array: `r params[["array"]]`
 * Annotation package from bioconductor: `r params[["annotation"]]`
+
+## Call Rate
+
+* `filter_callrate`: `r params[["filter_callrate"]]`
+* The threshold for the detection pvalues: `r params[["detection_pvalues"]]`
+* The call rate threshold for samples: `r params[["callrate_samples"]]`  
+    => should samples with less than the specified call rate (`r params[["callrate_samples"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
+* The call rate threshold for probes: `r params[["callrate_probes"]]`  
+    => should probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
+
+## Pre-Processing
+
+* The method to estimate background normal distribution parameters: `r params[["norm_background"]]`  
+    => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
+* The dye bias correction: `r params[["norm_dye"]]`  
+    => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
+* The quantile normalisation: `r params[["norm_quantile"]]`
+
+## Probes Filtering
+
 * `filter_snps`: `r params[["filter_snps"]]`  
     => should probes in which the probed CpG falls near a SNP be removed? ([Zhou et al., 2016](https://www.doi.org/10.1093/nar/gkw967))
 * `filter_non_cpg`: `r params[["filter_non_cpg"]]`  
@@ -143,25 +163,29 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     => should probes which align to multiple locations be removed?
 * `filter_beads`: `r params[["filter_beads"]]`  
     => should probes with a low beadcounts be removed?
-* Name of the ethnicity population: `r params[["population"]]`
 * The threshold for beadcount: `r params[["bead_cutoff"]]`
-* The threshold for the detection pvalues: `r params[["detection_pvalues"]]`
-* `filter_callrate`: `r params[["filter_callrate"]]`
-* The call rate threshold for samples: `r params[["callrate_samples"]]`  
-    => should samples with less than the specified call rate (`r params[["callrate_samples"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?
-* The call rate threshold for probes: `r params[["callrate_probes"]]`  
-    => should probes with less than the specified call rate (`r params[["callrate_probes"]]`) for detection p-values below $\alpha=`r params[["detection_pvalues"]]`$ be removed?  
+
+## Gender Check
+
 * The threshold value to discrimate gender: `r params[["gender_threshold"]]`  
     => flag samples with gender discrepancy.
-* The method to estimate background normal distribution parameters: `r params[["norm_background"]]`  
-    => methods from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
-* The dye bias correction: `r params[["norm_dye"]]`  
-    => methods from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
-* The quantile normalisation: `r params[["norm_quantile"]]`
+
+## Ethnicity Check
+
+* Name of the ethnicity population: `r params[["population"]]`
+
+## Cell Composition
+
 * The cell tissue: `r params[["cell_tissue"]]`  
-    => using reference panel or `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)
+    => using a reference panel or `RefFreeCellMix` method from [*RefFreeEWAS*](https://cran.r-project.org/package=RefFreeEWAS)
+    
+## Final Processing
+
+* Probe design type bias correction: `r "rcp"`  
+    => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
+
 * Batch effect normalisation: `r "ComBat"`  
-    => using `ComBat` method from [*sva*](https://doi.org/doi:10.18129/B9.bioc.sva)
+    => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
 
 
 # Quality Control
