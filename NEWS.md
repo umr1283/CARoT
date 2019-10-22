@@ -1,3 +1,9 @@
+# CARoT 0.3.2
+
+## Minor improvements and fixes
+* In `inst/rmarkdown/qc_idats.Rmd`, fix and update "methods and parameters" section.
+
+
 # CARoT 0.3.1
 
 ## Minor improvements and fixes
@@ -10,7 +16,7 @@
     + change `"MethPipe"` with `"CARoT"` in messages.
 * In `inst/rmarkdown/qc_idats.Rmd`,
     + add cord blood panel for cell composition (only 450k).
-    + ùerge methods and parameters sections.
+    + merge methods and parameters sections.
 
 # CARoT 0.3.0
 
