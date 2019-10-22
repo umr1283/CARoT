@@ -149,7 +149,8 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
     => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
 * The dye bias correction: `r params[["norm_dye"]]`  
     => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
-* The quantile normalisation: `r params[["norm_quantile"]]`
+* The quantile normalisation: `r params[["norm_quantile"]]`  
+    => method from [*ENmix*](https://doi.org/doi:10.18129/B9.bioc.ENmix)
 
 ## Probes Filtering
 
