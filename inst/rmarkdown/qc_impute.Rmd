@@ -43,7 +43,7 @@ library(tidyverse)
 library(scales)
 library(grid)
 
-pretty_kable <- function (
+pretty_kable <- function(
   data, 
   font_size = 12, 
   format_args = list(scientific = -1, digits = 3, big.mark = ","), 

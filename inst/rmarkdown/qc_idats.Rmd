@@ -191,7 +191,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
 # Quality Control
 
 ```{r sample_sheet}
-sample_sheet <- readr::read_csv(params[["csv_file"]])  %>% 
+sample_sheet <- readr::read_csv(params[["csv_file"]]) %>% 
   dplyr::mutate(
     gender_clean = if (do_check_gender) {
       c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[get(params[["gender_colname"]])]
@@ -242,7 +242,7 @@ phenotypes <- data_mset@metadata[["phenotypes"]]
 ```
 
 ```{r call_rate}
-data_call_rate_samples <- phenotypes  %>% 
+data_call_rate_samples <- phenotypes %>% 
   as.data.frame() %>% 
 	dplyr::select(Sample_ID, call_rate) %>% 
 	dplyr::arrange(call_rate) %>% 
@@ -362,7 +362,7 @@ cell_comp <- switch(
     
           c(
             K = Ktest,
-            AIC =  2 * (N1 + Ktest * (N1 + N2)) + 
+            AIC = 2 * (N1 + Ktest * (N1 + N2)) + 
               N1 * N2 +
               N2 * sum(log(tmpSigSq)),
             BIC = log(N2) * (N1 + Ktest * (N1 + N2)) + 
@@ -529,9 +529,7 @@ ggplot2::ggplot(
 
 ```{r gender_check_fig, eval = do_check_gender}
 ggplot2::ggplot(
-  data = phenotypes %>% 
-    as.data.frame() %>% 
-    dplyr::filter(!qc_gender_discrepancy), 
+  data = as.data.frame(phenotypes), 
   mapping = ggplot2::aes(
     x = qc_xmedian, 
     y = qc_ymedian, 
@@ -544,19 +542,19 @@ ggplot2::ggplot(
     mapping = ggplot2::aes(intercept = Seuil, slope = 1, linetype = Threshold),
     na.rm = TRUE
   ) +
-  ggplot2::geom_point(size = 2, na.rm = TRUE) +
   ggplot2::geom_point(
-    data = phenotypes %>% 
-      as.data.frame() %>% 
-      dplyr::filter(qc_gender_discrepancy),
+    data = ~dplyr::filter(.x, !qc_gender_discrepancy), 
+    size = 2, 
+    na.rm = TRUE
+  ) +
+  ggplot2::geom_point(
+    data = ~dplyr::filter(.x, qc_gender_discrepancy),
     size = 4,
     show.legend = FALSE,
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    data = phenotypes %>% 
-      as.data.frame() %>% 
-      dplyr::filter(qc_gender_discrepancy),
+    data = ~dplyr::filter(.x, qc_gender_discrepancy),
     mapping = ggplot2::aes(x = qc_xmedian, y = qc_ymedian, label = Sample_ID),
     segment.colour = "black",
     colour = "black",
@@ -590,16 +588,16 @@ ggplot2::ggplot(
 ```{r descrepancy_table, eval = do_check_gender}
 phenotypes %>%
   as.data.frame() %>% 
-  group_by(qc_predicted_gender, qc_observed_gender) %>% 
-  summarise(n = n()) %>% 
-  ungroup() %>% 
-  mutate(
+  dplyr::group_by(qc_predicted_gender, qc_observed_gender) %>% 
+  dplyr::summarise(n = n()) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(
     qc_observed_gender = paste("Observed:", qc_observed_gender),
     qc_predicted_gender = paste("Predicted:", qc_predicted_gender)
   ) %>% 
-  spread(key = "qc_observed_gender", value = "n") %>% 
-  rename(qc_predicted_gender = "") %>% 
-  replace(list = is.na(.), values = 0) %>% 
+  tidyr::spread(key = "qc_observed_gender", value = "n") %>% 
+  dplyr::rename(qc_predicted_gender = "") %>% 
+  dplyr::replace(list = is.na(.), values = 0) %>% 
   pretty_kable(full_width = FALSE)
 ```
 
@@ -648,10 +646,10 @@ if (max(norm_beta, na.rm = TRUE) >= 1) {
 }
 data_mset@metadata[grep("_values", names(data_mset@metadata))] <- NULL
 data_mset@metadata[["norm_beta_values"]] <- norm_beta
+data_mset@metadata[["phenotypes"]] <- phenotypes
 ```
 
 ```{r export}
-data_mset@metadata[["phenotypes"]] <- phenotypes
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
 
@@ -661,7 +659,7 @@ list_beta <- c(
 	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"raw_beta" =  minfi::getBeta(data_mset) %>% 
+	"raw_beta" = minfi::getBeta(data_mset) %>% 
 	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
 	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )

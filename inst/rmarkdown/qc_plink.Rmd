@@ -1006,7 +1006,7 @@ if (nrow(related_samples) != 0) {
       align = "c", 
       table.attr = "style='width:65%;'",
       caption = paste0(
-        "Pairs of samples with a proportion of IBD higher than ",  params[["IBD_threshold"]], "."
+        "Pairs of samples with a proportion of IBD higher than ", params[["IBD_threshold"]], "."
       )
     )
 }
@@ -1770,7 +1770,7 @@ ggpubr::ggarrange(
 
 ```{r population-03-bis, fig.height = 4.7 * 1.5, fig.cap = paste("First factorial plane computed with a combined dataset", "involving samples from the 1,000 Genomes Project.", 'Samples were coloured by **A** "super population" and **B** "population" groups.')}
 ggpubr::ggarrange(
-  p_superpop  +
+  p_superpop +
     ggplot2::facet_grid(cols = ggplot2::vars(Cohort)) +
     ggplot2::theme(legend.position = "top"),
   p_pop +
@@ -1952,7 +1952,7 @@ pca_threshold <- which(abs(diff(inertia_within[["y"]])) < 0.01)
 The principal components after `r qdap::replace_number(pca_threshold[1])` explain on average 
 `r scales::percent(mean(inertia_within[pca_threshold[1]:nrow(inertia_within), "y"]), accuracy = 0.01)` 
 [`r paste(scales::percent(range(inertia_within[pca_threshold[1]:nrow(inertia_within), "y"]), accuracy = 0.01), collapse = "; ")`] of 
-the variance (principal components up to `r  scales::comma(nrow(inertia_within))`).-->
+the variance (principal components up to `r scales::comma(nrow(inertia_within))`).-->
 
 ```{r population-07, fig.cap = "PCA plot for components from two to five."}
 pca_planes <- utils::combn(seq_len(min(params[["pca_components"]], 5))[-1], 2)
@@ -2062,7 +2062,7 @@ callrate_snps_raw <- data.table::fread(paste0(temp_directory, "/raw_data_good_sa
 
 Proportion of missing genotypes or call rate per variant was estimated using the `--missing` command in PLINK.  
 
-```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01),  "cut-off.", "Variants with a call rate greater than or equal to 99.9% are not shown.")}
+```{r variant-call-rate-02, fig.cap = paste("Call rate per variant. The red line denotes the call rate", scales::percent(params[["callrate_snps"]], accuracy = 0.01), "cut-off.", "Variants with a call rate greater than or equal to 99.9% are not shown.")}
 ggplot2::ggplot(
   data = callrate_snps_raw %>%
     dplyr::arrange(F_MISS) %>%
@@ -2253,7 +2253,7 @@ Hardy-Weinberg equilibrium (HWE) p-value was computed using the `--hardy` comman
 In total, **`r scales::comma(sum(hwe_complete[, "P"] < params[["hwe_pvalue"]]))`** variants 
 had a HWE p-value below `r scales::scientific(params[["hwe_pvalue"]])` and were excluded.  
 
-```{r hwe-02, fig.cap = paste0("The distribution of Hardy-Weinberg Equilibrium (HWE) p-values ",  "for variants with HWE p-value < ", scales::scientific(params[["hwe_pvalue"]] * 10), ". ", "The horizontal red line denotes the ", scales::scientific(params[["hwe_pvalue"]]), " cut-off.")}
+```{r hwe-02, fig.cap = paste0("The distribution of Hardy-Weinberg Equilibrium (HWE) p-values ", "for variants with HWE p-value < ", scales::scientific(params[["hwe_pvalue"]] * 10), ". ", "The horizontal red line denotes the ", scales::scientific(params[["hwe_pvalue"]]), " cut-off.")}
 ggplot2::ggplot(data = hwe_significant) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(x = 1:length(P), y = P),
