@@ -172,7 +172,7 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
 
 ## Ethnicity Check
 
-* Name of the ethnicity population: `r params[["population"]]`
+* Name of the ethnicity population: `r if (is.null(params[["population"]])) "Not defined" else params[["population"]]`
 
 ## Cell Composition
 
@@ -238,12 +238,11 @@ output <- utils::capture.output({
 output <- output[grep(pattern = "[CARoT] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
 output <- output[!grepl(pattern = "^[=[]", x = output)]
 cat(output, sep = "\n\n")
-phenotypes <- data_mset@metadata[["phenotypes"]]
+phenotypes <- as.data.frame(data_mset@metadata[["phenotypes"]])
 ```
 
 ```{r call_rate}
 data_call_rate_samples <- phenotypes %>% 
-  as.data.frame() %>% 
 	dplyr::select(Sample_ID, call_rate) %>% 
 	dplyr::arrange(call_rate) %>% 
 	dplyr::mutate(
@@ -282,8 +281,6 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    # nudge_x = 200, 
-    # nudge_y = 0.01,
     min.segment.length = ggplot2::unit(0, "lines"), 
     size = 2, 
     segment.colour = "black",
@@ -303,7 +300,7 @@ if (!do_cell_composition) {
 }
 ```
 
-```{r cell_composition, eval = do_cell_composition}
+```{r cell_composition, eval = do_cell_composition, results = "hide"}
 cell_comp <- switch(
   EXPR = tolower(params[["cell_tissue"]]),
   "blood" = {
@@ -414,15 +411,13 @@ cell_comp <- switch(
 )
 
 phenotypes <- phenotypes %>% 
-  as.data.frame() %>%
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
   dplyr::left_join(
     y = cell_comp %>% 
       as.data.frame() %>% 
       tibble::rownames_to_column("Sample_ID"), 
     by = "Sample_ID"
-  ) %>% 
-  S4Vectors::DataFrame()
+  )
 ```
 
 ```{r cell_composition_size}
@@ -442,7 +437,6 @@ def_height <- ifelse(def_height>=16, 16, def_height)
 ```{r cell_composition_fig, fig.height = def_height, eval = do_cell_composition}
 CARoT::ggheatmap(
   data = phenotypes %>% 
-    as.data.frame() %>% 
     dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
     tibble::column_to_rownames(var = "Sample_ID") %>% 
     tidyr::drop_na(), 
@@ -467,11 +461,11 @@ if (!do_check_gender) {
 }
 ```
 
-```{r gender_check, eval = do_check_gender}
+```{r gender_check_computation, eval = do_check_gender}
 if (is.null(params[["gender_threshold"]])) {
-  sex_predicted <- suppressPackageStartupMessages({
+  sex_predicted <- suppressWarnings(suppressPackageStartupMessages({
     minfi::getSex(minfi::mapToGenome(data_mset), cutoff = -2)
-  })
+  }))
   gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
   min_diff_xy <- which(diff(sign(diff(gender_density$y))) == 2)
   min_diff_xy <- min_diff_xy[which.min(gender_density$y[min_diff_xy])]
@@ -479,39 +473,33 @@ if (is.null(params[["gender_threshold"]])) {
 } else {
   gender_threshold <- params[["gender_threshold"]]
 }
-sex_predicted <- suppressPackageStartupMessages({
+sex_predicted <- suppressWarnings(suppressPackageStartupMessages({
   minfi::getSex(minfi::mapToGenome(data_mset), cutoff = gender_threshold)
-})
+}))
+sex_predicted <- sex_predicted %>% 
+  as.data.frame() %>% 
+  dplyr::mutate(Sample_ID = minfi::sampleNames(data_mset)) %>% 
+  dplyr::rename(
+    qc_xmedian = xMed,
+    qc_ymedian = yMed,
+    qc_predicted_gender = predictedSex
+  )
 
 cat("\nThe gender threshold used for prediction was:", gender_threshold, "\n\n")
 
 phenotypes <- phenotypes %>% 
-  as.data.frame() %>% 
   dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
-  dplyr::left_join(
-    y = sex_predicted %>% 
-      as.data.frame() %>% 
-      dplyr::mutate(Sample_ID = minfi::sampleNames(data_mset)) %>% 
-      dplyr::rename(
-        qc_xmedian = xMed,
-        qc_ymedian = yMed,
-        qc_predicted_gender = predictedSex
-      ), 
-    by = c("Sample_ID")
-  ) %>% 
+  dplyr::left_join(y = sex_predicted, by = c("Sample_ID")) %>% 
   dplyr::mutate(
     qc_predicted_gender = c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[qc_predicted_gender],
     qc_observed_gender = gender_clean,
     qc_gender_discrepancy = qc_observed_gender!=qc_predicted_gender
-  ) %>% 
-  S4Vectors::DataFrame()
+  )
 ```
 
 ```{r gender_check_threshold, eval = FALSE}
 ggplot2::ggplot(
-  data = phenotypes %>%
-    as.data.frame() %>%
-    dplyr::mutate(diff = qc_ymedian - qc_xmedian),
+  data = dplyr::mutate(phenotypes, diff = qc_ymedian - qc_xmedian),
   mapping = ggplot2::aes(x = diff)
 ) +
   ggplot2::geom_density(position = "identity", na.rm = TRUE) +
@@ -529,7 +517,7 @@ ggplot2::ggplot(
 
 ```{r gender_check_fig, eval = do_check_gender}
 ggplot2::ggplot(
-  data = as.data.frame(phenotypes), 
+  data = phenotypes, 
   mapping = ggplot2::aes(
     x = qc_xmedian, 
     y = qc_ymedian, 
@@ -587,7 +575,6 @@ ggplot2::ggplot(
 
 ```{r descrepancy_table, eval = do_check_gender}
 phenotypes %>%
-  as.data.frame() %>% 
   dplyr::group_by(qc_predicted_gender, qc_observed_gender) %>% 
   dplyr::summarise(n = n()) %>% 
   dplyr::ungroup() %>% 
@@ -603,7 +590,6 @@ phenotypes %>%
 
 ```{r descrepancy_samples_table, eval = do_check_gender}
 phenotypes %>% 
-  as.data.frame() %>% 
   dplyr::filter(qc_gender_discrepancy) %>% 
   dplyr::select(Sample_Name, Sample_ID, qc_observed_gender, qc_predicted_gender) %>% 
   pretty_kable(full_width = FALSE)
@@ -646,7 +632,7 @@ if (max(norm_beta, na.rm = TRUE) >= 1) {
 }
 data_mset@metadata[grep("_values", names(data_mset@metadata))] <- NULL
 data_mset@metadata[["norm_beta_values"]] <- norm_beta
-data_mset@metadata[["phenotypes"]] <- phenotypes
+data_mset@metadata[["phenotypes"]] <- S4Vectors::DataFrame(phenotypes, stringsAsFactors = FALSE)
 ```
 
 ```{r export}
@@ -659,8 +645,7 @@ list_beta <- c(
 	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"raw_beta" = minfi::getBeta(data_mset) %>% 
-	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
+	"raw_beta" = set_names(x = minfi::getBeta(data_mset), nm = minfi::pData(data_mset)[, "Sample_ID"]),
 	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )
 
