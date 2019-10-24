@@ -42,8 +42,8 @@ functions.
 
 Currently *CARoT* includes the following functions:
 
-  - `estimate_ethnicity()` allows to compute the genomic component (and
-    some figures) for ethnicity based on VCF files.
+  - `estimate_ethnicity()` allows to format VCF files and compute the
+    genomic components (and some figures) for ethnicity.
   - `ggheatmap()` allows to compute heatmap with dendrogram on x-axis
     and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
   - `read_idats()` allows to efficiently import idats files mostly using
