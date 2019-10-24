@@ -1,4 +1,4 @@
-#' qc_impute
+#' Compute post-imputation quality-control report using a default rmarkdown template.
 #'
 #' @param input_directory A `character`. The path to the VCF files.
 #' @param output_directory A `character`. The path to the output directory.

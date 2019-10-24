@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_idats.R
 \name{qc_idats}
 \alias{qc_idats}
-\title{qc_idats}
+\title{Compute quality-control of methylation array from Illumina using a rmarkdown template.}
 \usage{
 qc_idats(csv_file, data_directory, array = "EPIC",
   annotation = "ilm10b4.hg19", cohort_name = "CARoT",
@@ -128,5 +128,5 @@ Default is \code{"UTF-8"}.}
 \item{...}{Parameters to pass to \code{rmarkdown::render()}.}
 }
 \description{
-qc_idats
+Compute quality-control of methylation array from Illumina using a rmarkdown template.
 }

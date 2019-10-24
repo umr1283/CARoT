@@ -1,35 +1,18 @@
-#' read_idats
+#' Efficiently import idats files mostly using minfi functions.
 #'
-#' @param directory A `character`. Location of IDAT files,
-#'     default is the current working directory.
+#' @param directory A `character`. Location of IDAT files, default is the current working directory.
 #' @param csv_file A `character`. Path to the sample sheet (csv files) or
 #'     name of the sample sheet in `directory`.
 #' @param meth_value_type A `character`. Indicates whether you prefer m-values (`"M"`)
 #'     or beta-values (`"B"`). Default is `"B"`.
-#' @param filter_beads A `logical`. Should probes with a beadcount less than 3 will be removed
-#'     depending on the `bead_cutoff` value. Default is `TRUE`.
-#' @param bead_cutoff A `numeric`. The beadCutoff represents the fraction of samples that must
-#'     have a beadcount less than 3 before the probe is removed.(default = 0.05)
-#' @param filter_non_cpg A `logical`. Should non-cg probes be removed? Default is `TRUE`.
-#' @param filter_snps A `logical`. Should probes in which the probed CpG falls near a
-#'     SNP be removed? Default is `TRUE`.
-#' @param population A `vector(character)`.
-#' @param filter_multihit A `logical`. Should probes in which the probe aligns to multiple
-#'     locations with bwa be removed? Default is `TRUE`.
-#' @param filter_xy A `logical`. Should probes from X and Y chromosomes be removed? Default is `TRUE`.
-#' @param detection_pvalues A `numeric`.
-#' @param filter_callrate A `logical`.,
-#' @param callrate_samples A `numeric`.
-#' @param callrate_probes A `numeric`.
-#' @param norm_background A `character`.
-#' @param norm_dye A `character`.
-#' @param norm_quantile A `character`.
 #' @param array_name A `character`. Choose microarray type, eiyther `"450K"` or `"EPIC"`.
 #'     Default is `"EPIC"`.
 #' @param annotation_version A `character`. Version of the annotation package that should be used.
 #'     Default is `"ilm10b4.hg19"` for the `"EPIC"` array
 #' @param n_cores An `integer`. The number of cores to use,
 #'     i.e., at most how many child processes will be run simultaneously.
+#'
+#' @inheritParams qc_idats
 #'
 #' @return A `list`.
 #' @export

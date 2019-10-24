@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_idats.R
 \name{read_idats}
 \alias{read_idats}
-\title{read_idats}
+\title{Efficiently import idats files mostly using minfi functions.}
 \usage{
 read_idats(directory = getwd(), csv_file = "csv$",
   meth_value_type = "B", filter_beads = TRUE, bead_cutoff = 0.05,
@@ -14,8 +14,7 @@ read_idats(directory = getwd(), csv_file = "csv$",
   annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"), n_cores = 1)
 }
 \arguments{
-\item{directory}{A \code{character}. Location of IDAT files,
-default is the current working directory.}
+\item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}
 
 \item{csv_file}{A \code{character}. Path to the sample sheet (csv files) or
 name of the sample sheet in \code{directory}.}
@@ -23,37 +22,52 @@ name of the sample sheet in \code{directory}.}
 \item{meth_value_type}{A \code{character}. Indicates whether you prefer m-values (\code{"M"})
 or beta-values (\code{"B"}). Default is \code{"B"}.}
 
-\item{filter_beads}{A \code{logical}. Should probes with a beadcount less than 3 will be removed
-depending on the \code{bead_cutoff} value. Default is \code{TRUE}.}
+\item{filter_beads}{A \code{logical}. Should the probes with a beadcount less than 3 be removed?
+Default is \code{TRUE}.}
 
-\item{bead_cutoff}{A \code{numeric}. The beadCutoff represents the fraction of samples that must
-have a beadcount less than 3 before the probe is removed.(default = 0.05)}
+\item{bead_cutoff}{A \code{numeric}. The threshold for beadcount.
+Default is \code{0.05}.}
 
-\item{filter_non_cpg}{A \code{logical}. Should non-cg probes be removed? Default is \code{TRUE}.}
+\item{filter_non_cpg}{A \code{logical}. Should the non-cg probes be removed?}
 
-\item{filter_snps}{A \code{logical}. Should probes in which the probed CpG falls near a
-SNP be removed? Default is \code{TRUE}.}
+\item{filter_snps}{A \code{logical}. Should the probes in which the probed CpG falls near a SNP
+(according to (\href{https://www.doi.org/10.1093/nar/gkw967}{Zhou et al., 2016})) be removed?
+Default is \code{TRUE}.}
 
-\item{population}{A \code{vector(character)}.}
+\item{population}{A \code{character}. Name of the ethnicity population to be used.
+Default is \code{NULL} for none.}
 
-\item{filter_multihit}{A \code{logical}. Should probes in which the probe aligns to multiple
-locations with bwa be removed? Default is \code{TRUE}.}
+\item{filter_multihit}{A \code{logical}. Should the probes which align to multiple locations
+(according to \href{https://www.doi.org/10.1186/gb-2013-14-9-r105}{Nordlund et al., 2013}) be removed?
+Default is \code{TRUE}.}
 
-\item{filter_xy}{A \code{logical}. Should probes from X and Y chromosomes be removed? Default is \code{TRUE}.}
+\item{filter_xy}{A \code{logical}. Should the probes from X and Y chromosomes be removed?
+Default is \code{TRUE}.}
 
-\item{detection_pvalues}{A \code{numeric}.}
+\item{detection_pvalues}{A \code{numeric}. The threshold for the detection pvalues above which,
+values are considered as missing. Default is \code{0.01}.}
 
-\item{filter_callrate}{A \code{logical}.,}
+\item{filter_callrate}{A \code{logical}. Should the data be filtered based on call rate metric?
+Default is \code{TRUE}.}
 
-\item{callrate_samples}{A \code{numeric}.}
+\item{callrate_samples}{A \code{numeric}. The call rate threshold for samples, under which samples are excluded.
+Default is \code{0.99}.}
 
-\item{callrate_probes}{A \code{numeric}.}
+\item{callrate_probes}{A \code{numeric}. The call rate threshold for probes, under which probes are excluded.
+Default is \code{1}.}
 
-\item{norm_background}{A \code{character}.}
+\item{norm_background}{A \code{character}. Optional method to estimate background normal distribution parameters.
+This must be one of \code{"oob"}, \code{"est"} or \code{"neg"}.
+Default is \code{"oob"}.}
 
-\item{norm_dye}{A \code{character}.}
+\item{norm_dye}{A \code{character}. Dye bias correction, "mean": correction based on averaged red/green ratio;
+or \code{"RELIC"}: correction with RELIC method;
+or \code{"none"}: no dye bias correction.
+Default is \code{"RELIC"}.}
 
-\item{norm_quantile}{A \code{character}.}
+\item{norm_quantile}{A \code{character}. The quantile normalisation to be used.
+This should be one of \code{"quantile1"}, \code{"quantile2"}, or \code{"quantile3"}.
+Default is \code{"quantile1"}.}
 
 \item{array_name}{A \code{character}. Choose microarray type, eiyther \code{"450K"} or \code{"EPIC"}.
 Default is \code{"EPIC"}.}
@@ -68,5 +82,5 @@ i.e., at most how many child processes will be run simultaneously.}
 A \code{list}.
 }
 \description{
-read_idats
+Efficiently import idats files mostly using minfi functions.
 }

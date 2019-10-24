@@ -8,8 +8,7 @@ read_sample_sheet(directory, csv_file = "csv$", ignore.case = TRUE,
   recursive = TRUE, full.names = TRUE)
 }
 \arguments{
-\item{directory}{A \code{character}. Location of IDAT files,
-default is the current working directory.}
+\item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}
 
 \item{csv_file}{A \code{character}. Path to the sample sheet (csv files) or
 name of the sample sheet in \code{directory}.}

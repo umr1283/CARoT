@@ -1,4 +1,4 @@
-#' qc_plink
+#' Compute quality-control of genotyping array (PLINK format) using a rmarkdown template.
 #'
 #' @param input_directory A `character`. The path to the plink files.
 #'     The path should contains the file name without the extension, i.e., without `*.bed`, `*.bim` or `*.fam`.
