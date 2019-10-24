@@ -6,7 +6,6 @@
     + fix and update "methods and parameters" section.
     + remove redundant code, *i.e.*, `as.data.frame`.
     + suppress warnings for gender check, a plot is printed to allow diagnostic.
-    
 * In `R/estimate_ethnicity.R`, complete roxygen documentation.
 
 # CARoT 0.3.1
