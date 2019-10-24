@@ -1,7 +1,11 @@
 # CARoT 0.3.2
 
 ## Minor improvements and fixes
-* In `inst/rmarkdown/qc_idats.Rmd`, fix and update "methods and parameters" section.
+
+* In `inst/rmarkdown/qc_idats.Rmd`, 
+    + fix and update "methods and parameters" section.
+    + remove redundant code, *i.e.*, `as.data.frame`.
+    + suppress warnings for gender check, a plot is printed to allow diagnostic.
 
 
 # CARoT 0.3.1
