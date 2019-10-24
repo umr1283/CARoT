@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_ethnicity.R
 \name{compute_pca}
 \alias{compute_pca}
-\title{compute_pca}
+\title{Compute the genomic components (and some figures) for ethnicity based on VCF files.}
 \usage{
 compute_pca(cohort_name, input_plink, output_directory, ref1kg_population)
 }
@@ -19,5 +19,5 @@ compute_pca(cohort_name, input_plink, output_directory, ref1kg_population)
 A \code{data.frame}.
 }
 \description{
-compute_pca
+Compute the genomic components (and some figures) for ethnicity based on VCF files.
 }
