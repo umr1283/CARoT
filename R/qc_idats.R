@@ -1,4 +1,4 @@
-#' qc_idats
+#' Compute quality-control of methylation array from Illumina using a rmarkdown template.
 #'
 #' @param csv_file A `character`. The path to a CSV file, *i.e.*, a sample sheet describing the data.
 #' @param data_directory A `character`. The path to the data directory.

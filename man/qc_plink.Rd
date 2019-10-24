@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_plink.R
 \name{qc_plink}
 \alias{qc_plink}
-\title{qc_plink}
+\title{Compute quality-control of genotyping array (PLINK format) using a rmarkdown template.}
 \usage{
 qc_plink(input_directory = NULL, output_directory = NULL,
   cohort_name = "CARoT", output_file = paste0(cohort_name, "_QC.html"),
@@ -123,5 +123,5 @@ Default is \code{"UTF-8"}.}
 \item{...}{Parameters to pass to \code{rmarkdown::render()}.}
 }
 \description{
-qc_plink
+Compute quality-control of genotyping array (PLINK format) using a rmarkdown template.
 }

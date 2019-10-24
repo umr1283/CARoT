@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_impute.R
 \name{qc_impute}
 \alias{qc_impute}
-\title{qc_impute}
+\title{Compute post-imputation quality-control report using a default rmarkdown template.}
 \usage{
 qc_impute(input_directory = NULL, output_directory = NULL,
   cohort_name = "CARoT", output_file = paste0(cohort_name,
@@ -52,5 +52,5 @@ Default is \code{"UTF-8"}.}
 \item{...}{Parameters to pass to \code{rmarkdown::render()}.}
 }
 \description{
-qc_impute
+Compute post-imputation quality-control report using a default rmarkdown template.
 }

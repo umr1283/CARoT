@@ -9,8 +9,7 @@ read_metharray_exp(directory = NULL, sample_sheet = NULL,
   n_cores = 1)
 }
 \arguments{
-\item{directory}{A \code{character}. Location of IDAT files,
-default is the current working directory.}
+\item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}
 
 \item{ignore.case}{A \code{logical}. A logical value.
 If \code{TRUE}, the directory path is prepended to the file names to give a relative file path.

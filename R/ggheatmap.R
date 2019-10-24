@@ -1,4 +1,4 @@
-#' ggheatmap
+#' Compute heatmap with dendrogram on x-axis and y-axis using ggplot2.
 #'
 #' @param data A `data.frame`. The data on which to draw the heatmap/dendrogram.
 #' @param dendrogram_columns A `logical`. Should the dendrogram for columns be plotted?

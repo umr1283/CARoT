@@ -1,4 +1,4 @@
-#' estimate_ethnicity
+#' Compute the genomic component (and some figures) for ethnicity based on VCF files.
 #'
 #' @param cohort_name A `character`. A name to describe the studied population compared to 1,000 Genomes.
 #' @param input_vcfs A `character`. A path to one or several VCFs file.

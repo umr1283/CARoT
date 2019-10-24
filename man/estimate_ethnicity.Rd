@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_ethnicity.R
 \name{estimate_ethnicity}
 \alias{estimate_ethnicity}
-\title{estimate_ethnicity}
+\title{Compute the genomic component (and some figures) for ethnicity based on VCF files.}
 \usage{
 estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
   ref1kg_vcfs, ref1kg_population, ref1kg_maf = 0.05,
@@ -50,5 +50,5 @@ estimate_ethnicity(cohort_name, input_vcfs, input_type, output_directory,
 A \code{data.frame}.
 }
 \description{
-estimate_ethnicity
+Compute the genomic component (and some figures) for ethnicity based on VCF files.
 }

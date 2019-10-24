@@ -2,7 +2,7 @@
 % Please edit documentation in R/pca_report.R
 \name{pca_report}
 \alias{pca_report}
-\title{pca_report}
+\title{Compute an analysis report using principal component analysis from flashpca tool.}
 \usage{
 pca_report(data, design, id_var = "Sample_ID", technical_vars,
   n_comp = 5, fig_n_comp = n_comp, outliers_component = NULL,
@@ -31,5 +31,5 @@ pca_report(data, design, id_var = "Sample_ID", technical_vars,
 A \code{data.frame}.
 }
 \description{
-pca_report
+The function can be used in a chunk within a Rmarkdown document/script with results="asis" to render the report.
 }

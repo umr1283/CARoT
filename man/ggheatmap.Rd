@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggheatmap.R
 \name{ggheatmap}
 \alias{ggheatmap}
-\title{ggheatmap}
+\title{Compute heatmap with dendrogram on x-axis and y-axis using ggplot2.}
 \usage{
 ggheatmap(data, dendrogram_columns = TRUE, dendrogram_rows = TRUE,
   line_size = 0.1, font_size = 11, font_size_x = 11,
@@ -40,5 +40,5 @@ This should be one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{
 A \code{ggplot} object.
 }
 \description{
-ggheatmap
+Compute heatmap with dendrogram on x-axis and y-axis using ggplot2.
 }

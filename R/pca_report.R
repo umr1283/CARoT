@@ -1,4 +1,6 @@
-#' pca_report
+#' Compute an analysis report using principal component analysis from flashpca tool.
+#'
+#' The function can be used in a chunk within a Rmarkdown document/script with results="asis" to render the report.
 #'
 #' @param data A `vector` or `data.frame`. The data on which the PCA has to be performed.
 #' @param design A `data.frame`. Additional variables to be used with factorial planes.
