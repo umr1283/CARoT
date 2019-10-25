@@ -1,5 +1,10 @@
 # CARoT (development version)
 
+## Minor improvements and fixes
+
+* In `inst/rmarkdown/qc_idats.Rmd`, 
+    + simplify some call to tidyverse functions.
+
 # CARoT 0.3.2
 
 ## Minor improvements and fixes
