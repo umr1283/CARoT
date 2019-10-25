@@ -575,16 +575,13 @@ ggplot2::ggplot(
 
 ```{r descrepancy_table, eval = do_check_gender}
 phenotypes %>%
-  dplyr::group_by(qc_predicted_gender, qc_observed_gender) %>% 
-  dplyr::summarise(n = n()) %>% 
-  dplyr::ungroup() %>% 
+  dplyr::count(qc_predicted_gender, qc_observed_gender) %>% 
   dplyr::mutate(
     qc_observed_gender = paste("Observed:", qc_observed_gender),
     qc_predicted_gender = paste("Predicted:", qc_predicted_gender)
   ) %>% 
-  tidyr::spread(key = "qc_observed_gender", value = "n") %>% 
-  dplyr::rename(qc_predicted_gender = "") %>% 
-  dplyr::replace(list = is.na(.), values = 0) %>% 
+  tidyr::spread(key = "qc_observed_gender", value = "n", fill = 0) %>% 
+  dplyr::rename(` ` = qc_predicted_gender) %>% 
   pretty_kable(full_width = FALSE)
 ```
 
