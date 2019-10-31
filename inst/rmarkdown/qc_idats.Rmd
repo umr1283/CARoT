@@ -642,7 +642,8 @@ list_beta <- c(
 	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"raw_beta" = set_names(x = minfi::getBeta(data_mset), nm = minfi::pData(data_mset)[, "Sample_ID"]),
+	"raw_beta" = minfi::getBeta(data_mset) %>% 
+	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
 	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )
 
