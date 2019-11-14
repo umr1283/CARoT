@@ -4,6 +4,8 @@
 
 * In `inst/rmarkdown/qc_idats.Rmd`, 
     + simplify some call to tidyverse functions.
+* In `R/estimate_ethnicity.R`, 
+    + include super pop and pop from 1K genome.
 
 # CARoT 0.3.2
 
