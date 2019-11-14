@@ -623,7 +623,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
 
   pca_gg <- dplyr::as_tibble(pca_gg)
 
-  fid_iid <- utils::read.table(paste0(input_plink, ".fam"))[, c(1, 2)]
+  fid_iid <- utils::read.table(paste0(input_plink, ".fam"), stringsAsFactors = FALSE)[, c(1, 2)]
 
   if (all.equal(fid_iid[[1]], fid_iid[[2]])) {
     pca_gg[["sample"]] <- fid_iid[[2]]
@@ -649,7 +649,10 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
     x = ifelse(is.na(pca_gg[["pop"]]), cohort_name, "1,000 Genomes"),
     levels = c(cohort_name, "1,000 Genomes")
   )
-  pca_gg[["pop"]] <- ifelse(is.na(pca_gg[["pop"]]), "Unknown", pca_gg[["pop"]])
+  pca_gg[["pop"]] <- factor(
+    x = ifelse(is.na(pca_gg[["pop"]]), cohort_name, pca_gg[["pop"]]),
+    levels = c(cohort_name, sort(unique(na.omit(pca_gg[["pop"]]))))
+  )
   pca_gg[["super_pop"]] <- factor(
     x = ifelse(is.na(pca_gg[["super_pop"]] ), cohort_name, pca_gg[["super_pop"]]),
     levels = c(cohort_name, "AFR", "AMR", "EAS", "SAS", "EUR")
@@ -684,45 +687,48 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
       horizontal = FALSE
     )
 
-  pca_gg_pred <- pca_gg %>%
-    dplyr::filter(!!dplyr::sym("cohort") == !!cohort_name) %>%
-    dplyr::mutate(
-      super_pop_centre = pca_gg %>%
-        dplyr::filter(!!dplyr::sym("cohort") != !!cohort_name) %>%
-        dplyr::select(-"cohort") %>%
-        dplyr::group_by(!!dplyr::sym("super_pop")) %>%
-        dplyr::summarise(
-          PC01 = mean(!!dplyr::sym("PC01")),
-          PC02 = mean(!!dplyr::sym("PC02"))
-        ) %>%
-        list()
-    ) %>%
-    dplyr::group_by(sample) %>%
-    dplyr::mutate(
-      super_pop_pred = purrr::map(
-        .x = !!dplyr::sym("PC01"),
-        .y = !!dplyr::sym("PC02"),
-        .centre = !!dplyr::sym("super_pop_centre"),
-        .f = function(.x, .y, .centre) {
-          dist_pop <- sqrt(
-            (.x - .centre[[1]][["PC01"]])^2 +
-              (.y - .centre[[1]][["PC02"]])^2
-          )
-          names(dist_pop) <- as.character(.centre[[1]][["super_pop"]])
+  pop_centre <- purrr::map_df(c("super_pop", "pop") , function(ipop) {
+    pca_gg %>%
+      dplyr::filter(!!dplyr::sym("cohort") != !!cohort_name) %>%
+      dplyr::select(-"cohort") %>%
+      dplyr::group_by(!!dplyr::sym(ipop)) %>%
+      dplyr::summarise(
+        PC01_centre = mean(!!dplyr::sym("PC01")),
+        PC02_centre = mean(!!dplyr::sym("PC02"))
+      ) %>%
+      dplyr::mutate(pop_type = ipop) %>%
+      dplyr::rename("pop_closest" = !!ipop) %>%
+      dplyr::mutate_if(.predicate = is.factor, .funs = as.character)
+  })
 
-          out <- data.frame(
-            pop_pred = names(dist_pop[which.min(dist_pop)]),
-            dist = t(dist_pop)
-          )
-          colnames(out) <- gsub(".", "_", colnames(out), fixed = TRUE)
-          out
+  pca_gg_pred <- pca_gg %>%
+    select(-c(pop, super_pop)) %>%
+    dplyr::filter(!!dplyr::sym("cohort") == !!cohort_name) %>%
+    dplyr::mutate(pop_centre = list(pop_centre)) %>%
+    tidyr::unnest("pop_centre") %>%
+    dplyr::group_by(sample, pop_type) %>%
+    dplyr::mutate(
+      pop_dist = purrr::pmap_dbl(
+        .l = list(
+          .x = !!dplyr::sym("PC01"),
+          .y = !!dplyr::sym("PC02"),
+          .x_centre = !!dplyr::sym("PC01_centre"),
+          .y_centre = !!dplyr::sym("PC02_centre"),
+          .pop = !!dplyr::sym("pop_closest")
+        ),
+        .f = function(.x, .y, .x_centre, .y_centre, .pop) {
+          sqrt((.x - .x_centre)^2 + (.y - .y_centre)^2)
         }
-      ),
-      super_pop_centre = NULL
+      )
     ) %>%
-    tidyr::unnest() %>%
     dplyr::ungroup()
 
+  pca_gg_pred_best <- pca_gg_pred %>%
+    dplyr::group_by(sample, pop_type) %>%
+    dplyr::slice(which.min(pop_dist)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-dplyr::ends_with("_centre"), -pop_dist) %>%
+    tidyr::pivot_wider(names_from = pop_type, values_from = pop_closest)
 
   #################
   ### Exporting ###
@@ -739,7 +745,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
 
   invisible(
     readr::write_csv(
-      x = pca_gg_pred,
+      x = pca_gg_pred_best,
       path = paste0(output_directory, "/", cohort_name, "_ethnicity.csv")
     )
   )
