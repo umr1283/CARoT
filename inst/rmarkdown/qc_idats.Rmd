@@ -30,6 +30,7 @@ params:
   norm_dye: "RELIC"
   norm_quantile: "quantile1" 
   cell_tissue: NULL
+  pca: TRUE
   pca_vars: !r c("Sample_Plate", "Sentrix_ID")
   title: "EPIC Array Quality-Control"
   author_name: "Firstname Lastname"
@@ -608,8 +609,6 @@ cat(
 data_mset <- mset_f2
 ```
 
-## Principal Component Analysis
-
 ```{r normalisation, results = "hide"}
 norm_beta <- ENmix::rcp(mdat = data_mset)
 if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) { 
@@ -636,7 +635,9 @@ data_mset@metadata[["phenotypes"]] <- S4Vectors::DataFrame(phenotypes, stringsAs
 readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
 ```
 
-```{r pca}
+<!-- ## Principal Component Analysis -->
+```{r pca, eval = params[["pca"]]}
+cat("\n## Principal Component Analysis\n\n")
 list_beta <- c(
 	"raw_beta" = "Raw $beta$-values",
 	"norm_beta" = "ComBat normalised $beta$-values"
