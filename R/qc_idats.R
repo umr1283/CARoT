@@ -50,6 +50,7 @@
 #'     using a reference panel (*i.e.*, `"blood"` or `"cordblood"`) or a mathematical deconvolution.
 #'     Default is `NULL`.
 #' @param pca A `logical`. Whether or not a PCA should be performed on the dataset.
+#'     Default is `TRUE`.
 #' @param pca_vars A `vector(character)`. Variables to be used with factorial planes.
 #'     Default is `c("Sample_Plate", "Sentrix_ID")`.
 #' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
