@@ -4,6 +4,9 @@
 
 * In `inst/rmarkdown/qc_idats.Rmd`, 
     + simplify some call to tidyverse functions.
+    + add a parameter to control if PCA should be performed.
+* In `R/qc_idats.R`, 
+    + add a parameter to control if PCA should be performed.
 * In `R/estimate_ethnicity.R`, 
     + include super pop and pop from 1K genome.
 
