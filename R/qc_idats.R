@@ -49,6 +49,7 @@
 #' @param cell_tissue A `character`. The cell tissue to be used for cell composition estimation,
 #'     using a reference panel (*i.e.*, `"blood"` or `"cordblood"`) or a mathematical deconvolution.
 #'     Default is `NULL`.
+#' @param pca A `logical`. Whether or not a PCA should be performed on the dataset.
 #' @param pca_vars A `vector(character)`. Variables to be used with factorial planes.
 #'     Default is `c("Sample_Plate", "Sentrix_ID")`.
 #' @param title A `character`. The report's title. Default is `paste(array, "Array Quality-Control")`.
@@ -98,6 +99,7 @@ qc_idats <- function(
   norm_dye = "RELIC",
   norm_quantile = "quantile1",
   cell_tissue = NULL,
+  pca = TRUE,
   pca_vars = c("Sample_Plate", "Sentrix_ID"),
   title = paste(array, "Array Quality-Control"),
   author_name = "CARoT",
@@ -148,6 +150,7 @@ qc_idats <- function(
       norm_dye = norm_dye,
       norm_quantile = norm_quantile,
       cell_tissue = cell_tissue,
+      pca = pca,
       pca_vars = pca_vars,
       title = title,
       author_name = author_name,
