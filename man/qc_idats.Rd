@@ -94,7 +94,8 @@ Default is \code{"quantile1"}.}
 using a reference panel (\emph{i.e.}, \code{"blood"} or \code{"cordblood"}) or a mathematical deconvolution.
 Default is \code{NULL}.}
 
-\item{pca}{A \code{logical}. Whether or not a PCA should be performed on the dataset.}
+\item{pca}{A \code{logical}. Whether or not a PCA should be performed on the dataset.
+Default is \code{TRUE}.}
 
 \item{pca_vars}{A \code{vector(character)}. Variables to be used with factorial planes.
 Default is \code{c("Sample_Plate", "Sentrix_ID")}.}
