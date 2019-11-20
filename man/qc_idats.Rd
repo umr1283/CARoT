@@ -13,7 +13,7 @@ qc_idats(csv_file, data_directory, array = "EPIC",
   filter_callrate = TRUE, callrate_samples = 0.99,
   callrate_probes = 1, gender_threshold = -2, gender_colname = NULL,
   norm_background = "oob", norm_dye = "RELIC",
-  norm_quantile = "quantile1", cell_tissue = NULL,
+  norm_quantile = "quantile1", cell_tissue = NULL, pca = TRUE,
   pca_vars = c("Sample_Plate", "Sentrix_ID"), title = paste(array,
   "Array Quality-Control"), author_name = "CARoT",
   author_affiliation = NULL, author_email = NULL, cache = FALSE,
@@ -93,6 +93,8 @@ Default is \code{"quantile1"}.}
 \item{cell_tissue}{A \code{character}. The cell tissue to be used for cell composition estimation,
 using a reference panel (\emph{i.e.}, \code{"blood"} or \code{"cordblood"}) or a mathematical deconvolution.
 Default is \code{NULL}.}
+
+\item{pca}{A \code{logical}. Whether or not a PCA should be performed on the dataset.}
 
 \item{pca_vars}{A \code{vector(character)}. Variables to be used with factorial planes.
 Default is \code{c("Sample_Plate", "Sentrix_ID")}.}
