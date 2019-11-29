@@ -51,7 +51,8 @@ Imports:
     SummarizedExperiment,
     tibble,
     tidyr,
-    utils
+    utils,
+    CompQuadForm
 Suggests:
     covr,
     testthat,
