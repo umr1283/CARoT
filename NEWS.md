@@ -1,3 +1,12 @@
+# CARoT (development version)
+
+## Minor improvements and fixes
+
+* In `R/pca_report.R`, 
+    + rewrite core.
+    + add check for overall outlier.
+    + add example for roxygen.
+
 # CARoT 0.3.3
 
 ## Minor improvements and fixes
