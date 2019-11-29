@@ -24,13 +24,13 @@
 #'   Each row corresponds to a variant and each column corresponds to a variant characteristic.
 #'   If there is no second level covariates, a vector of 1 should be used.
 #' @param method [character] A method to compute the p-value and the default value is "liu".
-#'   Method "davies" represents an exact method that computes the p-value 
+#'   Method "davies" represents an exact method that computes the p-value
 #'     by inverting the characteristic function of the mixture chisq.
 #'   Method "liu" represents an approximation method that matches the first 3 moments.
-#' @param model [character] A `character` vector specifying the model. Default is to `"guess"`. 
+#' @param model [character] A `character` vector specifying the model. Default is to `"guess"`.
 #'   Possible choices are `"guess"`, `"continuous"` (linear regression) or `"binary"` (logistic regression).
-#' @param weight.beta [numeric] A `numeric` vector of parameters of beta function 
-#'   which is the weight for scorestatistics.  
+#' @param weight.beta [numeric] A `numeric` vector of parameters of beta function
+#'   which is the weight for scorestatistics.
 #'   The default value is `NULL`, *i.e.* no weight.
 #'   Default weight value could be `c(1, 25)`.
 #' @param maf [numeric] A `numeric` vector of MAF (minor allele frequency) for each SNP.
@@ -44,9 +44,9 @@
 #'   It combines p.value.S.pi and p.value.S.tau by using Fisher's procedure.
 #'
 #' @export
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' sample_size <- 100
 #' data <- data.frame(
 #'   y_continuous = c(rnorm(sample_size / 2, 10, 2), rnorm(sample_size / 2, 10, 2)),
@@ -59,91 +59,91 @@
 #'   g_variant4 = c(rbinom(sample_size / 2, 2, prob = 0.01), rbinom(sample_size / 2, 2, prob = 0.05))
 #' )
 #' z_1 <- matrix(
-#'   data = 1, 
-#'   nrow = length(paste0("g_variant", 1:4)), 
-#'   ncol = 1, 
+#'   data = 1,
+#'   nrow = length(paste0("g_variant", 1:4)),
+#'   ncol = 1,
 #'   dimnames = list(paste0("g_variant", 1:4), "cluster")
 #' )
 #' z_2 <- matrix(
-#'   c(1, 1, 0, 0, 0, 0, 1, 1), 
-#'   nrow = length(paste0("g_variant", 1:4)), 
-#'   ncol = 2, 
+#'   c(1, 1, 0, 0, 0, 0, 1, 1),
+#'   nrow = length(paste0("g_variant", 1:4)),
+#'   ncol = 2,
 #'   dimnames = list(paste0("g_variant", 1:4), paste0("cluster", 1:2))
 #' )
-#' 
-#' 
+#'
+#'
 #' ## One cluster
-#' 
-#' mist(
-#'   y = data[, "y_continuous"], 
-#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]), 
-#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]), 
-#'   Z = z_1, 
-#'   method = "liu", 
-#'   model = "continuous"
-#' ) 
-#' 
-#' mist(
-#'   y = data[, "y_binary"], 
-#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]), 
-#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]), 
-#'   Z = z_1, 
-#'   method = "liu", 
-#'   model = "binary"
-#' ) 
-#' 
-#' 
-#' ## Two clusters
-#' 
-#' mist(
-#'   y = data[, "y_continuous"], 
-#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]), 
-#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]), 
-#'   Z = z_2, 
-#'   method = "liu", 
-#'   model = "continuous"
-#' ) 
-#' 
-#' mist(
-#'   y = data[, "y_binary"], 
-#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]), 
-#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]), 
-#'   Z = z_2, 
-#'   method = "liu", 
-#'   model = "binary"
-#' )
-#' 
-#' 
-#' ## Weighted
-#' 
-#' maf <- colSums(as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE])) / (nrow(data) * 2)
-#' 
+#'
 #' mist(
 #'   y = data[, "y_continuous"],
 #'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
 #'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
 #'   Z = z_1,
 #'   method = "liu",
-#'   model = "continuous", 
-#'   weight.beta = c(1,25),
-#'   maf = maf
+#'   model = "continuous"
 #' )
-#' 
+#'
 #' mist(
 #'   y = data[, "y_binary"],
 #'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
 #'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
 #'   Z = z_1,
 #'   method = "liu",
-#'   model = "binary", 
+#'   model = "binary"
+#' )
+#'
+#'
+#' ## Two clusters
+#'
+#' mist(
+#'   y = data[, "y_continuous"],
+#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
+#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
+#'   Z = z_2,
+#'   method = "liu",
+#'   model = "continuous"
+#' )
+#'
+#' mist(
+#'   y = data[, "y_binary"],
+#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
+#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
+#'   Z = z_2,
+#'   method = "liu",
+#'   model = "binary"
+#' )
+#'
+#'
+#' ## Weighted
+#'
+#' maf <- colSums(as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE])) / (nrow(data) * 2)
+#'
+#' mist(
+#'   y = data[, "y_continuous"],
+#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
+#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
+#'   Z = z_1,
+#'   method = "liu",
+#'   model = "continuous",
 #'   weight.beta = c(1,25),
 #'   maf = maf
 #' )
-#' 
+#'
+#' mist(
+#'   y = data[, "y_binary"],
+#'   X = as.matrix(data[, paste0("x_cov", 1:2), drop = FALSE]),
+#'   G = as.matrix(data[, paste0("g_variant", 1:4), drop = FALSE]),
+#'   Z = z_1,
+#'   method = "liu",
+#'   model = "binary",
+#'   weight.beta = c(1,25),
+#'   maf = maf
+#' )
+#'
 mist <- function(
-  y, X, G, Z, 
-  method = "liu", 
-  model = c("guess", "continuous", "binary"), 
+  y, X, G, Z,
+  method = "liu",
+  model = c("guess", "continuous", "binary"),
   weight.beta = NULL, # c(1, 25)
   maf = NULL
 ) {
@@ -197,7 +197,7 @@ mist_print <- tidy_mist <- function(x) {
 print.mist <- function(x) {
   out <- tidy_mist(x)
   out$estimate[, -1] <- signif(out$estimate[, -1], digits = 3)
-  
+
   cat(
     "",
     "MiST: Mixed effects Score Test",
@@ -207,9 +207,9 @@ print.mist <- function(x) {
     "",
     sep = "\n"
   )
-  
+
   print.data.frame(out$estimate)
-  
+
   cat(
     "\n",
     "- Statistics:",
@@ -218,13 +218,13 @@ print.mist <- function(x) {
     "\n",
     "    * P-value = ", signif(out$statistic[, "p.value.overall"], digits = 3),
     "\n",
-    "  + PI (mean effect):  ", 
+    "  + PI (mean effect):  ",
     "\n",
     "    * Score =  ", signif(out$statistic[, "S.pi"], digits = 3),
     "\n",
     "    * P-value = ", signif(out$statistic[, "p.value.S.pi"], digits = 3),
     "\n",
-    "  + TAU (heterogeneous effect):  ", 
+    "  + TAU (heterogeneous effect):  ",
     "\n",
     "    * Score =  ", signif(out$statistic[, "S.tau"], digits = 3),
     "\n",
@@ -232,7 +232,7 @@ print.mist <- function(x) {
     "\n\n",
     sep = ""
   )
-  
+
   invisible(x)
 }
 
@@ -240,7 +240,7 @@ print.mist <- function(x) {
 #' mist_logit
 #'
 #' @inheritParams mist
-#' 
+#'
 #' @keywords internal
 #' @usage NULL
 #'
@@ -250,10 +250,10 @@ mist_logit<- function(y, X, G, Z, method = "liu", weight.beta = NULL, maf = NULL
   if (!(is.matrix(X) & is.numeric(X))) stop('"X", must be a numeric matrix.')
   if (!(is.matrix(G) & is.numeric(G))) stop('"G", must be a numeric matrix.')
   if (!(is.matrix(Z) & is.numeric(Z))) stop('"Z", must be a numeric matrix.')
-  
+
   GZ <- G %*% Z
   M <- cbind(X, GZ)
-  
+
   fit.0 <- stats::glm(
     formula = y ~ X - 1,
     family = stats::binomial(link = "logit")
@@ -261,7 +261,7 @@ mist_logit<- function(y, X, G, Z, method = "liu", weight.beta = NULL, maf = NULL
   mu.0 <- fit.0$fitted.value
   d.0 <- mu.0 * (1 - mu.0)
   res.0 <- y - mu.0
-  
+
   fit.0a <- stats::glm(
     formula = y ~ -1 + X + GZ,
     family = stats::binomial(link = "logit")
@@ -269,35 +269,35 @@ mist_logit<- function(y, X, G, Z, method = "liu", weight.beta = NULL, maf = NULL
   mu.0a <- fit.0a$fitted.value
   d.0a <- mu.0a * (1 - mu.0a)
   res.0a <- y - mu.0a
-  
+
   n <- dim(X)[1]
   I <- diag(1, n)
-  
+
   D.0 <- diag(d.0)
   D.0a <- diag(d.0a)
-  
+
   tXD0X <- t(X) %*% D.0 %*% X
   inv.tXD0X <- solve(tXD0X)
-  
+
   tMD0aM <- t(M) %*% D.0a %*% M
   inv.tMD0aM <- solve(tMD0aM)
-  
+
   P01 <- D.0 - (d.0 %o% d.0) * (X %*% (inv.tXD0X) %*% t(X))
   P02 <- D.0a - (d.0a %o% d.0a) * (M %*% (inv.tMD0aM) %*% t(M))
 
   if (is.null(weight.beta) | is.null(maf)) {
     S.tau <- 0.5 * t(res.0a) %*% G %*% t(G) %*% res.0a
   } else {
-    W <- diag( dbeta( maf, weight.beta[1], weight.beta[2] )^2 )
+    W <- diag( stats::dbeta( maf, weight.beta[1], weight.beta[2] )^2 )
     S.tau <- 0.5 * t(res.0a) %*% G %*% W %*% t(G) %*% res.0a
   }
-  
+
   inv.I.pi <- solve(t(GZ) %*% P01 %*% GZ)
-  
+
   S.pi <- t(res.0) %*% GZ %*% inv.I.pi %*% t(GZ) %*% res.0
-  
+
   p.value.S.pi <- 1 - stats::pchisq(S.pi, df = dim(Z)[2])
-  
+
   if (is.null(weight.beta) | is.null(maf)) {
     Mat <- 0.5 * t(G) %*% P02 %*% G
   } else {
@@ -346,7 +346,7 @@ mist_logit<- function(y, X, G, Z, method = "liu", weight.beta = NULL, maf = NULL
 #' mist_linear
 #'
 #' @inheritParams mist
-#' 
+#'
 #' @keywords internal
 #' @usage NULL
 #'
@@ -356,44 +356,44 @@ mist_linear <- function(y, X, G, Z, method = "liu", weight.beta = NULL, maf = NU
   if (!(is.matrix(G) & is.numeric(G))) stop('"G", must be a numeric matrix.')
   if (!(is.matrix(X) & is.numeric(X))) stop('"X", must be a numeric matrix.')
   if (!(is.matrix(Z) & is.numeric(Z))) stop('"Z", must be a numeric matrix.')
-  
+
   GZ <- G %*% Z
   M <- cbind(X, GZ)
-  
+
   tXX <- t(X) %*% X
   inv.tXX <- solve(tXX)
-  
+
   tMM <- t(M) %*% M
   inv.tMM <- solve(tMM)
-  
+
   fit.0 <- stats::lm(y ~ X - 1)
   tilde.sigma2 <- summary(fit.0)$sigma^2
   res.0 <- fit.0$resid
-  
+
   fit.0a <- stats::lm(y ~ M - 1)
   hat.sigma2 <- summary(fit.0a)$sigma^2
   res.0a <- fit.0a$resid
-  
+
   n <- dim(X)[1]
   I <- diag(1, n)
-  
+
   P2 <- I - X %*% inv.tXX %*% t(X)
   P1 <- I - M %*% inv.tMM %*% t(M)
 
   if (is.null(weight.beta) | is.null(maf)) {
     S.tau <- t(res.0a) %*% G %*% t(G) %*% res.0a
   } else {
-    W <- diag( dbeta( maf, weight.beta[1], weight.beta[2] )^2 )
+    W <- diag( stats::dbeta( maf, weight.beta[1], weight.beta[2] )^2 )
     S.tau <- t(res.0a) %*% G %*% W %*% t(G) %*% res.0a
   }
-  
+
   inv.I.pi <- solve(t(GZ) %*% P2 %*% GZ)
-  
+
   S.pi <- t(res.0) %*% GZ %*% inv.I.pi %*% t(GZ) %*% res.0
   S.pi <- S.pi / tilde.sigma2
-  
+
   p.value.S.pi <- 1 - stats::pchisq(S.pi, df = dim(Z)[2])
-  
+
   if (is.null(weight.beta) | is.null(maf)) {
     P1.G <- P1 %*% G
   } else {
