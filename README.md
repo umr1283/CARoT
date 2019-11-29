@@ -62,6 +62,9 @@ Currently *CARoT* includes the following functions:
   - `qc_impute()` allows to compute post-imputation quality-control
     report using a default [rmarkdown
     template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_impute.Rmd).
+  - `mist()` allows to test for association between a set of SNPS/genes
+    and continuous or binary outcomes by including variant
+    characteristic information and using (weighted) score statistics.
 
 ## Getting help
 
