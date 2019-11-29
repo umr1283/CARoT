@@ -76,7 +76,7 @@ pca_report <- function(
     dplyr::left_join(x = design, y = ., by = id_var)
 
   cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA inertia contribution {-}\n"))
-  p_inertia <- tibble::tibble(
+  p <- tibble::tibble(
     y = (pca_res$values / sum(pca_res$values)),
     x = sprintf("PC%02d", seq_along(pca_res$values)),
     cumsum = cumsum(.data[["y"]])
