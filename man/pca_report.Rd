@@ -5,7 +5,7 @@
 \title{Compute an analysis report using principal component analysis from flashpca tool.}
 \usage{
 pca_report(data, design, id_var = "Sample_ID", technical_vars,
-  n_comp = 5, fig_n_comp = n_comp, outliers_component = NULL,
+  n_comp = 5, fig_n_comp = n_comp, outliers_component = 1:2,
   outliers_threshold = 3, title_level = 2)
 }
 \arguments{
@@ -25,11 +25,26 @@ pca_report(data, design, id_var = "Sample_ID", technical_vars,
 
 \item{outliers_threshold}{A \code{numeric}. The threshold to define outliers.}
 
-\item{title_level}{A \code{numeric}. The markdown title level, i.e., the number of \code{#} preceding the section.}
+\item{title_level}{A \code{numeric}. The markdown title level, \emph{i.e.}, the number of \code{#} preceding the section.}
 }
 \value{
 A \code{data.frame}.
 }
 \description{
 The function can be used in a chunk within a Rmarkdown document/script with results="asis" to render the report.
+}
+\examples{
+
+pca_report(
+  data = t(mtcars),
+  design = rownames_to_column(mtcars, "Sample_ID"),
+  id_var = "Sample_ID",
+  technical_vars = c("cyl", "gear", "vs"),
+  n_comp = 5,
+  fig_n_comp = 5,
+  outliers_component = 1:2,
+  outliers_threshold = 3,
+  title_level = 2
+)
+
 }
