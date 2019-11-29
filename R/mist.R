@@ -188,9 +188,10 @@ mist_print <- tidy_mist <- function(x) {
 }
 
 
-#' print.mist
+#' Print method for mist objec
 #'
-#' @param x [mist]
+#' @param x [[mist]]
+#' @param ... Other arguments (Not used).
 #'
 #' @return list
 #' @export
