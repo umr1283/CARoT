@@ -52,7 +52,8 @@ Imports:
     tibble,
     tidyr,
     utils,
-    CompQuadForm
+    CompQuadForm,
+    rlang (>= 0.1.2)
 Suggests:
     covr,
     testthat,
@@ -61,7 +62,8 @@ Suggests:
     FlowSorted.Blood.450k,
     FlowSorted.CordBlood.450k,
     IlluminaHumanMethylationEPICanno.ilm10b4.hg19,
-    FlowSorted.Blood.EPIC
+    FlowSorted.Blood.EPIC,
+    roxygen2
 Remotes: github::gabraham/flashpca/flashpcaR
 SystemRequirements: 
     pandoc (>= 1.12.3) - http://pandoc.org,

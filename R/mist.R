@@ -195,7 +195,7 @@ mist_print <- tidy_mist <- function(x) {
 #'
 #' @return list
 #' @export
-print.mist <- function(x) {
+print.mist <- function(x, ...) {
   out <- tidy_mist(x)
   out$estimate[, -1] <- signif(out$estimate[, -1], digits = 3)
 
