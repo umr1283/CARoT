@@ -7,7 +7,7 @@
 mist_print(x)
 }
 \arguments{
-\item{x}{\link{mist}}
+\item{x}{[\link{mist}]}
 }
 \value{
 list
