@@ -37,7 +37,7 @@ The function can be used in a chunk within a Rmarkdown document/script with resu
 
 pca_report(
   data = t(mtcars),
-  design = rownames_to_column(mtcars, "Sample_ID"),
+  design = tibble::rownames_to_column(mtcars, "Sample_ID"),
   id_var = "Sample_ID",
   technical_vars = c("cyl", "gear", "vs"),
   n_comp = 5,
