@@ -1,5 +1,9 @@
 # CARoT (development version)
 
+## New features
+
+* New `mist()`, it allows to test for association between a set of SNPS/genes and continuous or binary outcomes by including variant characteristic information and using (weighted) score statistics
+
 ## Minor improvements and fixes
 
 * In `R/pca_report.R`, 

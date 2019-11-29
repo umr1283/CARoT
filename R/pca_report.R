@@ -15,7 +15,7 @@
 #' @return A `data.frame`.
 #' @export
 #'
-#' @example
+#' @examples
 #'
 #' pca_report(
 #'   data = t(mtcars),
