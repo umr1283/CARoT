@@ -2,16 +2,18 @@
 % Please edit documentation in R/mist.R
 \name{print.mist}
 \alias{print.mist}
-\title{print.mist}
+\title{Print method for mist objec}
 \usage{
-\method{print}{mist}(x)
+\method{print}{mist}(x, ...)
 }
 \arguments{
-\item{x}{\link{mist}}
+\item{x}{[\link{mist}]}
+
+\item{...}{Other arguments (Not used).}
 }
 \value{
 list
 }
 \description{
-print.mist
+Print method for mist objec
 }

@@ -70,10 +70,9 @@ pca_report <- function(
   )
 
   pca_dfxy <- pca_res[["projection"]] %>%
-    as.data.frame() %>%
-    setNames(., paste0("PC", seq_len(ncol(.)))) %>%
+    tibble::as_tibble(.name_repair = ~ paste0("PC", seq_len(length(.x)))) %>%
     dplyr::mutate(!!id_var := as.character(colnames(data))) %>%
-    dplyr::left_join(x = design, y = ., by = id_var)
+    dplyr::right_join(y = design, by = id_var)
 
   cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA inertia contribution {-}\n"))
   p <- tibble::tibble(
@@ -95,13 +94,17 @@ pca_report <- function(
       p <- paste0("PC", 1:fig_n_comp) %>%
         utils::combn(2) %>%
         t() %>%
-        as.data.frame() %>%
+        as.data.frame(stringsAsFactors = FALSE) %>%
+        stats::setNames(c("X.PC", "Y.PC")) %>%
         tibble::as_tibble() %>%
-        setNames(c("X.PC", "Y.PC")) %>%
         dplyr::mutate(
-          data = purrr::map2(X.PC, Y.PC, ~ setNames(pca_dfxy[, c(!!ivar, .x, .y)], c(!!ivar, "X", "Y")))
+          data = purrr::map2(
+            .x = .data[["X.PC"]],
+            .y = .data[["Y.PC"]],
+            .f = ~ stats::setNames(pca_dfxy[, c(!!ivar, .x, .y)], c(!!ivar, "X", "Y"))
+          )
         ) %>%
-        tidyr::unnest(data) %>%
+        tidyr::unnest(.data[["data"]]) %>%
         dplyr::mutate_at(dplyr::vars(ivar), as.character) %>%
         ggplot2::ggplot(mapping = ggplot2::aes(x = .data[["X"]], y = .data[["Y"]], colour = .data[[ivar]])) +
         ggplot2::geom_hline(yintercept = 0, na.rm = TRUE) +
@@ -123,12 +126,12 @@ pca_report <- function(
 
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA association {-}\n"))
     p <- pca_dfxy %>%
-      tidyr:: pivot_longer(names_to = "PC", values_to = "Values", cols = num_range("PC", 1:n_comp)) %>%
-      dplyr::filter(PC %in% paste0("PC", 1:fig_n_comp)) %>%
-      dplyr::group_by(PC) %>%
+      tidyr:: pivot_longer(names_to = "PC", values_to = "Values", cols = dplyr::num_range("PC", 1:n_comp)) %>%
+      dplyr::filter(.data[["PC"]] %in% paste0("PC", 1:fig_n_comp)) %>%
+      dplyr::group_by(.data[["PC"]]) %>%
       tidyr::nest() %>%
       dplyr::mutate(
-        lm = purrr::map(data, function(data) {
+        lm = purrr::map(.data[["data"]], function(data) {
           stats::lm(
             stats::as.formula(paste0("Values ~ ", paste(keep_technical, collapse = " + "))),
             data = data
@@ -140,8 +143,8 @@ pca_report <- function(
         })
       ) %>%
       dplyr::ungroup() %>%
-      dplyr::select(PC, lm) %>%
-      tidyr::unnest(lm) %>%
+      dplyr::select(.data[["PC"]], .data[["lm"]]) %>%
+      tidyr::unnest(.data[["lm"]]) %>%
       ggplot2::ggplot(
         mapping = ggplot2::aes(
           x = factor(.data[["PC"]]),
@@ -170,7 +173,7 @@ pca_report <- function(
     cat(paste0("\n", paste(rep("#", title_level), collapse = ""), " PCA Outliers {-}\n"))
     pcs <- paste0("PC", outliers_component)
     pca_dfxy <- pca_dfxy %>%
-      mutate(
+      dplyr::mutate(
         dist_centre = sqrt(as.vector(scale(.data[[pcs[1]]]))^2 + as.vector(scale(.data[[pcs[2]]]))^2),
         high = .data[["dist_centre"]] >=
           (stats::median(.data[["dist_centre"]]) + !!outliers_threshold * stats::IQR(.data[["dist_centre"]])),
@@ -187,13 +190,17 @@ pca_report <- function(
     p <- paste0("PC", 1:fig_n_comp) %>%
       utils::combn(2) %>%
       t() %>%
-      as.data.frame() %>%
+      as.data.frame(stringsAsFactors = FALSE) %>%
       tibble::as_tibble() %>%
-      setNames(c("X.PC", "Y.PC")) %>%
+      stats::setNames(c("X.PC", "Y.PC")) %>%
       dplyr::mutate(
-        data = purrr::map2(X.PC, Y.PC, ~ setNames(pca_dfxy[, c(!!ivar, .x, .y)], c(!!ivar, "X", "Y")))
+        data = purrr::map2(
+          .x = .data[["X.PC"]],
+          .y = .data[["Y.PC"]],
+          .f = ~ stats::setNames(pca_dfxy[, c(!!ivar, .x, .y)], c(!!ivar, "X", "Y"))
+        )
       ) %>%
-      tidyr::unnest(data) %>%
+      tidyr::unnest(.data[["data"]]) %>%
       dplyr::mutate_at(dplyr::vars(ivar), as.character) %>%
       ggplot2::ggplot(mapping = ggplot2::aes(x = .data[["X"]], y = .data[["Y"]], colour = .data[[ivar]])) +
       ggplot2::geom_hline(yintercept = 0, na.rm = TRUE) +

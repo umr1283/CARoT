@@ -651,7 +651,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   )
   pca_gg[["pop"]] <- factor(
     x = ifelse(is.na(pca_gg[["pop"]]), cohort_name, pca_gg[["pop"]]),
-    levels = c(cohort_name, sort(unique(na.omit(pca_gg[["pop"]]))))
+    levels = c(cohort_name, sort(unique(stats::na.omit(pca_gg[["pop"]]))))
   )
   pca_gg[["super_pop"]] <- factor(
     x = ifelse(is.na(pca_gg[["super_pop"]] ), cohort_name, pca_gg[["super_pop"]]),
@@ -661,7 +661,7 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
 
   p_ethni <- ggplot2::ggplot(
     data = pca_gg,
-    mapping = ggplot2::aes_string(x = "PC01", y = "PC02", colour = "super_pop")
+    mapping = ggplot2::aes(x = .data[["PC01"]], y = .data[["PC02"]], colour = .data[["super_pop"]])
   ) +
     ggplot2::theme_light(base_size = 12) +
   	ggplot2::geom_hline(yintercept = 0, linetype = 1, size = 0.5, na.rm = TRUE) +
@@ -681,20 +681,20 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
       )
     ) +
     ggforce::facet_zoom(
-      xlim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC01"]]),
-      ylim = range(dplyr::filter(pca_gg, !!dplyr::sym("cohort")==!!cohort_name)[["PC02"]]),
+      xlim = range(dplyr::filter(pca_gg, .data[["cohort"]] == !!cohort_name)[["PC01"]]),
+      ylim = range(dplyr::filter(pca_gg, .data[["cohort"]] == !!cohort_name)[["PC02"]]),
       zoom.size = 0.5,
       horizontal = FALSE
     )
 
   pop_centre <- purrr::map_df(c("super_pop", "pop") , function(ipop) {
     pca_gg %>%
-      dplyr::filter(!!dplyr::sym("cohort") != !!cohort_name) %>%
+      dplyr::filter(.data[["cohort"]] != !!cohort_name) %>%
       dplyr::select(-"cohort") %>%
-      dplyr::group_by(!!dplyr::sym(ipop)) %>%
+      dplyr::group_by(.data[[ipop]]) %>%
       dplyr::summarise(
-        PC01_centre = mean(!!dplyr::sym("PC01")),
-        PC02_centre = mean(!!dplyr::sym("PC02"))
+        PC01_centre = mean(.data[["PC01"]]),
+        PC02_centre = mean(.data[["PC02"]])
       ) %>%
       dplyr::mutate(pop_type = ipop) %>%
       dplyr::rename("pop_closest" = !!ipop) %>%
@@ -702,19 +702,19 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
   })
 
   pca_gg_pred <- pca_gg %>%
-    select(-c(pop, super_pop)) %>%
-    dplyr::filter(!!dplyr::sym("cohort") == !!cohort_name) %>%
-    dplyr::mutate(pop_centre = list(pop_centre)) %>%
+    dplyr::select(-c(.data[["pop"]], .data[["super_pop"]])) %>%
+    dplyr::filter(.data[["cohort"]] == !!cohort_name) %>%
+    dplyr::mutate(pop_centre = list(.data[["pop_centre"]])) %>%
     tidyr::unnest("pop_centre") %>%
-    dplyr::group_by(sample, pop_type) %>%
+    dplyr::group_by(.data[["sample"]], .data[["pop_type"]]) %>%
     dplyr::mutate(
       pop_dist = purrr::pmap_dbl(
         .l = list(
-          .x = !!dplyr::sym("PC01"),
-          .y = !!dplyr::sym("PC02"),
-          .x_centre = !!dplyr::sym("PC01_centre"),
-          .y_centre = !!dplyr::sym("PC02_centre"),
-          .pop = !!dplyr::sym("pop_closest")
+          .x = .data[["PC01"]],
+          .y = .data[["PC02"]],
+          .x_centre = .data[["PC01_centre"]],
+          .y_centre = .data[["PC02_centre"]],
+          .pop = .data[["pop_closest"]]
         ),
         .f = function(.x, .y, .x_centre, .y_centre, .pop) {
           sqrt((.x - .x_centre)^2 + (.y - .y_centre)^2)
@@ -724,11 +724,11 @@ compute_pca <- function(cohort_name, input_plink, output_directory, ref1kg_popul
     dplyr::ungroup()
 
   pca_gg_pred_best <- pca_gg_pred %>%
-    dplyr::group_by(sample, pop_type) %>%
-    dplyr::slice(which.min(pop_dist)) %>%
+    dplyr::group_by(.data[["sample"]], .data[["pop_type"]]) %>%
+    dplyr::slice(which.min(.data[["pop_dist"]])) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-dplyr::ends_with("_centre"), -pop_dist) %>%
-    tidyr::pivot_wider(names_from = pop_type, values_from = pop_closest)
+    dplyr::select(-dplyr::ends_with("_centre"), -.data[["pop_dist"]]) %>%
+    tidyr::pivot_wider(names_from = "pop_type", values_from = "pop_closest")
 
   #################
   ### Exporting ###
