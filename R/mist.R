@@ -14,26 +14,26 @@
 #' Test for association between a set of SNPS/genes and continuous outcomes by
 #' including variant characteristic information and using score statistics.
 #'
-#' @param y [numeric] A `numeric` vector of the continuous outcome variables. Missing values are not allowed.
-#' @param X [numeric] A `numeric` matrix of covariates with rows for individuals and columns for covariates.
+#' @param y [[numeric]] A `numeric` vector of the continuous outcome variables. Missing values are not allowed.
+#' @param X [[numeric]] A `numeric` matrix of covariates with rows for individuals and columns for covariates.
 #'   If there is no covariate, it does not need to be specified
-#' @param G [numeric] A `numeric` genotype matrix with rows for individuals and columns for SNPs.
+#' @param G [[numeric]] A `numeric` genotype matrix with rows for individuals and columns for SNPs.
 #'   Each SNP should be coded as 0, 1, and 2 for AA, Aa, aa, where A is a major allele and a is a minor allele.
 #'   Missing genotypes are not allowed.
-#' @param Z [numeric] a `numeric` matrix of second level covariates for variant characteristics.
+#' @param Z [[numeric]] a `numeric` matrix of second level covariates for variant characteristics.
 #'   Each row corresponds to a variant and each column corresponds to a variant characteristic.
 #'   If there is no second level covariates, a vector of 1 should be used.
-#' @param method [character] A method to compute the p-value and the default value is "liu".
+#' @param method [[character]] A method to compute the p-value and the default value is "liu".
 #'   Method "davies" represents an exact method that computes the p-value
 #'     by inverting the characteristic function of the mixture chisq.
 #'   Method "liu" represents an approximation method that matches the first 3 moments.
-#' @param model [character] A `character` vector specifying the model. Default is to `"guess"`.
+#' @param model [[character]] A `character` vector specifying the model. Default is to `"guess"`.
 #'   Possible choices are `"guess"`, `"continuous"` (linear regression) or `"binary"` (logistic regression).
-#' @param weight.beta [numeric] A `numeric` vector of parameters of beta function
+#' @param weight.beta [[numeric]] A `numeric` vector of parameters of beta function
 #'   which is the weight for scorestatistics.
 #'   The default value is `NULL`, *i.e.* no weight.
 #'   Default weight value could be `c(1, 25)`.
-#' @param maf [numeric] A `numeric` vector of MAF (minor allele frequency) for each SNP.
+#' @param maf [[numeric]] A `numeric` vector of MAF (minor allele frequency) for each SNP.
 #'
 #' @return
 #' * S.tau score Statistic for the variant heterogeneous effect.
@@ -172,7 +172,7 @@ mist <- function(
 
 #' tidy_mist / mist_print
 #'
-#' @param x [mist]
+#' @param x [[mist]]
 #'
 #' @return list
 #' @export
