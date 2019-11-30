@@ -1,6 +1,6 @@
-language: R
+language: r
 cache: packages
-sudo: true
+os: linux
 cran: https://cloud.r-project.org
 
 env:
@@ -24,7 +24,7 @@ bioc_packages:
   - IlluminaHumanMethylation450kmanifest
   - IlluminaHumanMethylationEPICmanifest
 
-matrix:
+jobs:
   include:
   - r: devel
   - r: release
@@ -33,7 +33,7 @@ matrix:
     deploy:
       provider: script
       script: Rscript -e 'pkgdown::deploy_site_github()'
-      skip_cleanup: true
+      cleanup: false
   - r: 3.6
 
 after_success:
