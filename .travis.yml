@@ -33,7 +33,7 @@ jobs:
     deploy:
       provider: script
       script: Rscript -e 'pkgdown::deploy_site_github()'
-      cleanup: false
+      skip_cleanup: true
   - r: 3.6
 
 after_success:
