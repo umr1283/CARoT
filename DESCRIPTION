@@ -52,8 +52,11 @@ Imports:
     tibble,
     tidyr,
     utils,
-    CompQuadForm,
-    rlang (>= 0.1.2)
+    rlang (>= 0.1.2),
+    MiST,
+    crayon,
+    cli,
+    rstudioapi
 Suggests:
     covr,
     testthat,
