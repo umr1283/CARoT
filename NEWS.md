@@ -1,5 +1,9 @@
 # CARoT (development version)
 
+## New features
+
+* CARoT is now a meta-package.
+
 ## Minor improvements and fixes
 
 * CARoT now load `mist()` directly from the R package MiST.
