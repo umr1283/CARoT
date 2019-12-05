@@ -7,6 +7,7 @@
 ## Minor improvements and fixes
 
 * CARoT now load `mist()` directly from the R package MiST.
+* CARoT includes the R package `NACHO`.
 
 # CARoT 0.4.0
 
