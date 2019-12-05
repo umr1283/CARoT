@@ -3,11 +3,21 @@
 ## New features
 
 * CARoT is now a meta-package.
+    * Now attaches the R package `MiST`
+    * Now attaches the R package `NACHO`
+    * Now attaches the R package `forcats`
+    * Now attaches the R package `stringr`
+    * Now attaches the R package `dplyr`
+    * Now attaches the R package `purrr`
+    * Now attaches the R package `readr`
+    * Now attaches the R package `tidyr`
+    * Now attaches the R package `tibble`
+    * Now attaches the R package `ggplot2`
 
 ## Minor improvements and fixes
 
-* CARoT now load `mist()` directly from the R package MiST.
-* CARoT includes the R package `NACHO`.
+* Remove `R/mist.R`, now attaches the R package `MiST`.
+
 
 # CARoT 0.4.0
 
