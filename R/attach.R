@@ -1,30 +1,4 @@
-core <- c("MiST")
-
-msg <- function(..., startup = FALSE) {
-  if (startup) {
-    if (!isTRUE(getOption("CARoT.quiet"))) {
-      packageStartupMessage(text_col(...))
-    }
-  } else {
-    message(text_col(...))
-  }
-}
-
-text_col <- function(x) {
-  # If RStudio not available, messages already printed in black
-  if (!rstudioapi::isAvailable()) {
-    return(x)
-  }
-
-  if (!rstudioapi::hasFun("getThemeInfo")) {
-    return(x)
-  }
-
-  theme <- rstudioapi::getThemeInfo()
-
-  if (isTRUE(theme$dark)) crayon::white(x) else crayon::black(x)
-
-}
+core <- c("ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats", "MiST", "NACHO")
 
 core_unloaded <- function() {
   search <- paste0("package:", core)
@@ -40,7 +14,7 @@ same_library <- function(pkg) {
   )
 }
 
-tidyverse_attach <- function() {
+carot_attach <- function() {
   to_load <- core_unloaded()
   if (length(to_load) == 0)
     return(invisible())
