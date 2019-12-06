@@ -1,3 +1,5 @@
+# nocov start
+
 core <- c("ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats", "MiST", "NACHO")
 
 .onAttach <- function(...) {
@@ -259,3 +261,5 @@ style_grey <- function(level, ...) {
     crayon::make_style(grDevices::grey(level), grey = TRUE)
   )
 }
+
+# nocov end
