@@ -1,28 +1,34 @@
-Package: CARoT
 Type: Package
+Package: CARoT
 Title: Centralised and Automated Reporting Tools
 Version: 0.4.0.9000
-Authors@R: c(
-    person(
-      given = "Mickaël", family = "Canouil", role = c("aut", "cre"), email = "mickael.canouil@cnrs.fr", 
-      comment = c(ORCID = "0000-0002-3396-4549")
-    ),
-    person(
-      given = "Mathilde", family = "Boissel", role = "aut", email = "mathilde.boissel@cnrs.fr", 
-      comment = c(ORCID = "0000-0001-5719-8749")
-    ),
-    person(
-      given = "Lijiao", family = "Ning", role = "aut", email = "lijiao.ning@cnrs.fr"
-    )
-  )
-Description: A set of Quality-Control reporting tools and some other functions.
+Authors@R: 
+    c(person(given = "Mickaël",
+             family = "Canouil",
+             role = c("aut", "cre"),
+             email = "mickael.canouil@cnrs.fr",
+             comment = c(ORCID = "0000-0002-3396-4549")),
+      person(given = "Mathilde",
+             family = "Boissel",
+             role = "aut",
+             email = "mathilde.boissel@cnrs.fr",
+             comment = c(ORCID = "0000-0001-5719-8749")),
+      person(given = "Lijiao",
+             family = "Ning",
+             role = "aut",
+             email = "lijiao.ning@cnrs.fr"))
+Description: A set of Quality-Control reporting tools and some
+    other functions.
 License: GPL-3 | file LICENSE
-URL: https://github.com/mcanouil/CARoT, https://mcanouil.github.io/CARoT
+URL: https://github.com/mcanouil/CARoT,
+    https://mcanouil.github.io/CARoT
 BugReports: https://github.com/mcanouil/CARoT/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
+    cli,
     cowplot,
+    crayon,
     data.table,
     dplyr,
     ENmix,
@@ -39,45 +45,39 @@ Imports:
     magrittr,
     methods,
     minfi,
+    MiST,
     parallel,
     purrr,
     qdap,
     R.utils,
     readr,
+    rlang (>= 0.1.2),
     rmarkdown,
     RSpectra,
+    rstudioapi,
     S4Vectors,
     scales,
     SummarizedExperiment,
     tibble,
     tidyr,
-    utils,
-    rlang (>= 0.1.2),
-    MiST,
-    crayon,
-    cli,
-    rstudioapi
+    utils
 Suggests:
-    covr,
-    testthat,
     ChAMPdata,
-    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    covr,
     FlowSorted.Blood.450k,
-    FlowSorted.CordBlood.450k,
-    IlluminaHumanMethylationEPICanno.ilm10b4.hg19,
     FlowSorted.Blood.EPIC,
-    roxygen2
-Remotes: github::gabraham/flashpca/flashpcaR
-SystemRequirements: 
-    pandoc (>= 1.12.3) - http://pandoc.org,
-    bcftools,
-    vcftools,
-    bgzip,
-    tabix,
-    plink1.9,
-    gcta64,
-LazyData: true
-RoxygenNote: 6.1.1
-Roxygen: list(markdown = TRUE)
-VignetteBuilder: knitr
+    FlowSorted.CordBlood.450k,
+    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    IlluminaHumanMethylationEPICanno.ilm10b4.hg19,
+    roxygen2,
+    testthat
+VignetteBuilder: 
+    knitr
+Remotes: 
+    github::gabraham/flashpca/flashpcaR
 Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+SystemRequirements: pandoc (>= 1.12.3) - http://pandoc.org,
+    bcftools, vcftools, bgzip, tabix, plink1.9, gcta64,
