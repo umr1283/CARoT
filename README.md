@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Centralised and Automated Reporting Tools <img src="man/figures/carot_hex.png" align="right" width="120" />
+# Centralised and Automated Reporting Tools <img src="man/figures/carot.png" align="right" width="120" />
 
 <!-- badges: start -->
 
