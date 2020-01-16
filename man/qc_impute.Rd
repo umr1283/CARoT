@@ -4,13 +4,23 @@
 \alias{qc_impute}
 \title{Compute post-imputation quality-control report using a default rmarkdown template.}
 \usage{
-qc_impute(input_directory = NULL, output_directory = NULL,
-  cohort_name = "CARoT", output_file = paste0(cohort_name,
-  "_imputation_QC.html"), title = "Post-Imputation Quality-Control",
-  author_name = "CARoT", author_affiliation = NULL,
-  author_email = NULL, cache = FALSE, show_code = FALSE,
-  n_cores = 1, dpi = 120, gg_fontsize = 12, encoding = "UTF-8",
-  ...)
+qc_impute(
+  input_directory = NULL,
+  output_directory = NULL,
+  cohort_name = "CARoT",
+  output_file = paste0(cohort_name, "_imputation_QC.html"),
+  title = "Post-Imputation Quality-Control",
+  author_name = "CARoT",
+  author_affiliation = NULL,
+  author_email = NULL,
+  cache = FALSE,
+  show_code = FALSE,
+  n_cores = 1,
+  dpi = 120,
+  gg_fontsize = 12,
+  encoding = "UTF-8",
+  ...
+)
 }
 \arguments{
 \item{input_directory}{A \code{character}. The path to the VCF files.}

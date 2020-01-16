@@ -8,8 +8,8 @@ read_metharray(basenames, n_cores = 1)
 }
 \arguments{
 \item{basenames}{The \code{basenames} or \code{filenames} of the IDAT files.
-\code{basenames} are the filename without the ending \code{_Grn.idat} or \code{_Red.idat}.
-\code{filenames} are filenames including \code{_Grn.idat} or \code{_Red.idat}.}
+\code{basenames} are the filename without the ending \verb{_Grn.idat} or \verb{_Red.idat}.
+\code{filenames} are filenames including \verb{_Grn.idat} or \verb{_Red.idat}.}
 
 \item{n_cores}{An \code{integer}. The number of cores to use,
 i.e., at most how many child processes will be run simultaneously.}

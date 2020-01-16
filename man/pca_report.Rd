@@ -4,9 +4,17 @@
 \alias{pca_report}
 \title{Compute an analysis report using principal component analysis from flashpca tool.}
 \usage{
-pca_report(data, design, id_var = "Sample_ID", technical_vars,
-  n_comp = 5, fig_n_comp = n_comp, outliers_component = 1:2,
-  outliers_threshold = 3, title_level = 2)
+pca_report(
+  data,
+  design,
+  id_var = "Sample_ID",
+  technical_vars,
+  n_comp = 5,
+  fig_n_comp = n_comp,
+  outliers_component = 1:2,
+  outliers_threshold = 3,
+  title_level = 2
+)
 }
 \arguments{
 \item{data}{A \code{vector} or \code{data.frame}. The data on which the PCA has to be performed.}
@@ -25,7 +33,7 @@ pca_report(data, design, id_var = "Sample_ID", technical_vars,
 
 \item{outliers_threshold}{A \code{numeric}. The threshold to define outliers.}
 
-\item{title_level}{A \code{numeric}. The markdown title level, \emph{i.e.}, the number of \code{#} preceding the section.}
+\item{title_level}{A \code{numeric}. The markdown title level, \emph{i.e.}, the number of \verb{#} preceding the section.}
 }
 \value{
 A \code{data.frame}.

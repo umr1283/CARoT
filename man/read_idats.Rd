@@ -4,14 +4,28 @@
 \alias{read_idats}
 \title{Efficiently import idats files mostly using minfi functions.}
 \usage{
-read_idats(directory = getwd(), csv_file = "csv$",
-  meth_value_type = "B", filter_beads = TRUE, bead_cutoff = 0.05,
-  filter_non_cpg = TRUE, filter_snps = TRUE, population = NULL,
-  filter_multihit = TRUE, filter_xy = TRUE, detection_pvalues = 0.01,
-  filter_callrate = TRUE, callrate_samples = 0.99,
-  callrate_probes = 1, norm_background = "oob", norm_dye = "RELIC",
-  norm_quantile = "quantile1", array_name = c("EPIC", "450k"),
-  annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"), n_cores = 1)
+read_idats(
+  directory = getwd(),
+  csv_file = "csv$",
+  meth_value_type = "B",
+  filter_beads = TRUE,
+  bead_cutoff = 0.05,
+  filter_non_cpg = TRUE,
+  filter_snps = TRUE,
+  population = NULL,
+  filter_multihit = TRUE,
+  filter_xy = TRUE,
+  detection_pvalues = 0.01,
+  filter_callrate = TRUE,
+  callrate_samples = 0.99,
+  callrate_probes = 1,
+  norm_background = "oob",
+  norm_dye = "RELIC",
+  norm_quantile = "quantile1",
+  array_name = c("EPIC", "450k"),
+  annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"),
+  n_cores = 1
+)
 }
 \arguments{
 \item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}

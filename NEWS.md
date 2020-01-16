@@ -3,7 +3,8 @@
 ## New features
 
 * CARoT is now a meta-package.
-    * Now attaches the R package `MiST`
+    * Now attaches the R package `MiSTr`
+    * Now attaches the R package `rain`
     * Now attaches the R package `NACHO`
     * Now attaches the R package `forcats`
     * Now attaches the R package `stringr`
@@ -16,7 +17,8 @@
 
 ## Minor improvements and fixes
 
-* Remove `R/mist.R`, now attaches the R package `MiST`.
+* Remove `R/mist.R`, now attaches the R package `MiSTr`.
+* Remove `R/estimate_ethnicity.R`, now attaches the R package `rain`.
 
 
 # CARoT 0.4.0

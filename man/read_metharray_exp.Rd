@@ -4,9 +4,14 @@
 \alias{read_metharray_exp}
 \title{read_metharray_exp}
 \usage{
-read_metharray_exp(directory = NULL, sample_sheet = NULL,
-  ignore.case = TRUE, recursive = TRUE, full.names = TRUE,
-  n_cores = 1)
+read_metharray_exp(
+  directory = NULL,
+  sample_sheet = NULL,
+  ignore.case = TRUE,
+  recursive = TRUE,
+  full.names = TRUE,
+  n_cores = 1
+)
 }
 \arguments{
 \item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}
