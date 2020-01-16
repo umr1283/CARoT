@@ -4,8 +4,13 @@
 \alias{read_sample_sheet}
 \title{read_sample_sheet}
 \usage{
-read_sample_sheet(directory, csv_file = "csv$", ignore.case = TRUE,
-  recursive = TRUE, full.names = TRUE)
+read_sample_sheet(
+  directory,
+  csv_file = "csv$",
+  ignore.case = TRUE,
+  recursive = TRUE,
+  full.names = TRUE
+)
 }
 \arguments{
 \item{directory}{A \code{character}. Location of IDAT files, default is the current working directory.}

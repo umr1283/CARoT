@@ -4,26 +4,48 @@
 \alias{qc_plink}
 \title{Compute quality-control of genotyping array (PLINK format) using a rmarkdown template.}
 \usage{
-qc_plink(input_directory = NULL, output_directory = NULL,
-  cohort_name = "CARoT", output_file = paste0(cohort_name, "_QC.html"),
-  array = NULL, callrate_samples = 0.95, callrate_snps = 0.95,
-  heterozygosity_treshold = 4, maf_threshold = 0.01,
-  hwe_pvalue = 1e-04, includes_relatives = FALSE,
-  mendelian_samples = 0.05, mendelian_snp = 0.1, IBD_threshold = 0.2,
-  population = NULL, pca_components = 10, pca_threshold = 3,
-  check_bim_script = system.file("perl", "HRC-1000G-check-bim.pl",
-  package = "CARoT"), ref1kg_panel = NULL, ref1kg_population = NULL,
-  ref1kg_genotypes = NULL, ref1kg_legend = NULL, ref1kg_fasta = NULL,
-  bin_path = list(bcftools = "/usr/bin/bcftools", bgzip =
-  "/usr/bin/bgzip", plink = "/usr/bin/plink1.9", gcta = "/usr/bin/gcta64"),
-  title = paste(array, "Array Quality-Control"), author_name = "CARoT",
-  author_affiliation = NULL, author_email = NULL, cache = FALSE,
-  show_code = FALSE, n_cores = 1, dpi = 120, gg_fontsize = 12,
-  encoding = "UTF-8", ...)
+qc_plink(
+  input_directory = NULL,
+  output_directory = NULL,
+  cohort_name = "CARoT",
+  output_file = paste0(cohort_name, "_QC.html"),
+  array = NULL,
+  callrate_samples = 0.95,
+  callrate_snps = 0.95,
+  heterozygosity_treshold = 4,
+  maf_threshold = 0.01,
+  hwe_pvalue = 1e-04,
+  includes_relatives = FALSE,
+  mendelian_samples = 0.05,
+  mendelian_snp = 0.1,
+  IBD_threshold = 0.2,
+  population = NULL,
+  pca_components = 10,
+  pca_threshold = 3,
+  check_bim_script = system.file("perl", "HRC-1000G-check-bim.pl", package = "CARoT"),
+  ref1kg_panel = NULL,
+  ref1kg_population = NULL,
+  ref1kg_genotypes = NULL,
+  ref1kg_legend = NULL,
+  ref1kg_fasta = NULL,
+  bin_path = list(bcftools = "/usr/bin/bcftools", bgzip = "/usr/bin/bgzip", plink =
+    "/usr/bin/plink1.9", gcta = "/usr/bin/gcta64"),
+  title = paste(array, "Array Quality-Control"),
+  author_name = "CARoT",
+  author_affiliation = NULL,
+  author_email = NULL,
+  cache = FALSE,
+  show_code = FALSE,
+  n_cores = 1,
+  dpi = 120,
+  gg_fontsize = 12,
+  encoding = "UTF-8",
+  ...
+)
 }
 \arguments{
 \item{input_directory}{A \code{character}. The path to the plink files.
-The path should contains the file name without the extension, i.e., without \code{*.bed}, \code{*.bim} or \code{*.fam}.}
+The path should contains the file name without the extension, i.e., without \verb{*.bed}, \verb{*.bim} or \verb{*.fam}.}
 
 \item{output_directory}{A \code{character}. The path to the output directory.}
 
@@ -75,19 +97,19 @@ Default is \code{3}.}
 \item{check_bim_script}{A \code{character}. The PERL script to use to check PLINK files to allow later imputation.
 Default is \code{system.file("perl", "HRC-1000G-check-bim.pl", package = "CARoT")}.}
 
-\item{ref1kg_panel}{A \code{character}. The \code{*.panel} file from 1,000 Genome project.
+\item{ref1kg_panel}{A \code{character}. The \verb{*.panel} file from 1,000 Genome project.
 Default is \code{NULL}.}
 
-\item{ref1kg_population}{A \code{character}. The \code{*.tsv} file from 1,000 Genome project describing samples and ethnicity.
+\item{ref1kg_population}{A \code{character}. The \verb{*.tsv} file from 1,000 Genome project describing samples and ethnicity.
 Default is \code{NULL}.}
 
 \item{ref1kg_genotypes}{A \code{character}. The PLINK files from 1,000 Genome project.
 Default is \code{NULL}.}
 
-\item{ref1kg_legend}{A \code{character}. The \code{*.legend} file from 1,000 Genome project.
+\item{ref1kg_legend}{A \code{character}. The \verb{*.legend} file from 1,000 Genome project.
 Default is \code{NULL}.}
 
-\item{ref1kg_fasta}{A \code{character}. The \code{*.fasta} file from 1,000 Genome project.
+\item{ref1kg_fasta}{A \code{character}. The \verb{*.fasta} file from 1,000 Genome project.
 Default is \code{NULL}.}
 
 \item{bin_path}{A \code{list(character)}. A list giving the binary path of \code{bcftools}, \code{bgzip}, \code{gcta} and \code{plink1.9}.}
