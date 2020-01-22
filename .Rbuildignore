@@ -14,3 +14,4 @@
 ^\.github$
 ^_build.R$
 ^\.git$
+^LICENSE\.md$

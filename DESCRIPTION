@@ -19,7 +19,7 @@ Authors@R:
              email = "lijiao.ning@cnrs.fr"))
 Description: A set of Quality-Control reporting tools and some
     other functions.
-License: GPL-3 | file LICENSE
+License: GPL-3
 URL: https://github.com/mcanouil/CARoT,
     https://mcanouil.github.io/CARoT
 BugReports: https://github.com/mcanouil/CARoT/issues
