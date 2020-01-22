@@ -32,8 +32,6 @@ functions.
 
 Currently *CARoT* includes the following functions:
 
-  - `estimate_ethnicity()` allows to format VCF files and compute the
-    genomic components (and some figures) for ethnicity.
   - `ggheatmap()` allows to compute heatmap with dendrogram on x-axis
     and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
   - `read_idats()` allows to efficiently import idats files mostly using
@@ -52,9 +50,16 @@ Currently *CARoT* includes the following functions:
   - `qc_impute()` allows to compute post-imputation quality-control
     report using a default [rmarkdown
     template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_impute.Rmd).
-  - `mist()` allows to test for association between a set of SNPS/genes
-    and continuous or binary outcomes by including variant
-    characteristic information and using (weighted) score statistics.
+
+## Functions from packages
+
+  - [`rain::estimate_ethnicity()`](https://github.com/omicsr/rain)
+    allows to format VCF files and compute the genomic components (and
+    some figures) for ethnicity.
+  - [`MiSTr::mist()`](https://github.com/mcanouil/MiSTr) allows to test
+    for association between a set of SNPS/genes and continuous or binary
+    outcomes by including variant characteristic information and using
+    (weighted) score statistics.
 
 ## Getting help
 
