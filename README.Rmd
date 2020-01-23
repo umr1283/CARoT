@@ -43,7 +43,6 @@ Currently *CARoT* includes the following functions:
 
 * `ggheatmap()` allows to compute heatmap with dendrogram on x-axis and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
 * `read_idats()` allows to efficiently import idats files mostly using [minfi](https://doi.org/doi:10.18129/B9.bioc.minfi) functions.
-* `pca_report()` allows to compute an analysis report using principal component analysis from [flashpca](https://github.com/gabraham/flashpca) tool.  
   The function can be used in a chunk within a Rmarkdown document/script with `results="asis"` to render the report.
 * `qc_idats()` allows to compute quality-control of methylation array from Illumina using a [rmarkdown template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_idats.Rmd).
 * `qc_plink()` allows to compute quality-control of genotyping array (PLINK format) using a [rmarkdown template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_plink.Rmd).
@@ -52,7 +51,8 @@ Currently *CARoT* includes the following functions:
 
 ## Functions from packages
 
-* [`rain::estimate_ethnicity()`](https://github.com/omicsr/rain) allows to format VCF files and compute the genomic components (and some figures) for ethnicity.
+* [`rain::estimate_ethnicity()`](https://github.com/omicsr/rain) allows to format VCF files and compute the genomic components (and some figures) for ethnicity using [flashpca](https://github.com/gabraham/flashpca) software
+* [`rain::pca_report()`](https://github.com/omicsr/rain) allows to compute an analysis report using principal component analysis from [flashpca](https://github.com/gabraham/flashpca) software.  
 * [`MiSTr::mist()`](https://github.com/mcanouil/MiSTr) allows to test for association between a set of SNPS/genes and continuous or binary outcomes by including variant characteristic information and using (weighted) score statistics.
 
 
