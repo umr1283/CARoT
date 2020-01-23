@@ -29,6 +29,10 @@ install.packages("CARoT")
 # install.packages("remotes")
 remotes::install_github("omicsr/CARoT")
 ```
+```{r}
+library(CARoT)
+```
+
 
 
 ## Overview 
