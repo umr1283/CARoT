@@ -24,6 +24,32 @@ install.packages("CARoT")
 remotes::install_github("omicsr/CARoT")
 ```
 
+``` r
+library(CARoT)
+#>                                                                   
+#>   .oooooo.         .o.       ooooooooo.             ooooooooooooo 
+#>  d8P'  `Y8b       .888.      `888   `Y88.           8'   888   `8 
+#> 888              .8"888.      888   .d88'  .ooooo.       888      
+#> 888             .8' `888.     888ooo88P'  d88' `88b      888      
+#> 888            .88ooo8888.    888`88b.    888   888      888      
+#> `88b    ooo   .8'     `888.   888  `88b.  888   888      888      
+#>  `Y8bood8P'  o88o     o8888o o888o  o888o `Y8bod8P'     o888o     
+#> 
+#> ── Attaching packages ─────────────────────────────────────────────────────────── CARoT 0.4.0.9000 ──
+#> ✓ ggplot2 3.2.1          ✓ stringr 1.4.0     
+#> ✓ tibble  2.1.3          ✓ forcats 0.4.0     
+#> ✓ tidyr   1.0.0          ✓ MiSTr   1.0.0.9000
+#> ✓ readr   1.3.1          ✓ rain    0.1.0.9000
+#> ✓ purrr   0.3.3          ✓ NACHO   1.0.0     
+#> ✓ dplyr   0.8.3
+#> ── Conflicts ─────────────────────────────────────────────────────────────────── carot_conflicts() ──
+#> x methods::body<-()    masks base::body<-()
+#> x dplyr::filter()      masks stats::filter()
+#> x methods::kronecker() masks base::kronecker()
+#> x dplyr::lag()         masks stats::lag()
+#> x NACHO::summarize()   masks dplyr::summarize()
+```
+
 ## Overview
 
 *CARoT* (Centralised and Automated Reporting Tools) is an under
