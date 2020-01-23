@@ -650,7 +650,7 @@ data_batch <- list(
 
 for (ibeta in seq_along(list_beta)) {
 	cat("\n###", list_beta[ibeta], " {.tabset .tabset-fade .tabset-pills}\n\n")
-	CARoT::pca_report(
+	rain::pca_report(
 		data = data_batch[[names(list_beta)[ibeta]]], 
 		design = data_mset@metadata[["phenotypes"]], 
 		id_var = "Sample_ID",
