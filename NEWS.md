@@ -21,6 +21,7 @@
 * Remove `R/estimate_ethnicity.R`, now attaches the R package `rain`.
 * Use Rmarkdown template directory for `qc_idats`.
 * Use Rmarkdown template directory for `qc_impute`.
+* Use Rmarkdown template directory for `qc_plink`.
 
 
 # CARoT 0.4.0
