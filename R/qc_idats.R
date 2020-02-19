@@ -119,8 +119,8 @@ qc_idats <- function(
   message(message_prefix, "Quality-Control started ...")
 
   file.copy(
-    from = system.file("rmarkdown", "qc_idats.Rmd", package = "CARoT"),
-    to = paste0(tempdir(), "/qc_idats.Rmd"),
+    from = system.file("rmarkdown", "templates", "qc_idats", "skeleton.Rmd", package = "CARoT"),
+    to = file.apth(tempdir(), "qc_idats.Rmd"),
     overwrite = TRUE
   )
 
