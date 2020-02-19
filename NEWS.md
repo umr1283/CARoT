@@ -19,6 +19,7 @@
 
 * Remove `R/mist.R`, now attaches the R package `MiSTr`.
 * Remove `R/estimate_ethnicity.R`, now attaches the R package `rain`.
+* Use Rmarkdown template directory for `qc_idats`.
 
 
 # CARoT 0.4.0
