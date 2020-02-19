@@ -62,9 +62,10 @@ editor_options:
 options(stringsAsFactors = FALSE)
 
 output_directory <- params[["output_directory"]]
+dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
 
 if (params[["cache"]]) {
-  dir.create(paste0(output_directory, "/cache/"), recursive = TRUE, showWarnings = FALSE, mode = "0777")
+  dir.create(file.path(output_directory, "cache"), recursive = TRUE, showWarnings = FALSE, mode = "0777")
 }
 
 
@@ -73,6 +74,14 @@ library(parallel)
 library(tidyverse)
 library(scales)
 library(grid)
+library(knitr)
+library(CARoT)
+library(kableExtra)
+library(Hmisc)
+library(sessioninfo)
+library(ENmix)
+# library(FlowSorted.Blood.EPIC)
+# library(RefFreeEWAS)
 
 ### Set knitr rmarkdown chunk options
 knitr::opts_chunk$set(
@@ -89,8 +98,7 @@ knitr::opts_chunk$set(
   fig.align = "center",
   fig.pos = "!H",
   cache = params[["cache"]],
-  cache.path = paste0(output_directory, "/cache/"),
-  fig.path = paste0(output_directory, "/cache/")
+  cache.path = paste0(output_directory, "/cache/")
 )
 
 
@@ -202,7 +210,7 @@ sample_sheet <- readr::read_csv(params[["csv_file"]]) %>%
   ) %>% 
   dplyr::select(Sample_ID, dplyr::everything())
 
-readr::write_csv(x = sample_sheet, path = paste0(tempdir(), "/sample_sheet.csv"))
+readr::write_csv(x = sample_sheet, path = file.path(tempdir(), "sample_sheet.csv"))
 
 if (do_check_gender) {
   pca_vars <- intersect(colnames(sample_sheet), unique(c(params[["pca_vars"]], "gender_clean")))
@@ -215,7 +223,7 @@ if (do_check_gender) {
 output <- utils::capture.output({
   data_mset <- CARoT::read_idats(
     directory = params[["data_directory"]], 
-    csv_file = paste0(tempdir(), "/sample_sheet.csv"), 
+    csv_file = file.path(tempdir(), "sample_sheet.csv"), 
     meth_value_type = "B",
     filter_beads = params[["filter_beads"]], 
     bead_cutoff = params[["bead_cutoff"]], 
@@ -632,7 +640,7 @@ data_mset@metadata[["phenotypes"]] <- S4Vectors::DataFrame(phenotypes, stringsAs
 ```
 
 ```{r export}
-readr::write_rds(x = data_mset, path = paste0(output_directory, "/", params[["array"]], "_mset.rds"))
+readr::write_rds(x = data_mset, path = file.path(output_directory, paste0(params[["array"]], "_mset.rds")))
 ```
 
 <!-- ## Principal Component Analysis -->
