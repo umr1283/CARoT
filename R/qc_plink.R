@@ -116,8 +116,8 @@ qc_plink <- function(
   message(message_prefix, "Note: it can take from one to two hours.")
 
   file.copy(
-    from = system.file("rmarkdown", "qc_plink.Rmd", package = "CARoT"),
-    to = paste0(tempdir(), "/qc_plink.Rmd"),
+    from = system.file("rmarkdown", "templates", "qc_plink", "skeleton.Rmd", package = "CARoT"),
+    to = file.path(tempdir(), "qc_plink.Rmd"),
     overwrite = TRUE
   )
 
