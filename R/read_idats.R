@@ -338,7 +338,6 @@ read_sample_sheet <- function(
 #' @param basenames The `basenames` or `filenames` of the IDAT files.
 #'     `basenames` are the filename without the ending `_Grn.idat` or `_Red.idat`.
 #'     `filenames` are filenames including `_Grn.idat` or `_Red.idat`.
-#' @inheritParams read_idats
 #'
 #' @keywords internal
 read_metharray <- function(basenames) {
