@@ -30,3 +30,4 @@ i.e., at most how many child processes will be run simultaneously.}
 \description{
 read_metharray_exp
 }
+\keyword{internal}
