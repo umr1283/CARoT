@@ -29,3 +29,4 @@ If \code{FALSE}, the file names (rather than paths) are returned.}
 \description{
 read_sample_sheet
 }
+\keyword{internal}

@@ -111,27 +111,19 @@ ggplot2::theme_set(ggplot2::theme_light(base_size = params[["gg_fontsize"]]))
 
 
 ### Additional packages and functions
-pretty_kable <- function(
-  data, 
-  font_size = 12, 
-  format_args = list(scientific = -1, digits = 3, big.mark = ","), 
-  col.names = NA,
-  full_width = NULL,
-  echo = TRUE,
-  ...
-) {
-  colnames(data) <- Hmisc::capitalize(colnames(data))
+pretty_kable <- function(x) {
   options(knitr.table.format = "html")
-  output <- knitr::kable(x = data, format.args = format_args, col.names = col.names, ...)
-  output <- kableExtra::kable_styling(
-    kable_input = output,
-    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-    full_width = ifelse(is.null(full_width), FALSE, full_width),
-    position = "center",
-    font_size = font_size
-  )
-  
-  if (echo) print(output) else invisible(output)
+  output <- knitr::kable(x)
+  if (knitr::is_html_output()) {
+    kableExtra::kable_styling(
+      kable_input = output,
+      bootstrap_options = c("striped", "hover", "condensed", "responsive", "bordered"),
+      full_width = FALSE,
+      position = "center"
+    )
+  } else {
+    output
+  }
 }
 
 do_check_gender <- !is.null(params[["gender_colname"]])
@@ -200,15 +192,15 @@ do_cell_composition <- !is.null(params[["cell_tissue"]])
 # Quality Control
 
 ```{r sample_sheet}
-sample_sheet <- readr::read_csv(params[["csv_file"]]) %>% 
+sample_sheet <- readr::read_csv(params[["csv_file"]], skip = 8) %>% 
   dplyr::mutate(
     gender_clean = if (do_check_gender) {
-      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[get(params[["gender_colname"]])]
+      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[!!!params[["gender_colname"]]]
     } else {
       NULL
     }
   ) %>% 
-  dplyr::select(Sample_ID, dplyr::everything())
+  dplyr::select(Sample_ID = Sample_Name, dplyr::everything())
 
 readr::write_csv(x = sample_sheet, path = file.path(tempdir(), "sample_sheet.csv"))
 
@@ -221,7 +213,7 @@ if (do_check_gender) {
 
 ```{r read_idats}
 output <- utils::capture.output({
-  data_mset <- CARoT::read_idats(
+  data_idats <- CARoT::read_idats(
     directory = params[["data_directory"]], 
     csv_file = file.path(tempdir(), "sample_sheet.csv"), 
     meth_value_type = "B",
@@ -248,7 +240,10 @@ output <- output[grep(pattern = "[CARoT] Filtering IDAT files ...", output, fixe
 output <- output[!grepl(pattern = "^[=[]", x = output)]
 cat(output, sep = "\n\n")
 phenotypes <- as.data.frame(data_mset@metadata[["phenotypes"]])
+data_mset <- data_idats[["mset"]]
+data_rgset <- data_idats[["rgset"]]
 ```
+
 
 ```{r call_rate}
 data_call_rate_samples <- phenotypes %>% 
@@ -314,7 +309,7 @@ cell_comp <- switch(
   EXPR = tolower(params[["cell_tissue"]]),
   "blood" = {
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
-      rgSet = data_mset, 
+      rgSet = data_rgset, 
       compositeCellType = "Blood",
       processMethod = "preprocessQuantile", 
       probeSelect = c("auto", "any", "IDOL"), 
@@ -331,14 +326,14 @@ cell_comp <- switch(
   }, 
   "cordblood" = {
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
-      rgSet = data_mset,
-      compositeCellType = "CordBlood",
-      processMethod = "preprocessQuantile", 
-      probeSelect = "auto",
-      cellTypes = c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Gran", "nRBC"),
-      referencePlatform = "IlluminaHumanMethylation450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
-      referenceset = NULL, 
-      IDOLOptimizedCpGs = NULL, 
+      rgSet = data_rgset,
+      compositeCellType = "CordBloodCombined",
+      processMethod = "preprocessQuantile",
+      probeSelect = "IDOL",
+      cellTypes = c("Bcell", "CD4T", "CD8T", "Gran", "Mono", "NK", "nRBC"),
+      referencePlatform = "IlluminaHumanMethylation.450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
+      referenceset = "FlowSorted.CordBloodCombined.450k", 
+      IDOLOptimizedCpGs = get(data("IDOLOptimizedCpGsCordBlood", package = "FlowSorted.CordBloodCombined.450k")), 
       returnAll = FALSE,
       meanPlot = TRUE, 
       verbose = FALSE
@@ -388,7 +383,7 @@ cell_comp <- switch(
         ), "K"]
       )
     }
-    beta_matrix <- minfi::getBeta(data_mset)
+    beta_matrix <- minfi::getBeta(data_rgset)
     max_k <- min(ncol(beta_matrix), 25)
     k_estimated <- min(estimate_k_cluster(
       Rmat = beta_matrix, 
@@ -473,7 +468,7 @@ if (!do_check_gender) {
 ```{r gender_check_computation, eval = do_check_gender}
 if (is.null(params[["gender_threshold"]])) {
   sex_predicted <- suppressWarnings(suppressPackageStartupMessages({
-    minfi::getSex(minfi::mapToGenome(data_mset), cutoff = -2)
+    minfi::getSex(minfi::mapToGenome(data_rgset), cutoff = -2)
   }))
   gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
   min_diff_xy <- which(diff(sign(diff(gender_density$y))) == 2)
@@ -483,11 +478,11 @@ if (is.null(params[["gender_threshold"]])) {
   gender_threshold <- params[["gender_threshold"]]
 }
 sex_predicted <- suppressWarnings(suppressPackageStartupMessages({
-  minfi::getSex(minfi::mapToGenome(data_mset), cutoff = gender_threshold)
+  minfi::getSex(minfi::mapToGenome(data_rgset), cutoff = gender_threshold)
 }))
 sex_predicted <- sex_predicted %>% 
   as.data.frame() %>% 
-  dplyr::mutate(Sample_ID = minfi::sampleNames(data_mset)) %>% 
+  dplyr::mutate(Sample_ID = minfi::sampleNames(data_rgset)) %>% 
   dplyr::rename(
     qc_xmedian = xMed,
     qc_ymedian = yMed,
@@ -591,14 +586,14 @@ phenotypes %>%
   ) %>% 
   tidyr::spread(key = "qc_observed_gender", value = "n", fill = 0) %>% 
   dplyr::rename(` ` = qc_predicted_gender) %>% 
-  pretty_kable(full_width = FALSE)
+  pretty_kable()
 ```
 
 ```{r descrepancy_samples_table, eval = do_check_gender}
 phenotypes %>% 
   dplyr::filter(qc_gender_discrepancy) %>% 
   dplyr::select(Sample_Name, Sample_ID, qc_observed_gender, qc_predicted_gender) %>% 
-  pretty_kable(full_width = FALSE)
+  pretty_kable()
 ```
 
 ```{r filter_xy, eval = params[["filter_xy"]]}
@@ -651,8 +646,8 @@ list_beta <- c(
 	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"raw_beta" = minfi::getBeta(data_mset) %>% 
-	  `colnames<-`(minfi::pData(data_mset)[, "Sample_ID"]),
+	"raw_beta" = minfi::getBeta(data_rgset) %>% 
+	  `colnames<-`(minfi::pData(data_rgset)[, "Sample_ID"]),
 	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )
 

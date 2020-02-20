@@ -57,7 +57,7 @@ read_idats <- function(
     "[CARoT] ", "Reading IDAT files ...", "\n",
     "=============================="
   )
-  if (is.null(rgSet)) {
+  if (is.null(rgSet) | !inherits(rgSet, "RGChannelSet")) {
     sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
     rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
   }
@@ -259,7 +259,7 @@ read_idats <- function(
     }
   )
 
-  mset
+  list(mset = mset, rgset = rgSet)
 }
 
 
@@ -272,7 +272,7 @@ read_idats <- function(
 #' @param recursive A `logical`. Should the listing recurse into directories?
 #' @param full.names A `logical`. Should pattern-matching be case-insensitive?
 #'
-#' @export
+#' @keywords internal
 read_sample_sheet <- function(
   directory,
   csv_file = "csv$",
@@ -442,7 +442,7 @@ read_metharray <- function(basenames, n_cores = 1) {
 #' @inheritParams read_metharray
 #' @inheritParams read_sample_sheet
 #'
-#' @export
+#' @keywords internal
 read_metharray_exp <- function(
   directory = NULL,
   sample_sheet = NULL,
