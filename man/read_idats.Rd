@@ -24,7 +24,8 @@ read_idats(
   norm_quantile = "quantile1",
   array_name = c("EPIC", "450k"),
   annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"),
-  n_cores = 1
+  n_cores = 1,
+  rgSet = NULL
 )
 }
 \arguments{
@@ -91,6 +92,8 @@ Default is \code{"ilm10b4.hg19"} for the \code{"EPIC"} array}
 
 \item{n_cores}{An \code{integer}. The number of cores to use,
 i.e., at most how many child processes will be run simultaneously.}
+
+\item{rgSet}{A \code{RGChannelSet} object.}
 }
 \value{
 A \code{list}.

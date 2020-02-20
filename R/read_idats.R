@@ -11,6 +11,7 @@
 #'     Default is `"ilm10b4.hg19"` for the `"EPIC"` array
 #' @param n_cores An `integer`. The number of cores to use,
 #'     i.e., at most how many child processes will be run simultaneously.
+#' @param rgSet A `RGChannelSet` object.
 #'
 #' @inheritParams qc_idats
 #'
@@ -36,7 +37,8 @@ read_idats <- function(
   norm_quantile = "quantile1",
   array_name = c("EPIC", "450k"),
   annotation_version = c("ilm10b4.hg19", "ilmn12.hg19"),
-  n_cores = 1
+  n_cores = 1,
+  rgSet = NULL
 ) {
   array_name <- array_name[1]
   annotation_version <- annotation_version[1]
@@ -55,9 +57,10 @@ read_idats <- function(
     "[CARoT] ", "Reading IDAT files ...", "\n",
     "=============================="
   )
-  sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
-  rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
-
+  if (is.null(rgSet)) {
+    sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
+    rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
+  }
   rgSet@annotation <- switch(
     EXPR = array_name,
     "450k" = c(array = "IlluminaHumanMethylation450k", annotation = annotation_version),
