@@ -22,6 +22,9 @@
 * Use Rmarkdown template directory for `qc_idats`.
 * Use Rmarkdown template directory for `qc_impute`.
 * Use Rmarkdown template directory for `qc_plink`.
+* In `R/qc_idats.R`, 
+    + add rgSet parameters to pass raw rgSet for normalisation and filtering.
+    + now return raw rgSet and mSet.
 
 
 # CARoT 0.4.0
