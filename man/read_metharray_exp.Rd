@@ -9,8 +9,7 @@ read_metharray_exp(
   sample_sheet = NULL,
   ignore.case = TRUE,
   recursive = TRUE,
-  full.names = TRUE,
-  n_cores = 1
+  full.names = TRUE
 )
 }
 \arguments{
@@ -23,9 +22,6 @@ If \code{FALSE}, the file names (rather than paths) are returned.}
 \item{recursive}{A \code{logical}. Should the listing recurse into directories?}
 
 \item{full.names}{A \code{logical}. Should pattern-matching be case-insensitive?}
-
-\item{n_cores}{An \code{integer}. The number of cores to use,
-i.e., at most how many child processes will be run simultaneously.}
 }
 \description{
 read_metharray_exp
