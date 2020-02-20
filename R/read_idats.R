@@ -59,7 +59,7 @@ read_idats <- function(
   )
   if (is.null(rgSet) | !inherits(rgSet, "RGChannelSet")) {
     sample_sheet <- read_sample_sheet(directory = directory, csv_file = csv_file)
-    rgSet <- read_metharray_exp(sample_sheet = sample_sheet, n_cores = 1)
+    rgSet <- read_metharray_exp(sample_sheet = sample_sheet)
   }
   rgSet@annotation <- switch(
     EXPR = array_name,
@@ -341,7 +341,7 @@ read_sample_sheet <- function(
 #' @inheritParams read_idats
 #'
 #' @keywords internal
-read_metharray <- function(basenames, n_cores = 1) {
+read_metharray <- function(basenames) {
   basenames <- unique(sub("_[GR][re][nd]\\.idat.*", "", basenames))
 
   p <- dplyr::progress_estimated(length(basenames)*2+6)
@@ -361,8 +361,8 @@ read_metharray <- function(basenames, n_cores = 1) {
       }
       i_files <- paste0(i_files, ".gz")
     }
-    i_idats <- parallel::mclapply(
-      X = i_files, mc.cores = n_cores, mc.preschedule = FALSE,
+    i_idats <- lapply(
+      X = i_files,
       FUN = function(x) {
         p$pause(0.1)$tick()$print()
         illuminaio::readIDAT(x)
@@ -372,19 +372,17 @@ read_metharray <- function(basenames, n_cores = 1) {
     p$pause(0.1)$tick()$print()
   }
 
-  common_addresses <- as.character(Reduce("intersect", parallel::mclapply(
-    X = get("G_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  common_addresses <- as.character(Reduce("intersect", lapply(
+    X = get("G_idats"),
     FUN = function(x) rownames(x$Quants)
   )))
 
   p$pause(0.1)$tick()$print()
 
-  GreenMean <- do.call("cbind", parallel::mclapply(
-    X = get("G_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  GreenMean <- do.call("cbind", lapply(
+    X = get("G_idats"),
     y = common_addresses,
-    FUN = function(x, y) {
-      x$Quants[y, "Mean"]
-    }
+    FUN = function(x, y) x$Quants[y, "Mean"]
   ))
 
   p$pause(0.1)$tick()$print()
@@ -448,8 +446,7 @@ read_metharray_exp <- function(
   sample_sheet = NULL,
   ignore.case = TRUE,
   recursive = TRUE,
-  full.names = TRUE,
-  n_cores = 1
+  full.names = TRUE
 ) {
   if (is.null(sample_sheet)) {
     Grn_files <- list.files(
@@ -504,7 +501,7 @@ read_metharray_exp <- function(
       )
     }
 
-    rgSet <- read_metharray(basenames = commonFiles, n_cores = n_cores)
+    rgSet <- read_metharray(basenames = commonFiles)
   } else {
     if (!"Basename" %in% names(sample_sheet)) {
       stop(
@@ -519,7 +516,7 @@ read_metharray_exp <- function(
       files <- sample_sheet$Basename
     }
 
-    rgSet <- read_metharray(basenames = files, n_cores = n_cores)
+    rgSet <- read_metharray(basenames = files)
 
     pD <- sample_sheet
     pD$filenames <- files
