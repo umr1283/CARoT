@@ -269,7 +269,7 @@ read_idats <- function(
 #' @param recursive A `logical`. Should the listing recurse into directories?
 #' @param full.names A `logical`. Should pattern-matching be case-insensitive?
 #'
-#' @keywords internal
+#' @export
 read_sample_sheet <- function(
   directory,
   csv_file = "csv$",
@@ -439,7 +439,7 @@ read_metharray <- function(basenames, n_cores = 1) {
 #' @inheritParams read_metharray
 #' @inheritParams read_sample_sheet
 #'
-#' @keywords internal
+#' @export
 read_metharray_exp <- function(
   directory = NULL,
   sample_sheet = NULL,
