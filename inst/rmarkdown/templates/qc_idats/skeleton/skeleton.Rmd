@@ -223,7 +223,7 @@ output <- utils::capture.output({
     filter_snps = params[["filter_snps"]], 
     population = params[["population"]], 
     filter_multihit = params[["filter_multihit"]],
-    filter_xy = FALSE, 
+    filter_xy = params[["filter_xy"]], 
     detection_pvalues = params[["detection_pvalues"]],
     filter_callrate = params[["filter_callrate"]],
     callrate_samples = params[["callrate_samples"]],
@@ -577,7 +577,7 @@ ggplot2::ggplot(
   )
 ```
 
-```{r descrepancy_table, eval = do_check_gender}
+```{r discrepancy_table, eval = do_check_gender}
 phenotypes %>%
   dplyr::count(qc_predicted_gender, qc_observed_gender) %>% 
   dplyr::mutate(
@@ -589,14 +589,14 @@ phenotypes %>%
   pretty_kable()
 ```
 
-```{r descrepancy_samples_table, eval = do_check_gender}
+```{r discrepancy_samples_table, eval = do_check_gender}
 phenotypes %>% 
   dplyr::filter(qc_gender_discrepancy) %>% 
   dplyr::select(Sample_Name, Sample_ID, qc_observed_gender, qc_predicted_gender) %>% 
   pretty_kable()
 ```
 
-```{r filter_xy, eval = params[["filter_xy"]]}
+```{r filter_xy, eval = FALSE}
 switch(
   EXPR = params[["array"]],
   "450k" = utils::data("probe.features", package = "ChAMPdata"),
