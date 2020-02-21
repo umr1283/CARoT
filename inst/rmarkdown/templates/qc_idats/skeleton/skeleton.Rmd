@@ -1,13 +1,9 @@
 ---
-title: '`r params[["title"]]`'
-author:
-- name: '`r params[["author_name"]]`'
-  affiliation: '`r params[["author_affiliation"]]`'
-  email: '`r params[["author_email"]]`'
-date: '`r format(Sys.time(), "%B %d, %Y")`'
-monofont: 'Source Code Pro'
-monofontoptions: 'Scale=0.7'
 params:
+  title: "EPIC Array Quality-Control"
+  author_name: "Firstname Lastname"
+  author_affiliation: "Institution"
+  author_email: "some@email.com"
   output_directory: "/EPIC_QC"
   csv_file: "sample_sheet_clean.csv"
   data_directory: "/idats"
@@ -32,15 +28,17 @@ params:
   cell_tissue: NULL
   pca: TRUE
   pca_vars: !r c("Sample_Plate", "Sentrix_ID")
-  title: "EPIC Array Quality-Control"
-  author_name: "Firstname Lastname"
-  author_affiliation: "Institution"
-  author_email: "some@email.com"
   cache: FALSE
   show_code: FALSE
   n_cores: 20
   dpi: 120
   gg_fontsize: 12
+title: '`r params[["title"]]`'
+author:
+- name: '`r params[["author_name"]]`'
+  affiliation: '`r params[["author_affiliation"]]`'
+  email: '`r params[["author_email"]]`'
+date: '`r format(Sys.time(), "%B %d, %Y")`'
 output:
   bookdown::html_document2:
     theme: simplex
@@ -64,24 +62,19 @@ options(stringsAsFactors = FALSE)
 output_directory <- params[["output_directory"]]
 dir.create(output_directory, recursive = TRUE, showWarnings = FALSE)
 
-if (params[["cache"]]) {
-  dir.create(file.path(output_directory, "cache"), recursive = TRUE, showWarnings = FALSE, mode = "0777")
-}
 
+### Check packages
+stopifnot(all(sapply(
+  X = c(
+    "CARoT", "doParallel", "dplyr", "ENmix", "ggplot2", "grid", 
+    "Hmisc", "kableExtra", "knitr", "minfi", "parallel", "parallel", 
+    "rain", "readr", "scales", "sessioninfo", "stats", "tibble", 
+    "tidyr", "utils", "magrittr"
+  ),
+  FUN = requireNamespace
+)))
 
-### Load packages and functions
-library(parallel)
-library(tidyverse)
-library(scales)
-library(grid)
-library(knitr)
-library(CARoT)
-library(kableExtra)
-library(Hmisc)
-library(sessioninfo)
-library(ENmix)
-# library(FlowSorted.Blood.EPIC)
-# library(RefFreeEWAS)
+`%>%` <- magrittr::`%>%`
 
 ### Set knitr rmarkdown chunk options
 knitr::opts_chunk$set(
@@ -96,14 +89,13 @@ knitr::opts_chunk$set(
   crop = TRUE,
   autodep = TRUE,
   fig.align = "center",
-  fig.pos = "!H",
-  cache = params[["cache"]],
-  cache.path = paste0(output_directory, "/cache/")
+  fig.pos = "!H"
 )
 
-
-### Define n_cores
-n_cores <- params[["n_cores"]]
+if (params[["cache"]]) {
+  dir.create(file.path(output_directory, "cache"), recursive = TRUE, showWarnings = FALSE, mode = "0777")
+  knitr::opts_chunk$set(cache = params[["cache"]], cache.path = paste0(output_directory, "/cache/"))
+}
 
 
 ### Define theme
@@ -127,7 +119,13 @@ pretty_kable <- function(x) {
 }
 
 do_check_gender <- !is.null(params[["gender_colname"]])
-do_cell_composition <- !is.null(params[["cell_tissue"]])
+
+if (!requireNamespace("FlowSorted.Blood.EPIC")) {
+  do_cell_composition <- FALSE
+  message('Package "FlowSorted.Blood.EPIC" is not available.')
+} else {
+  do_cell_composition <- !is.null(params[["cell_tissue"]])
+}
 ```
 
 # Methods and Parameters
@@ -239,9 +237,13 @@ output <- utils::capture.output({
 output <- output[grep(pattern = "[CARoT] Filtering IDAT files ...", output, fixed = TRUE):length(output)]
 output <- output[!grepl(pattern = "^[=[]", x = output)]
 cat(output, sep = "\n\n")
-phenotypes <- as.data.frame(data_mset@metadata[["phenotypes"]])
+
 data_mset <- data_idats[["mset"]]
+phenotypes <- as.data.frame(data_mset@metadata[["phenotypes"]])
+
 data_rgset <- data_idats[["rgset"]]
+
+readr::write_rds(x = data_idats, path = file.path(output_directory, paste0(params[["array"]], "_idats.rds")))
 ```
 
 
@@ -256,16 +258,18 @@ data_call_rate_samples <- phenotypes %>%
 ```
   
 ```{r call_rate_samples_tab}
-tab_call_rate_samples <- lapply(phenotypes[["call_rate"]], `<`, c(0.90, 0.95, 0.97, 0.98, 0.99, 1)) %>% 
-	do.call("rbind", .) %>%
-	colSums() %>%
-	data.frame(
-		"Call Rate Threshold" = paste0("<", c("0.90", "0.95", "0.97", "0.98", "0.99", "1.00")),
-		"Samples (N)" = .,
-		"Samples (%)" = signif((. / nrow(data_call_rate_samples)) * 100, digits = 3),
-		check.names = FALSE
-	)
-pretty_kable(tab_call_rate_samples)
+phenotypes %>% 
+  dplyr::mutate("Call Rate Threshold" = list(c(0.90, 0.95, 0.97, 0.98, 0.99, 1))) %>% 
+  tidyr::unnest("Call Rate Threshold") %>% 
+  dplyr::count(`Call Rate Threshold`, bad = call_rate < `Call Rate Threshold`, name = "Samples (N)") %>%
+  dplyr::filter(bad) %>% 
+  dplyr::arrange(dplyr::desc(`Call Rate Threshold`)) %>% 
+  dplyr::mutate(
+    "Samples (%)" = signif((`Samples (N)` / sum(`Samples (N)`)) * 100, digits = 3),
+    `Call Rate Threshold` = paste("<", `Call Rate Threshold`),
+    bad = NULL
+  ) %>% 
+  pretty_kable()
 ```
 
 ```{r call_rate_samples_fig}
@@ -299,8 +303,35 @@ ggplot2::ggplot(
 ## Cell composition
 
 ```{r do_cell_composition}
+if (tolower(params[["cell_tissue"]]) %in% "blood" & !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))) {
+  do_cell_composition <- FALSE
+  message(paste0('Package "', paste0("FlowSorted.Blood.", params[["array"]]), '" is not available.'))
+}
+
+if (tolower(params[["cell_tissue"]]) %in% "blood" & !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))) {
+  do_cell_composition <- FALSE
+  message(paste0('Package "', paste0("FlowSorted.Blood.", params[["array"]]), '" is not available.'))
+}
+
+if (tolower(params[["cell_tissue"]]) %in% "cordblood" & !requireNamespace("FlowSorted.CordBloodCombined.450k")) {
+  message('Package "FlowSorted.CordBloodCombined.450k" is not available.')
+  if (requireNamespace("AnnotationHub") & requireNamespace("ExperimentHub")) {
+    message('Experiment "FlowSorted.CordBloodCombined.450k" will be downloaded with "ExperimentHub".')
+  } else {
+    do_cell_composition <- FALSE
+    message('Package "FlowSorted.CordBloodCombined.450k", "AnnotationHub" and "ExperimentHub" are not available.')
+  }
+}
+
+if (!tolower(params[["cell_tissue"]]) %in% c("blood", "cordblood") & !requireNamespace("RefFreeEWAS")) {
+  do_cell_composition <- FALSE
+  message('Package "RefFreeEWAS" is not available.')
+}
+
 if (!do_cell_composition) {
-  cat("No cell tissue was provided.\n")
+  cat("No cell tissue was provided or no available reference set (packages).\n")
+} else {
+  cat("IDOL optimised CpGs are used when available in the relevant reference set or method.\n")
 }
 ```
 
@@ -308,34 +339,60 @@ if (!do_cell_composition) {
 cell_comp <- switch(
   EXPR = tolower(params[["cell_tissue"]]),
   "blood" = {
+    idol_cpgs <- switch(params[["array"]],
+      "450k" = FlowSorted.Blood.EPIC::IDOLOptimizedCpGs450klegacy,
+      "EPIC" = FlowSorted.Blood.EPIC::IDOLOptimizedCpGs
+    )
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_rgset, 
       compositeCellType = "Blood",
-      processMethod = "preprocessQuantile", 
-      probeSelect = c("auto", "any", "IDOL"), 
+      processMethod = "preprocessNoob", 
+      probeSelect = "IDOL", 
       cellTypes = c("CD8T", "CD4T", "NK", "Bcell", "Mono", "Neu"),
-      referencePlatform = paste0('IlluminaHumanMethylation', params[["array"]]),
-      referenceset = NULL, 
-      IDOLOptimizedCpGs = NULL, 
+      referencePlatform = paste0("IlluminaHumanMethylation", params[["array"]]),
+      IDOLOptimizedCpGs = idol_cpgs, 
       returnAll = FALSE,
-      meanPlot = TRUE, 
+      meanPlot = FALSE, 
       verbose = FALSE
     )$counts
     colnames(out) <- paste0("CellT_", colnames(out))
     out
   }, 
+  "cordbloodlegacy" = {
+    out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
+      rgSet = data_rgset, 
+      compositeCellType = "CordBlood",
+      processMethod = "preprocessNoob", 
+      probeSelect = "auto", 
+      cellTypes = c("Bcell", "CD4T", "CD8T", "Gran", "Mono", "NK", "nRBC"),
+      referencePlatform = "IlluminaHumanMethylation450k",
+      IDOLOptimizedCpGs = NULL, 
+      returnAll = FALSE,
+      meanPlot = FALSE, 
+      verbose = FALSE
+    )$counts
+  }, 
   "cordblood" = {
+    if (requireNamespace("FlowSorted.CordBloodCombined.450k")) {
+      idol_cpgs <- get(utils::data("IDOLOptimizedCpGsCordBlood", package = "FlowSorted.CordBloodCombined.450k"))
+    } else {
+      idol_cpgs <- NULL
+      FlowSorted.CordBloodCombined.450k <- AnnotationHub::query(
+        x = ExperimentHub::ExperimentHub(), 
+        pattern = "FlowSorted.CordBloodCombined.450k"
+      )[[1]]
+    }
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_rgset,
-      compositeCellType = "CordBloodCombined",
-      processMethod = "preprocessQuantile",
-      probeSelect = "IDOL",
+      compositeCellType = "cordbloodCombined",
+      processMethod = "preprocessNoob",
+      probeSelect = if (!is.null(idol_cpgs)) "IDOL" else "auto",
       cellTypes = c("Bcell", "CD4T", "CD8T", "Gran", "Mono", "NK", "nRBC"),
-      referencePlatform = "IlluminaHumanMethylation.450k", # paste0('IlluminaHumanMethylation', params[["array"]]),
-      referenceset = "FlowSorted.CordBloodCombined.450k", 
-      IDOLOptimizedCpGs = get(data("IDOLOptimizedCpGsCordBlood", package = "FlowSorted.CordBloodCombined.450k")), 
+      referencePlatform = paste0("IlluminaHumanMethylation", params[["array"]]),
+      referenceset = "FlowSorted.CordBloodCombined.450k",
+      IDOLOptimizedCpGs = idol_cpgs, 
       returnAll = FALSE,
-      meanPlot = TRUE, 
+      meanPlot = FALSE, 
       verbose = FALSE
     )$counts
     colnames(out) <- paste0("CellT_", colnames(out))
@@ -414,14 +471,11 @@ cell_comp <- switch(
   }
 )
 
-phenotypes <- phenotypes %>% 
-  dplyr::mutate(Sample_ID = as.character(Sample_ID)) %>% 
-  dplyr::left_join(
-    y = cell_comp %>% 
-      as.data.frame() %>% 
-      tibble::rownames_to_column("Sample_ID"), 
-    by = "Sample_ID"
-  )
+phenotypes <- dplyr::left_join(
+  x = dplyr::mutate(phenotypes, Sample_ID = as.character(Sample_ID)),
+  y = tibble::rownames_to_column(as.data.frame(cell_comp), "Sample_ID"), 
+  by = "Sample_ID"
+)
 ```
 
 ```{r cell_composition_size}
@@ -479,8 +533,7 @@ if (is.null(params[["gender_threshold"]])) {
 }
 sex_predicted <- suppressWarnings(suppressPackageStartupMessages({
   minfi::getSex(minfi::mapToGenome(data_rgset), cutoff = gender_threshold)
-}))
-sex_predicted <- sex_predicted %>% 
+})) %>% 
   as.data.frame() %>% 
   dplyr::mutate(Sample_ID = minfi::sampleNames(data_rgset)) %>% 
   dplyr::rename(
@@ -497,7 +550,7 @@ phenotypes <- phenotypes %>%
   dplyr::mutate(
     qc_predicted_gender = c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[qc_predicted_gender],
     qc_observed_gender = gender_clean,
-    qc_gender_discrepancy = qc_observed_gender!=qc_predicted_gender
+    qc_gender_discrepancy = qc_observed_gender != qc_predicted_gender
   )
 ```
 
@@ -535,18 +588,18 @@ ggplot2::ggplot(
     na.rm = TRUE
   ) +
   ggplot2::geom_point(
-    data = ~dplyr::filter(.x, !qc_gender_discrepancy), 
+    data = ~ dplyr::filter(.x, !qc_gender_discrepancy), 
     size = 2, 
     na.rm = TRUE
   ) +
   ggplot2::geom_point(
-    data = ~dplyr::filter(.x, qc_gender_discrepancy),
+    data = ~ dplyr::filter(.x, qc_gender_discrepancy),
     size = 4,
     show.legend = FALSE,
     na.rm = TRUE
   ) +
   ggrepel::geom_label_repel(
-    data = ~dplyr::filter(.x, qc_gender_discrepancy),
+    data = ~ dplyr::filter(.x, qc_gender_discrepancy),
     mapping = ggplot2::aes(x = qc_xmedian, y = qc_ymedian, label = Sample_ID),
     segment.colour = "black",
     colour = "black",
@@ -596,22 +649,6 @@ phenotypes %>%
   pretty_kable()
 ```
 
-```{r filter_xy, eval = FALSE}
-switch(
-  EXPR = params[["array"]],
-  "450k" = utils::data("probe.features", package = "ChAMPdata"),
-  "EPIC" = utils::data("probe.features.epic", package = "ChAMPdata")
-)
-probe_features <- get("probe.features")
-autosomes <- probe_features[!probe_features$CHR %in% c("X", "Y"), ]
-mset_f2 <- data_mset[minfi::featureNames(data_mset) %in% rownames(autosomes), ]
-cat(
-  "Filtering probes on the X or Y chromosome:\n\n",
-  "  - ", scales::comma(dim(data_mset)[1] - dim(mset_f2)[1]), " probes were discarded"
-)
-data_mset <- mset_f2
-```
-
 ```{r normalisation, results = "hide"}
 norm_beta <- ENmix::rcp(mdat = data_mset)
 if (length(unique(minfi::pData(data_mset)[["Sentrix_ID"]])) > 1) { 
@@ -631,7 +668,7 @@ if (max(norm_beta, na.rm = TRUE) >= 1) {
 }
 data_mset@metadata[grep("_values", names(data_mset@metadata))] <- NULL
 data_mset@metadata[["norm_beta_values"]] <- norm_beta
-data_mset@metadata[["phenotypes"]] <- S4Vectors::DataFrame(phenotypes, stringsAsFactors = FALSE)
+data_mset@metadata[["phenotypes"]] <- phenotypes
 ```
 
 ```{r export}
@@ -646,8 +683,7 @@ list_beta <- c(
 	"norm_beta" = "ComBat normalised $beta$-values"
 )
 data_batch <- list(
-	"raw_beta" = minfi::getBeta(data_rgset) %>% 
-	  `colnames<-`(minfi::pData(data_rgset)[, "Sample_ID"]),
+	"raw_beta" = `colnames<-`(minfi::getBeta(data_rgset), minfi::pData(data_rgset)[, "Sample_ID"]),
 	"norm_beta" = data_mset@metadata[["norm_beta_values"]]
 )
 
