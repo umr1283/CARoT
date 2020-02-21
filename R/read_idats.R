@@ -338,6 +338,7 @@ read_sample_sheet <- function(
 #' @param basenames The `basenames` or `filenames` of the IDAT files.
 #'     `basenames` are the filename without the ending `_Grn.idat` or `_Red.idat`.
 #'     `filenames` are filenames including `_Grn.idat` or `_Red.idat`.
+#' @inheritParams read_idats
 #'
 #' @keywords internal
 read_metharray <- function(basenames) {
@@ -386,37 +387,29 @@ read_metharray <- function(basenames) {
 
   p$pause(0.1)$tick()$print()
 
-  RedMean <- do.call("cbind", parallel::mclapply(
-    X = get("R_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  RedMean <- do.call("cbind", lapply(
+    X = get("R_idats"),
     y = common_addresses,
-    FUN = function(x, y) {
-      x$Quants[y, "Mean"]
-    }
+    FUN = function(x, y) x$Quants[y, "Mean"]
   ))
 
   p$pause(0.1)$tick()$print()
 
 
-  GreenSD <- do.call("cbind", parallel::mclapply(
-    X = get("G_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  GreenSD <- do.call("cbind", lapply(
+    X = get("G_idats"),
     y = common_addresses,
-    FUN = function(x, y) {
-      x$Quants[common_addresses, "SD"]
-    }
+    FUN = function(x, y) x$Quants[common_addresses, "SD"]
   ))
-  RedSD <- do.call("cbind", parallel::mclapply(
-    X = get("R_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  RedSD <- do.call("cbind", lapply(
+    X = get("R_idats"),
     y = common_addresses,
-    FUN = function(x, y) {
-      x$Quants[common_addresses, "SD"]
-    }
+    FUN = function(x, y) x$Quants[common_addresses, "SD"]
   ))
-  NBeads <- do.call("cbind", parallel::mclapply(
-    X = get("G_idats"), mc.cores = n_cores, mc.preschedule = FALSE,
+  NBeads <- do.call("cbind", lapply(
+    X = get("G_idats"),
     y = common_addresses,
-    FUN = function(x, y) {
-      x$Quants[common_addresses, "NBeads"]
-    }
+    FUN = function(x, y) x$Quants[common_addresses, "NBeads"]
   ))
   out <- minfi::RGChannelSetExtended(
     Red = RedMean,
