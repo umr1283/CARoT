@@ -35,14 +35,14 @@ library(CARoT)
 #> `88b    ooo   .8'     `888.   888  `88b.  888   888      888      
 #>  `Y8bood8P'  o88o     o8888o o888o  o888o `Y8bod8P'     o888o     
 #> 
-#> ── Attaching packages ─────────────────────────────────────────────────────────── CARoT 0.4.0.9000 ──
+#> ── Attaching packages ───────────────────────────────────────────────────────────────────── CARoT 0.4.0.9000 ──
 #> ✓ ggplot2 3.2.1          ✓ stringr 1.4.0     
 #> ✓ tibble  2.1.3          ✓ forcats 0.4.0     
-#> ✓ tidyr   1.0.0          ✓ MiSTr   1.0.0.9000
-#> ✓ readr   1.3.1          ✓ rain    0.1.0.9000
-#> ✓ purrr   0.3.3          ✓ NACHO   1.0.0     
-#> ✓ dplyr   0.8.3
-#> ── Conflicts ─────────────────────────────────────────────────────────────────── carot_conflicts() ──
+#> ✓ tidyr   1.0.2          ✓ umr1283 0.2.0     
+#> ✓ readr   1.3.1          ✓ MiSTr   1.0.0.9000
+#> ✓ purrr   0.3.3          ✓ rain    0.1.0.9000
+#> ✓ dplyr   0.8.4          ✓ NACHO   1.0.0
+#> ── Conflicts ───────────────────────────────────────────────────────────────────────────── carot_conflicts() ──
 #> x methods::body<-()    masks base::body<-()
 #> x dplyr::filter()      masks stats::filter()
 #> x methods::kronecker() masks base::kronecker()
@@ -60,21 +60,26 @@ Currently *CARoT* includes the following functions:
 
   - `ggheatmap()` allows to compute heatmap with dendrogram on x-axis
     and y-axis using [ggplot2](https://ggplot2.tidyverse.org/).
+
   - `read_idats()` allows to efficiently import idats files mostly using
-    [minfi](https://doi.org/doi:10.18129/B9.bioc.minfi) functions. The
-    function can be used in a chunk within a Rmarkdown document/script
-    with `results="asis"` to render the report.
+    [minfi](https://doi.org/doi:10.18129/B9.bioc.minfi) functions.
+    
+    The function can be used in a chunk within a Rmarkdown
+    document/script with `results="asis"` to render the report.
+
   - `qc_idats()` allows to compute quality-control of methylation array
     from Illumina using a [rmarkdown
-    template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_idats.Rmd).
+    template](https://github.com/mcanouil/UMR1283/blob/master/inst/rmarkdown/templates/qc_idats/skeleton/skeleton.Rmd).
+
   - `qc_plink()` allows to compute quality-control of genotyping array
     (PLINK format) using a [rmarkdown
-    template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_plink.Rmd).
+    template](https://github.com/mcanouil/UMR1283/blob/master/inst/rmarkdown/templates/qc_plink/skeleton/skeleton.Rmd).
+
   - `qc_impute()` allows to compute post-imputation quality-control
     report using a default [rmarkdown
-    template](https://github.com/mcanouil/CARoT/blob/master/inst/rmarkdown/qc_impute.Rmd).
+    template](https://github.com/mcanouil/UMR1283/blob/master/inst/rmarkdown/templates/qc_impute/skeleton/skeleton.Rmd).
 
-## Functions from packages
+## Functions from other packages
 
   - [`rain::estimate_ethnicity()`](https://github.com/omicsr/rain)
     allows to format VCF files and compute the genomic components (and
