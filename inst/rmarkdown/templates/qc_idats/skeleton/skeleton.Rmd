@@ -56,7 +56,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include = FALSE}
 options(stringsAsFactors = FALSE)
 
 output_directory <- params[["output_directory"]]
@@ -73,7 +72,7 @@ stopifnot(all(sapply(
   ),
   FUN = requireNamespace
 )))
-
+library("rlang")
 `%>%` <- magrittr::`%>%`
 
 ### Set knitr rmarkdown chunk options
@@ -192,13 +191,14 @@ if (!requireNamespace("FlowSorted.Blood.EPIC")) {
 ```{r sample_sheet}
 sample_sheet <- readr::read_csv(params[["csv_file"]], skip = 8) %>% 
   dplyr::mutate(
+    Sample_ID = Sample_Name,
     gender_clean = if (do_check_gender) {
-      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[!!!params[["gender_colname"]]]
+      c("1" = 1, "2" = 2, "M" = 1, "F" = 2, "0" = 2)[ get(params[["gender_colname"]]) ]
     } else {
       NULL
     }
   ) %>% 
-  dplyr::select(Sample_ID = Sample_Name, dplyr::everything())
+  dplyr::select(Sample_ID, dplyr::everything())
 
 readr::write_csv(x = sample_sheet, path = file.path(tempdir(), "sample_sheet.csv"))
 
@@ -303,17 +303,26 @@ ggplot2::ggplot(
 ## Cell composition
 
 ```{r do_cell_composition}
-if (tolower(params[["cell_tissue"]]) %in% "blood" & !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))) {
+if (
+  tolower(params[["cell_tissue"]]) %in% "blood" & 
+    !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))
+) {
   do_cell_composition <- FALSE
   message(paste0('Package "', paste0("FlowSorted.Blood.", params[["array"]]), '" is not available.'))
 }
 
-if (tolower(params[["cell_tissue"]]) %in% "blood" & !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))) {
+if (
+  tolower(params[["cell_tissue"]]) %in% "blood" & 
+    !requireNamespace(paste0("FlowSorted.Blood.", params[["array"]]))
+) {
   do_cell_composition <- FALSE
   message(paste0('Package "', paste0("FlowSorted.Blood.", params[["array"]]), '" is not available.'))
 }
 
-if (tolower(params[["cell_tissue"]]) %in% "cordblood" & !requireNamespace("FlowSorted.CordBloodCombined.450k")) {
+if (
+  tolower(params[["cell_tissue"]]) %in% "cordblood" & 
+    !requireNamespace("FlowSorted.CordBloodCombined.450k")
+) {
   message('Package "FlowSorted.CordBloodCombined.450k" is not available.')
   if (requireNamespace("AnnotationHub") & requireNamespace("ExperimentHub")) {
     message('Experiment "FlowSorted.CordBloodCombined.450k" will be downloaded with "ExperimentHub".')
@@ -323,7 +332,10 @@ if (tolower(params[["cell_tissue"]]) %in% "cordblood" & !requireNamespace("FlowS
   }
 }
 
-if (!tolower(params[["cell_tissue"]]) %in% c("blood", "cordblood") & !requireNamespace("RefFreeEWAS")) {
+if (
+  !tolower(params[["cell_tissue"]]) %in% c("blood", "cordblood") & 
+    !requireNamespace("RefFreeEWAS")
+) {
   do_cell_composition <- FALSE
   message('Package "RefFreeEWAS" is not available.')
 }
@@ -377,11 +389,11 @@ cell_comp <- switch(
       idol_cpgs <- get(utils::data("IDOLOptimizedCpGsCordBlood", package = "FlowSorted.CordBloodCombined.450k"))
     } else {
       idol_cpgs <- NULL
-      FlowSorted.CordBloodCombined.450k <- AnnotationHub::query(
-        x = ExperimentHub::ExperimentHub(), 
-        pattern = "FlowSorted.CordBloodCombined.450k"
-      )[[1]]
     }
+    FlowSorted.CordBloodCombined.450k <- AnnotationHub::query(
+      x = ExperimentHub::ExperimentHub(), 
+      pattern = "FlowSorted.CordBloodCombined.450k"
+    )[[1]]
     out <- FlowSorted.Blood.EPIC::estimateCellCounts2(
       rgSet = data_rgset,
       compositeCellType = "cordbloodCombined",
@@ -478,21 +490,7 @@ phenotypes <- dplyr::left_join(
 )
 ```
 
-```{r cell_composition_size}
-def_res <- params[["dpi"]]
-def_label_gene_y <- params[["gg_fontsize"]] / 8
-def_label_gene_x <- params[["gg_fontsize"]] / 8
-
-def_grid_h_middle <- 0.90
-def_height <- nrow(sample_sheet) * 
-  (def_label_gene_y * params[["gg_fontsize"]] / 0.75) / 
-  def_grid_h_middle /
-  def_res
-
-def_height <- ifelse(def_height>=16, 16, def_height)
-```
-
-```{r cell_composition_fig, fig.height = def_height, eval = do_cell_composition}
+```{r cell_composition_fig, eval = do_cell_composition}
 CARoT::ggheatmap(
   data = phenotypes %>% 
     dplyr::select(Sample_ID, dplyr::starts_with("CellT_")) %>% 
@@ -502,8 +500,8 @@ CARoT::ggheatmap(
   dendrogram_rows = TRUE,
   line_size = 0.5,
   font_size = params[["gg_fontsize"]],
-  font_size_x = def_label_gene_x,
-  font_size_y = def_label_gene_y,
+  font_size_x = params[["gg_fontsize"]],
+  font_size_y = 0, # params[["gg_fontsize"]] / 8,
   distance_method = "euclidean",
   cluster_method = "ward.D2",
   scale_name = "Cell Composition",
@@ -525,9 +523,16 @@ if (is.null(params[["gender_threshold"]])) {
     minfi::getSex(minfi::mapToGenome(data_rgset), cutoff = -2)
   }))
   gender_density <- stats::density(sex_predicted$yMed - sex_predicted$xMed, n = 100000)
+  
   min_diff_xy <- which(diff(sign(diff(gender_density$y))) == 2)
   min_diff_xy <- min_diff_xy[which.min(gender_density$y[min_diff_xy])]
   gender_threshold <- round(x = gender_density$x[min_diff_xy], digits = 3)
+  
+  # gender_threshold <- gender_density[c("x", "y")] %>% 
+  #   as.data.frame() %>% 
+  #   dplyr::mutate(local_minima = dplyr::lag(y) > y & dplyr::lead(y) > y) %>% 
+  #   dplyr::filter(local_minima) %>% 
+  #   .[["x"]]
 } else {
   gender_threshold <- params[["gender_threshold"]]
 }
@@ -554,7 +559,7 @@ phenotypes <- phenotypes %>%
   )
 ```
 
-```{r gender_check_threshold, eval = FALSE}
+```{r gender_check_threshold, eval = do_check_gender}
 ggplot2::ggplot(
   data = dplyr::mutate(phenotypes, diff = qc_ymedian - qc_xmedian),
   mapping = ggplot2::aes(x = diff)
@@ -583,7 +588,7 @@ ggplot2::ggplot(
   )
 ) +
   ggplot2::geom_abline(
-    data = data.frame(Threshold = paste("=", gender_threshold), Seuil = gender_threshold), 
+    data = data.frame(Threshold = paste("=", gender_threshold), Seuil = -1), 
     mapping = ggplot2::aes(intercept = Seuil, slope = 1, linetype = Threshold),
     na.rm = TRUE
   ) +
@@ -669,10 +674,13 @@ if (max(norm_beta, na.rm = TRUE) >= 1) {
 data_mset@metadata[grep("_values", names(data_mset@metadata))] <- NULL
 data_mset@metadata[["norm_beta_values"]] <- norm_beta
 data_mset@metadata[["phenotypes"]] <- phenotypes
+
 ```
 
 ```{r export}
-readr::write_rds(x = data_mset, path = file.path(output_directory, paste0(params[["array"]], "_mset.rds")))
+readr::write_rds(x = data_mset, path = file.path(output_directory, paste0(params[["array"]], "_QC_mset.rds")))
+readr::write_csv(norm_beta, path = file.path(output_directory, paste0(params[["array"]], "_QC_betavalues.csv")))
+readr::write_csv(norm_beta, path = file.path(output_directory, paste0(params[["array"]], "_QC_phenotypes.csv")))
 ```
 
 <!-- ## Principal Component Analysis -->
@@ -691,7 +699,7 @@ for (ibeta in seq_along(list_beta)) {
 	cat("\n###", list_beta[ibeta], " {.tabset .tabset-fade .tabset-pills}\n\n")
 	rain::pca_report(
 		data = data_batch[[names(list_beta)[ibeta]]], 
-		design = data_mset@metadata[["phenotypes"]], 
+		design = phenotypes, 
 		id_var = "Sample_ID",
 		technical_vars = pca_vars, 
 		n_comp = min(10, ncol(data_batch[[names(list_beta)[ibeta]]])), 
