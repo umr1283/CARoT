@@ -3,6 +3,7 @@
 ## New features
 
 * CARoT is now a meta-package.
+    * Now attaches the R package `umr1283`
     * Now attaches the R package `MiSTr`
     * Now attaches the R package `rain`
     * Now attaches the R package `NACHO`
@@ -19,9 +20,9 @@
 
 * Remove `R/mist.R`, now attaches the R package `MiSTr`.
 * Remove `R/estimate_ethnicity.R`, now attaches the R package `rain`.
-* Use Rmarkdown template directory for `qc_idats`.
-* Use Rmarkdown template directory for `qc_impute`.
-* Use Rmarkdown template directory for `qc_plink`.
+* Use Rmarkdown template directory for `qc_idats` from `umr1283`.
+* Use Rmarkdown template directory for `qc_impute` from `umr1283`.
+* Use Rmarkdown template directory for `qc_plink` from `umr1283`.
 * In `R/qc_idats.R`, 
     + add rgSet parameters to pass raw rgSet for normalisation and filtering.
     + now return raw rgSet and mSet.
