@@ -56,6 +56,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r setup, include = FALSE}
 options(stringsAsFactors = FALSE)
 
 output_directory <- params[["output_directory"]]
@@ -408,6 +409,7 @@ cell_comp <- switch(
       verbose = FALSE
     )$counts
     colnames(out) <- paste0("CellT_", colnames(out))
+    ExperimentHub::removeCache()
     out
   },
   {
@@ -679,8 +681,8 @@ data_mset@metadata[["phenotypes"]] <- phenotypes
 
 ```{r export}
 readr::write_rds(x = data_mset, path = file.path(output_directory, paste0(params[["array"]], "_QC_mset.rds")))
-readr::write_csv(norm_beta, path = file.path(output_directory, paste0(params[["array"]], "_QC_betavalues.csv")))
-readr::write_csv(norm_beta, path = file.path(output_directory, paste0(params[["array"]], "_QC_phenotypes.csv")))
+readr::write_csv(as.data.frame(norm_beta), path = file.path(output_directory, paste0(params[["array"]], "_QC_betavalues.csv")))
+readr::write_csv(as.data.frame(phenotypes), path = file.path(output_directory, paste0(params[["array"]], "_QC_phenotypes.csv")))
 ```
 
 <!-- ## Principal Component Analysis -->
