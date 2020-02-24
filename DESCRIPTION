@@ -17,65 +17,66 @@ Authors@R:
              family = "Ning",
              role = "aut",
              email = "lijiao.ning@cnrs.fr"))
-Description: A set of Quality-Control reporting tools and some
-    other functions.
+Description: A set of Quality-Control reporting tools and some other functions.
 License: GPL-3
-URL: https://github.com/mcanouil/CARoT,
-    https://mcanouil.github.io/CARoT
+URL: https://github.com/mcanouil/CARoT, https://mcanouil.github.io/CARoT
 BugReports: https://github.com/mcanouil/CARoT/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
+    methods,
+    utils,
+    parallel,
     cli (>= 1.1.0),
     cowplot (>= 1.0.0),
     crayon (>= 1.3.4),
     data.table (>= 1.12.4),
     dplyr (>= 0.8.3),
-    ENmix (>= 1.21.6),
     fs (>= 1.3.1),
     ggdendro (>= 0.1.20),
     ggforce (>= 0.3.1),
     ggplot2 (>= 3.2.1),
     glue (>= 1.3.1),
-    IlluminaHumanMethylation450kmanifest (>= 0.4.0),
-    IlluminaHumanMethylationEPICmanifest (>= 0.3.0),
-    illuminaio (>= 0.26.0),
     knitr (>= 1.25),
     magrittr (>= 1.5),
-    methods,
-    minfi (>= 1.30.0),
-    MiSTr (>= 1.0.0),
-    parallel,
     purrr (>= 0.3.3),
     qdap (>= 2.3.2),
     R.utils (>= 2.9.0),
-    rain (>= 0.1.0),
     readr (>= 1.3.1),
     rlang (>= 0.1.2),
     rmarkdown (>= 1.16),
     RSpectra (>= 0.15.0),
     rstudioapi (>= 0.10),
-    S4Vectors (>= 0.22.1),
     scales (>= 1.0.0),
-    SummarizedExperiment (>= 1.14.1),
     tibble (>= 2.1.3),
     tidyr (>= 1.0.0),
-    utils
-Suggests:
+    minfi (>= 1.30.0),
+    ENmix (>= 1.21.6),
+    illuminaio (>= 0.26.0),
+    IlluminaHumanMethylation450kmanifest (>= 0.4.0),
+    IlluminaHumanMethylationEPICmanifest (>= 0.3.0),
+    SummarizedExperiment (>= 1.14.1),
+    S4Vectors (>= 0.22.1),
     ChAMPdata (>= 2.16.0),
-    covr (>= 3.3.2),
     FlowSorted.Blood.450k (>= 1.22.0),
     FlowSorted.Blood.EPIC (>= 1.2.0),
     FlowSorted.CordBlood.450k (>= 1.12.0),
+    FlowSorted.CordBloodCombined.450k (>= 1.2.1),
     IlluminaHumanMethylation450kanno.ilmn12.hg19 (>= 0.6.0),
     IlluminaHumanMethylationEPICanno.ilm10b4.hg19 (>= 0.6.0),
+    umr1283,
+    MiSTr,
+    rain
+Suggests:
+    covr (>= 3.3.2),
     roxygen2 (>= 7.0.2),
     testthat (>= 2.2.1)
 VignetteBuilder: 
     knitr
-Remotes: 
-    github::mcanouil/mistr,
-    github::mcanouil/rain
+Remotes:
+    github::mcanouil/umr1283
+    github::mcanouil/MiSTr,
+    github::mcanouil/rain,
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
