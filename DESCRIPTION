@@ -74,7 +74,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    github::mcanouil/umr1283
+    github::mcanouil/umr1283,
     github::mcanouil/MiSTr,
     github::mcanouil/rain,
 Encoding: UTF-8
