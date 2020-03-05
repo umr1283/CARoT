@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![GitHub
-tag](https://img.shields.io/github/tag/omicsr/CARoT?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
+tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
 [![Coverage Status
 (codecov)](https://codecov.io/gh/omicsr/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/omicsr/CARoT)
 <!-- badges: end -->
@@ -39,7 +39,7 @@ library(CARoT)
 #> ✓ ggplot2 3.2.1          ✓ stringr 1.4.0     
 #> ✓ tibble  2.1.3          ✓ forcats 0.5.0     
 #> ✓ tidyr   1.0.2          ✓ umr1283 0.1.0     
-#> ✓ readr   1.3.1          ✓ MiSTr   1.0.0.9000
+#> ✓ readr   1.3.1          ✓ MiSTr   1.0.0     
 #> ✓ purrr   0.3.3          ✓ rain    0.1.0.9000
 #> ✓ dplyr   0.8.4          ✓ NACHO   1.0.0
 #> ── Conflicts ─────────────────────────────────────────────────────────────────── carot_conflicts() ──

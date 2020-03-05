@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![GitHub tag](https://img.shields.io/github/tag/omicsr/CARoT?label=latest tag&include_prereleases)](https://github.com/omicsr/CARoT)
+[![GitHub tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest tag&include_prereleases)](https://github.com/omicsr/CARoT)
 [![Coverage Status (codecov)](https://codecov.io/gh/omicsr/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/omicsr/CARoT)
 <!-- badges: end -->
 
