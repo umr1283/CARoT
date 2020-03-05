@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![GitHub
-tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
+tag](https://img.shields.io/github/tag/omicsr/CARoT?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
 [![Coverage Status
 (codecov)](https://codecov.io/gh/omicsr/CARoT/branch/master/graph/badge.svg)](https://codecov.io/gh/omicsr/CARoT)
 <!-- badges: end -->
