@@ -70,11 +70,9 @@ Currently *CARoT* includes the following functions from other packages:
         statistics.
   - [`dgapaq`](https://github.com/omicsr/dgapaq)
       - `dgapaq::qc_plink()` allows to compute quality-control of
-        genotyping array (PLINK format) using a Rmarkdown template
-        ([dgapaq](https://github.com/omicsr/dgapaq)).
+        genotyping array (PLINK format) using a Rmarkdown template.
       - `dgapaq::qc_vcf()` allows to compute post-imputation
-        quality-control report using a default Rmarkdown template
-        ([dgapaq](https://github.com/omicsr/dgapaq)).
+        quality-control report using a default Rmarkdown template.
   - [`dmapaq`](https://github.com/omicsr/dmapaq)
       - `dmapaq::ggheatmap()` allows to compute heatmap with dendrogram
         on x-axis and y-axis using
@@ -83,8 +81,7 @@ Currently *CARoT* includes the following functions from other packages:
         mostly using [minfi](https://bioconductor.org/packages/minfi/)
         functions.
       - `dmapaq::qc_idats()` allows to compute quality-control of
-        methylation array from Illumina using a Rmarkdown template
-        ([dgapaq](https://github.com/omicsr/dgapaq)).
+        methylation array from Illumina using a Rmarkdown template.
       - `dmapaq::ComBat.mc()` is a multi-processor wrapper for ComBat
         method (initially in
         [ENmix](https://bioconductor.org/packages/ENmix/)).
