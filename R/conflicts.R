@@ -1,6 +1,9 @@
 # nocov start
 
-core <- c("ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats", "umr1283", "MiSTr", "rain", "NACHO")
+core <- c(
+  "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats",
+  "MiSTr", "rain", "NACHO", "dgapaq"
+)
 
 .onAttach <- function(...) {
   needed <- core[!is_attached(core)]
