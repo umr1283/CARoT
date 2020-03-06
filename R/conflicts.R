@@ -1,5 +1,3 @@
-# nocov start
-
 core <- c(
   "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats",
   "MiSTr", "rain", "NACHO", "dgapaq", "dmapaq"
@@ -263,5 +261,3 @@ style_grey <- function(level, ...) {
     crayon::make_style(grDevices::grey(level), grey = TRUE)
   )
 }
-
-# nocov end
