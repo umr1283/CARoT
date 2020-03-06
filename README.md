@@ -56,27 +56,26 @@ functions.
 
 Currently *CARoT* includes the following functions from other packages:
 
-  - [`rain`](mcanouil/rain)
-      - [`rain::estimate_ethnicity()`](https://github.com/mcanouil/rain)
-        allows to format VCF files and compute the genomic components
-        (and some figures) for ethnicity using
-        [flashpca](https://github.com/gabraham/flashpca) software
-      - [`rain::pca_report()`](https://github.com/mcanouil/rain) allows
-        to compute an analysis report using principal component analysis
-        from [flashpca](https://github.com/gabraham/flashpca) software.
-  - [`MiSTr`](mcanouil/MiSTr)
-      - [`MiSTr::mist()`](https://github.com/mcanouil/MiSTr) allows to
-        test for association between a set of SNPS/genes and continuous
-        or binary outcomes by including variant characteristic
-        information and using (weighted) score statistics.
-  - [`dgapaq`](omicsr/dgapaq)
+  - [`rain`](https://github.com/mcanouil/rain)
+      - `rain::estimate_ethnicity()` allows to format VCF files and
+        compute the genomic components (and some figures) for ethnicity
+        using [flashpca](https://github.com/gabraham/flashpca) software
+      - `rain::pca_report()` allows to compute an analysis report using
+        principal component analysis from
+        [flashpca](https://github.com/gabraham/flashpca) software.
+  - [`MiSTr`](https://github.com/mcanouil/MiSTr)
+      - `MiSTr::mist()` allows to test for association between a set of
+        SNPS/genes and continuous or binary outcomes by including
+        variant characteristic information and using (weighted) score
+        statistics.
+  - [`dgapaq`](https://github.com/omicsr/dgapaq)
       - `dgapaq::qc_plink()` allows to compute quality-control of
         genotyping array (PLINK format) using a Rmarkdown template
         ([dgapaq](https://github.com/omicsr/dgapaq)).
       - `dgapaq::qc_vcf()` allows to compute post-imputation
         quality-control report using a default Rmarkdown template
         ([dgapaq](https://github.com/omicsr/dgapaq)).
-  - [`dmapaq`](omicsr/dmapaq)
+  - [`dmapaq`](https://github.com/omicsr/dmapaq)
       - `dmapaq::ggheatmap()` allows to compute heatmap with dendrogram
         on x-axis and y-axis using
         [ggplot2](https://ggplot2.tidyverse.org/).
