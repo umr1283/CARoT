@@ -95,7 +95,6 @@ package_version <- function(x) {
 #' @export
 #' @examples
 #' carot_logo()
-
 carot_logo <- function(unicode = l10n_info()$`UTF-8`) {
   logo <- c(
     "                                                                  ",
@@ -163,7 +162,7 @@ carot_conflict_message <- function(x) {
     ~ paste0(crayon::blue(.x), "::", .y, "()", collapse = ", ")
   )
 
-  winner <- pkgs %>% purrr::map_chr(1)
+  winner <- purrr::map_chr(pkgs, 1)
   funs <- format(paste0(crayon::blue(winner), "::", crayon::green(paste0(names(x), "()"))))
   bullets <- paste0(
     crayon::red(cli::symbol$cross), " ", funs,
