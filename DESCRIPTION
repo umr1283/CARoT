@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.5.0
+Version: 0.5.0.9000
 Authors@R: 
     c(person(given = "Mickaël",
              family = "Canouil",
@@ -64,9 +64,9 @@ Imports:
     FlowSorted.CordBloodCombined.450k (>= 1.2.1),
     IlluminaHumanMethylation450kanno.ilmn12.hg19 (>= 0.6.0),
     IlluminaHumanMethylationEPICanno.ilm10b4.hg19 (>= 0.6.0),
-    umr1283 (>= 0.1.0),
     MiSTr (>= 1.0.0),
-    rain (>= 0.2.0)
+    rain (>= 0.2.0),
+    dgapaq (>= 0.1.0)
 Suggests:
     covr (>= 3.3.2),
     roxygen2 (>= 7.0.2),
@@ -74,9 +74,9 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    github::mcanouil/umr1283,
     github::mcanouil/MiSTr,
     github::mcanouil/rain,
+    github::omicsr/dgapaq
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

@@ -1,20 +1,31 @@
+# CARoT (development version)
+
+## New features
+
+* Now attaches the R package `dgapaq`:
+    * Remove `R/qc_impute.R`.
+    * Remove `R/qc_plinky.R`.
+    * Remove `inst/perl/HRC-1000G-check.bim.pl`.
+    
+* Remove the R package `umr1283` from the list of attached packages.
+
 # CARoT 0.5.0
 
 ## New features
 
-* CARoT is now a meta-package.
-    * Now attaches the R package `umr1283`
-    * Now attaches the R package `MiSTr`
-    * Now attaches the R package `rain`
-    * Now attaches the R package `NACHO`
-    * Now attaches the R package `forcats`
-    * Now attaches the R package `stringr`
-    * Now attaches the R package `dplyr`
-    * Now attaches the R package `purrr`
-    * Now attaches the R package `readr`
-    * Now attaches the R package `tidyr`
-    * Now attaches the R package `tibble`
-    * Now attaches the R package `ggplot2`
+* CARoT is now a meta-package:
+    * Now attaches the R package `umr1283`.
+    * Now attaches the R package `MiSTr`.
+    * Now attaches the R package `rain`.
+    * Now attaches the R package `NACHO`.
+    * Now attaches the R package `forcats`.
+    * Now attaches the R package `stringr`.
+    * Now attaches the R package `dplyr`.
+    * Now attaches the R package `purrr`.
+    * Now attaches the R package `readr`.
+    * Now attaches the R package `tidyr`.
+    * Now attaches the R package `tibble`.
+    * Now attaches the R package `ggplot2`.
 
 ## Minor improvements and fixes
 
