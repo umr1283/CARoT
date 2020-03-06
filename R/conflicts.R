@@ -2,7 +2,7 @@
 
 core <- c(
   "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats",
-  "MiSTr", "rain", "NACHO", "dgapaq"
+  "MiSTr", "rain", "NACHO", "dgapaq", "dmapaq"
 )
 
 .onAttach <- function(...) {
