@@ -1,4 +1,4 @@
-# CARoT (development version)
+# CARoT 0.6.0
 
 ## New features
 
