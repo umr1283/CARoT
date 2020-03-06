@@ -6,8 +6,13 @@
     * Remove `R/qc_impute.R`.
     * Remove `R/qc_plinky.R`.
     * Remove `inst/perl/HRC-1000G-check.bim.pl`.
-    
+* Now attaches the R package `dmapaq`:
+    * Remove `R/qc_idats.R`.
+    * Remove `R/read_idats.R`.
+    * Remove `R/ggheatmap.R`.
 * Remove the R package `umr1283` from the list of attached packages.
+* Remove `R/utils-pipe.R`.
+* Remove `R/utils-tidy-eval.R`.
 
 # CARoT 0.5.0
 
