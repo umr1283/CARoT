@@ -1,3 +1,9 @@
+# CARoT 0.6.1
+
+## Minor improvements and fixes
+
+* Update packages version in `Imports`.
+
 # CARoT 0.6.0
 
 ## New features
