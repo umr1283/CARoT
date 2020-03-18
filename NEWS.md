@@ -1,3 +1,10 @@
+# CARoT 0.6.2
+
+## Minor improvements and fixes
+
+* Update `rain` to `v0.3.2`.
+* Update `dgapaq` to `v0.1.3`.
+
 # CARoT 0.6.1
 
 ## Minor improvements and fixes
