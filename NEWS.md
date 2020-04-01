@@ -1,3 +1,9 @@
+# CARoT 0.6.4
+
+## Minor improvements and fixes
+
+* Update `umr1283` to `v0.3.0`.
+
 # CARoT 0.6.3
 
 ## Minor improvements and fixes
