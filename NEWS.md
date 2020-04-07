@@ -1,3 +1,5 @@
+# CARoT 0.6.6
+
 # CARoT 0.6.5
 
 ## Minor improvements and fixes
