@@ -1,3 +1,9 @@
+# CARoT 0.6.9
+
+## Minor improvements and fixes
+
+* Update `rain` to `v0.3.3`.
+
 # CARoT 0.6.8
 
 ## Minor improvements and fixes

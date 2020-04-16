@@ -27,7 +27,7 @@ Imports:
     dmapaq (>= 0.1.5),
     MiSTr (>= 1.0.0),
     NACHO (>= 1.0.0),
-    rain (>= 0.3.2)
+    rain (>= 0.3.3)
 Suggests:
     roxygen2 (>= 7.0.2)
 Remotes:
