@@ -1,3 +1,9 @@
+# CARoT 0.6.11
+
+## Minor improvements and fixes
+
+* Update `dgapaq` to `v0.1.9`.
+
 # CARoT 0.6.10
 
 ## Minor improvements and fixes
