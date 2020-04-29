@@ -33,18 +33,15 @@ library(CARoT)
 #> `88b    ooo   .8'     `888.   888  `88b.  888   888      888      
 #>  `Y8bood8P'  o88o     o8888o o888o  o888o `Y8bod8P'     o888o     
 #> 
-#> ── Attaching packages ───────────────────────────────────────────────────────────────────── CARoT 0.6.10 ──
+#> ── Attaching packages ───────────────────────────────────────────────────────────────────── CARoT 0.6.11 ──
 #> ✓ ggplot2 3.3.0     ✓ forcats 0.5.0
-#> ✓ tibble  2.1.3     ✓ MiSTr   1.0.0
+#> ✓ tibble  3.0.1     ✓ MiSTr   1.0.0
 #> ✓ tidyr   1.0.2     ✓ rain    0.3.3
 #> ✓ readr   1.3.1     ✓ NACHO   1.0.0
-#> ✓ purrr   0.3.3     ✓ dgapaq  0.1.8
+#> ✓ purrr   0.3.4     ✓ dgapaq  0.1.9
 #> ✓ dplyr   0.8.5     ✓ dmapaq  0.1.5
 #> ✓ stringr 1.4.0
-#> Using temporary cache /tmp/RtmpU28hiD/BiocFileCache
-#> snapshotDate(): 2019-10-22
-#> Using temporary cache /tmp/RtmpU28hiD/BiocFileCache
-#> Using temporary cache /tmp/RtmpU28hiD/BiocFileCache
+#> snapshotDate(): 2020-04-27
 #> ── Conflicts ───────────────────────────────────────────────────────────────────────── carot_conflicts() ──
 #> x NACHO::summarize() masks dplyr::summarize()
 ```
