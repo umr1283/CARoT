@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.6.11
+Version: 0.6.12
 Authors@R: 
     person(given = "Mickaël",
            family = "Canouil",
