@@ -24,7 +24,7 @@ Imports:
     purrr (>= 0.3.3),
     rstudioapi (>= 0.11),
     dgapaq (>= 0.1.9),
-    dmapaq (>= 0.1.5),
+    dmapaq (>= 0.1.6),
     MiSTr (>= 1.0.0),
     NACHO (>= 1.0.0),
     rain (>= 0.3.3)
