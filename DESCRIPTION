@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.6.12
+Version: 0.6.13
 Authors@R: 
     person(given = "Mickaël",
            family = "Canouil",
@@ -27,9 +27,9 @@ Imports:
     dmapaq (>= 0.1.6),
     MiSTr (>= 1.0.0),
     NACHO (>= 1.0.0),
-    rain (>= 0.3.3)
+    rain (>= 0.3.5)
 Suggests:
-    roxygen2 (>= 7.0.2)
+    roxygen2 (>= 7.1.0)
 Remotes:
     github::mcanouil/MiSTr,
     github::mcanouil/rain,

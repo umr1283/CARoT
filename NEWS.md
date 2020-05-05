@@ -2,6 +2,12 @@
 
 ## Minor improvements and fixes
 
+* Update `rain` to `v0.3.5`.
+
+# CARoT 0.6.12
+
+## Minor improvements and fixes
+
 * Update `dmapaq` to `v0.1.6`.
 
 # CARoT 0.6.11
