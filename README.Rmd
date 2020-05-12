@@ -64,8 +64,6 @@ Currently *CARoT* includes the following functions from other packages:
         using [minfi](https://bioconductor.org/packages/minfi/) functions.
     - `dmapaq::qc_idats()` allows to compute quality-control of methylation array from Illumina 
         using a Rmarkdown template.
-    - `dmapaq::ComBat.mc()` is a multi-processor wrapper for ComBat method 
-        (initially in [ENmix](https://bioconductor.org/packages/ENmix/)).
 
 ## Getting help
 

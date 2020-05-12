@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.6.13
+Version: 0.6.14
 Authors@R: 
     person(given = "Mickaël",
            family = "Canouil",
@@ -24,7 +24,7 @@ Imports:
     purrr (>= 0.3.3),
     rstudioapi (>= 0.11),
     dgapaq (>= 0.1.9),
-    dmapaq (>= 0.1.6),
+    dmapaq (>= 0.1.7),
     MiSTr (>= 1.0.0),
     NACHO (>= 1.0.0),
     rain (>= 0.3.5)

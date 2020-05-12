@@ -33,16 +33,16 @@ library(CARoT)
 #> `88b    ooo   .8'     `888.   888  `88b.  888   888      888      
 #>  `Y8bood8P'  o88o     o8888o o888o  o888o `Y8bod8P'     o888o     
 #> 
-#> ── Attaching packages ───────────────────────────────────────────────────────────────────── CARoT 0.6.11 ──
+#> ── Attaching packages ──────────────────────────────────────────────────────────────────── CARoT 0.6.14 ──
 #> ✓ ggplot2 3.3.0     ✓ forcats 0.5.0
 #> ✓ tibble  3.0.1     ✓ MiSTr   1.0.0
-#> ✓ tidyr   1.0.2     ✓ rain    0.3.3
+#> ✓ tidyr   1.0.2     ✓ rain    0.3.5
 #> ✓ readr   1.3.1     ✓ NACHO   1.0.0
 #> ✓ purrr   0.3.4     ✓ dgapaq  0.1.9
-#> ✓ dplyr   0.8.5     ✓ dmapaq  0.1.5
+#> ✓ dplyr   0.8.5     ✓ dmapaq  0.1.7
 #> ✓ stringr 1.4.0
 #> snapshotDate(): 2020-04-27
-#> ── Conflicts ───────────────────────────────────────────────────────────────────────── carot_conflicts() ──
+#> ── Conflicts ──────────────────────────────────────────────────────────────────────── carot_conflicts() ──
 #> x NACHO::summarize() masks dplyr::summarize()
 ```
 
@@ -80,9 +80,6 @@ Currently *CARoT* includes the following functions from other packages:
         functions.
       - `dmapaq::qc_idats()` allows to compute quality-control of
         methylation array from Illumina using a Rmarkdown template.
-      - `dmapaq::ComBat.mc()` is a multi-processor wrapper for ComBat
-        method (initially in
-        [ENmix](https://bioconductor.org/packages/ENmix/)).
 
 ## Getting help
 
