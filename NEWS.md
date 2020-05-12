@@ -1,4 +1,10 @@
-# CARoT 0.6.12
+# CARoT 0.6.14
+
+## Minor improvements and fixes
+
+* Update `dmapaq` to `v0.1.7`.
+
+# CARoT 0.6.13
 
 ## Minor improvements and fixes
 
