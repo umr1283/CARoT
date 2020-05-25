@@ -1,3 +1,9 @@
+# CARoT 0.6.15
+
+## Minor improvements and fixes
+
+* Add back missing authors/contributors.
+
 # CARoT 0.6.14
 
 ## Minor improvements and fixes

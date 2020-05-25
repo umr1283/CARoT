@@ -1,13 +1,22 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.6.14
+Version: 0.6.15
 Authors@R: 
-    person(given = "Mickaël",
-           family = "Canouil",
-           role = c("aut", "cre"),
-           email = "mickael.canouil@cnrs.fr",
-           comment = c(ORCID = "0000-0002-3396-4549"))
+    c(person(given = "Mickaël",
+             family = "Canouil",
+             role = c("aut", "cre"),
+             email = "mickael.canouil@cnrs.fr",
+             comment = c(ORCID = "0000-0002-3396-4549")),
+      person(given = "Mathilde",
+             family = "Boissel",
+             role = "ctb",
+             email = "mathilde.boissel@cnrs.fr",
+             comment = c(ORCID = "0000-0001-5719-8749")),
+      person(given = "Lijiao",
+             family = "Ning",
+             role = "ctb",
+             email = "lijiao.ning@cnrs.fr"))
 Description: A set of Quality-Control reporting tools and some
     other functions.
 License: GPL-3
