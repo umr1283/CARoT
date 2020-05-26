@@ -1,93 +1,13 @@
-# CARoT 0.6.15
+# CARoT 0.7.0
 
 ## Minor improvements and fixes
 
-* Add back missing authors/contributors.
-
-# CARoT 0.6.14
-
-## Minor improvements and fixes
-
-* Update `dmapaq` to `v0.1.7`.
-
-# CARoT 0.6.13
-
-## Minor improvements and fixes
-
-* Update `rain` to `v0.3.5`.
-
-# CARoT 0.6.12
-
-## Minor improvements and fixes
-
-* Update `dmapaq` to `v0.1.6`.
-
-# CARoT 0.6.11
-
-## Minor improvements and fixes
-
-* Update `dgapaq` to `v0.1.9`.
-
-# CARoT 0.6.10
-
-## Minor improvements and fixes
-
-* Update `dgapaq` to `v0.1.8`.
-
-# CARoT 0.6.9
-
-## Minor improvements and fixes
-
-* Update `rain` to `v0.3.3`.
-
-# CARoT 0.6.8
-
-## Minor improvements and fixes
-
-* Update `dgapaq` to `v0.1.6`.
-
-# CARoT 0.6.7
-
-## Minor improvements and fixes
-
-* Update `dgapaq` to `v0.1.5`.
-
-# CARoT 0.6.6
-
-## Minor improvements and fixes
-
-* Update `dmapaq` to `v0.1.5`.
-
-# CARoT 0.6.5
-
-## Minor improvements and fixes
-
-* Update `dmapaq` to `v0.1.4`.
-
-# CARoT 0.6.4
-
-## Minor improvements and fixes
-
-* Update `umr1283` to `v0.3.0`.
-
-# CARoT 0.6.3
-
-## Minor improvements and fixes
-
-* Update `dmapaq` to `v0.1.3`.
-
-# CARoT 0.6.2
-
-## Minor improvements and fixes
-
-* Update `rain` to `v0.3.2`.
-* Update `dgapaq` to `v0.1.3`.
-
-# CARoT 0.6.1
-
-## Minor improvements and fixes
-
-* Update packages version in `Imports`.
+* In `DESCRIPTION`, 
+  + Add back missing authors/contributors.
+  + Update packages version in `Imports`.
+  + Update `dgapaq` to `v0.2.0`.
+  + Update `dmapaq` to `v0.2.0`.
+  + Update `rain` to `v0.4.0`.
 
 # CARoT 0.6.0
 
