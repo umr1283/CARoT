@@ -4,6 +4,7 @@
 
 * In `DESCRIPTION`, 
   + Add back missing authors/contributors.
+  + Update URLs with the new github repository.
   + Update packages version in `Imports`.
   + Update `dgapaq` to `v0.2.0`.
   + Update `dmapaq` to `v0.2.0`.
