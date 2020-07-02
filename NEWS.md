@@ -1,5 +1,8 @@
 # CARoT (development version)
 
+* In `DESCRIPTION`, 
+  + Update `dgapaq` to `v0.4.0`.
+
 # CARoT 0.7.0
 
 ## Minor improvements and fixes
