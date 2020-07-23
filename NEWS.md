@@ -1,7 +1,9 @@
-# CARoT (development version)
+# CARoT 0.8.0
 
 * In `DESCRIPTION`, 
-  + Update `dgapaq` to `v0.4.0`.
+  + Update `dgapaq` to `v0.5.1`.
+  + Update `dmapaq` to `v0.3.1`.
+  + Update `rain` to `v0.5.0`.
 
 # CARoT 0.7.0
 
