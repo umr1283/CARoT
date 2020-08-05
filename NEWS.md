@@ -1,3 +1,8 @@
+# CARoT 0.8.1
+
+* In `DESCRIPTION`, 
+  + Update `dmapaq` to `v0.3.2`
+
 # CARoT 0.8.0
 
 * In `DESCRIPTION`, 
