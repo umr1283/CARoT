@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.8.1
+Version: 0.8.2
 Authors@R: 
     c(person(given = "Mickaël",
              family = "Canouil",
@@ -32,13 +32,13 @@ Imports:
     magrittr (>= 1.5),
     purrr (>= 0.3.4),
     rstudioapi (>= 0.11),
-    dgapaq (>= 0.5.1),
-    dmapaq (>= 0.3.2),
-    MiSTr (>= 1.0.0),
+    dgapaq (>= 0.5.2),
+    dmapaq (>= 0.3.3),
+    MiSTr (>= 1.0.1),
     NACHO (>= 1.0.1),
     rain (>= 0.5.0)
 Suggests:
-    roxygen2 (>= 7.1.0)
+    roxygen2 (>= 7.1.1)
 Remotes:
     github::mcanouil/MiSTr,
     github::mcanouil/rain,
