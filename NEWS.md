@@ -1,3 +1,8 @@
+# CARoT 0.9.0
+
+* In `DESCRIPTION`, 
+  + Update `dgapaq` to `v0.6.0`.
+  
 # CARoT 0.8.2
 
 * In `DESCRIPTION`, 
