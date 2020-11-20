@@ -136,8 +136,7 @@ carot_conflicts <- function() {
   tidy_names <- paste0("package:", carot_packages())
   conflicts <- conflicts[sapply(conflicts, function(x) any(x %in% tidy_names))]
 
-  conflict_funs <- mapply(confirm_conflict, conflicts, names(conflicts))
-
+  conflict_funs <- mapply(confirm_conflict, conflicts, names(conflicts), SIMPLIFY = FALSE)
   conflict_funs <- conflict_funs[!sapply(conflict_funs, is.null)]
 
   structure(conflict_funs, class = "carot_conflicts")
@@ -151,11 +150,12 @@ carot_conflict_message <- function(x) {
     right = "carot_conflicts()"
   )
 
-  pkgs <- lapply(x, function(x) gsub("^package:", "", x))
-  others <- lapply(pkgs, `[`, -1)
+  pkgs <- lapply(x, function(.x) gsub("^package:", "", .x))
+  others <- lapply(pkgs, "[", -1)
   other_calls <- mapply(
-    FUN = function(x, y) paste0(crayon::blue(x), "::", y, "()", collapse = ", "),
-    others, names(others)
+    FUN = function(.x, .y) paste0(crayon::blue(.x), "::", .y, "()", collapse = ", "),
+    others, names(others),
+    SIMPLIFY = FALSE
   )
 
   winner <- sapply(X = pkgs, FUN = "[", 1)

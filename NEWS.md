@@ -1,3 +1,14 @@
+# CARoT 0.10.0
+
+## Minor improvements and fixes
+
+* In `DESCRIPTION`, 
+  + Update `rain` to `v0.5.1`.
+  + Update `dmapaq` to `v0.3.4`.
+  + Remove `NACHO`.
+  + Remove `rain`.
+  + Remove other dependencies.
+
 # CARoT 0.9.0
 
 * In `DESCRIPTION`, 

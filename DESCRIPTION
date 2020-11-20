@@ -1,7 +1,7 @@
 Type: Package
 Package: CARoT
 Title: Centralised and Automated Reporting Tools
-Version: 0.9.0
+Version: 0.10.0
 Authors@R: 
     c(person(given = "Mickaël",
              family = "Canouil",
@@ -41,5 +41,5 @@ Remotes:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 SystemRequirements: pandoc (>= 1.12.3) - http://pandoc.org
