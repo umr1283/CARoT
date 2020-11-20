@@ -25,25 +25,19 @@ BugReports: https://github.com/omicsr/CARoT/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
-    grDevices,
     utils,
     cli (>= 2.0.2),
     crayon (>= 1.3.4),
-    magrittr (>= 1.5),
-    purrr (>= 0.3.4),
     rstudioapi (>= 0.11),
     dgapaq (>= 0.6.0),
-    dmapaq (>= 0.3.3),
-    MiSTr (>= 1.0.1),
-    NACHO (>= 1.0.1),
-    rain (>= 0.5.0)
+    dmapaq (>= 0.3.4),
+    rain (>= 0.5.1)
 Suggests:
     roxygen2 (>= 7.1.1)
 Remotes:
-    github::mcanouil/MiSTr,
-    github::mcanouil/rain,
-    github::omicsr/dgapaq,
-    github::omicsr/dmapaq
+    github::mcanouil/rain@v0.5.1,
+    github::omicsr/dgapaq@v0.6.0,
+    github::omicsr/dmapaq@v0.3.4
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

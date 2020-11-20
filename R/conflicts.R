@@ -1,7 +1,4 @@
-core <- c(
-  "ggplot2", "tibble", "tidyr", "readr", "purrr", "dplyr", "stringr", "forcats",
-  "MiSTr", "rain", "NACHO", "dgapaq", "dmapaq"
-)
+core <- c("rain", "dgapaq", "dmapaq")
 
 .onAttach <- function(...) {
   needed <- core[!is_attached(core)]
@@ -131,16 +128,17 @@ print.carot_logo <- function(x, ...) {
 #' carot_conflicts()
 carot_conflicts <- function() {
   envs <- grep("^package:", search(), value = TRUE)
-  envs <- purrr::set_names(envs)
+  names(envs) <- envs
   objs <- invert(lapply(envs, ls_env))
 
-  conflicts <- purrr::keep(objs, ~ length(.x) > 1)
+  conflicts <- objs[sapply(objs, function(x) length(x) > 1)]
 
   tidy_names <- paste0("package:", carot_packages())
-  conflicts <- purrr::keep(conflicts, ~ any(.x %in% tidy_names))
+  conflicts <- conflicts[sapply(conflicts, function(x) any(x %in% tidy_names))]
 
-  conflict_funs <- purrr::imap(conflicts, confirm_conflict)
-  conflict_funs <- purrr::compact(conflict_funs)
+  conflict_funs <- mapply(confirm_conflict, conflicts, names(conflicts))
+
+  conflict_funs <- conflict_funs[!sapply(conflict_funs, is.null)]
 
   structure(conflict_funs, class = "carot_conflicts")
 }
@@ -153,14 +151,14 @@ carot_conflict_message <- function(x) {
     right = "carot_conflicts()"
   )
 
-  pkgs <- x %>% purrr::map(~ gsub("^package:", "", .))
-  others <- pkgs %>% purrr::map(`[`, -1)
-  other_calls <- purrr::map2_chr(
-    others, names(others),
-    ~ paste0(crayon::blue(.x), "::", .y, "()", collapse = ", ")
+  pkgs <- lapply(x, function(x) gsub("^package:", "", x))
+  others <- lapply(pkgs, `[`, -1)
+  other_calls <- mapply(
+    FUN = function(x, y) paste0(crayon::blue(x), "::", y, "()", collapse = ", "),
+    others, names(others)
   )
 
-  winner <- purrr::map_chr(pkgs, 1)
+  winner <- sapply(X = pkgs, FUN = "[", 1)
   funs <- format(paste0(crayon::blue(winner), "::", crayon::green(paste0(names(x), "()"))))
   bullets <- paste0(
     crayon::red(cli::symbol$cross), " ", funs,
@@ -176,12 +174,10 @@ print.carot_conflicts <- function(x, ..., startup = FALSE) {
   cli::cat_line(carot_conflict_message(x))
 }
 
-#' @importFrom magrittr %>%
 confirm_conflict <- function(packages, name) {
   # Only look at functions
-  objs <- packages %>%
-    purrr::map(~ get(name, pos = .)) %>%
-    purrr::keep(is.function)
+  objs <- lapply(packages, function(x) get(name, pos = x))
+  objs <- objs[sapply(objs, is.function)]
 
   if (length(objs) <= 1)
     return()
