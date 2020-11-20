@@ -9,6 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![GitHub
 tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
+[![R build
+status](https://github.com/omicsr/CARoT/workflows/R-CMD-check/badge.svg)](https://github.com/omicsr/CARoT/actions)
 <!-- badges: end -->
 
 ## Installation
@@ -33,16 +35,10 @@ library(CARoT)
 #> `88b    ooo   .8'     `888.   888  `88b.  888   888      888      
 #>  `Y8bood8P'  o88o     o8888o o888o  o888o `Y8bod8P'     o888o     
 #> 
-#> ── Attaching packages ─────────────────────────────────────────── CARoT 0.9.0 ──
-#> ✓ ggplot2 3.3.2     ✓ forcats 0.5.0
-#> ✓ tibble  3.0.4     ✓ MiSTr   1.0.1
-#> ✓ tidyr   1.1.2     ✓ rain    0.5.0
-#> ✓ readr   1.4.0     ✓ NACHO   1.0.1
-#> ✓ purrr   0.3.4     ✓ dgapaq  0.6.0
-#> ✓ dplyr   1.0.2     ✓ dmapaq  0.3.3
-#> ✓ stringr 1.4.0
-#> ── Conflicts ────────────────────────────────────────────── carot_conflicts() ──
-#> x NACHO::summarize() masks dplyr::summarize()
+#> ── Attaching packages ────────────────────────────────────────── CARoT 0.10.0 ──
+#> ✓ rain   0.5.0     ✓ dmapaq 0.3.4
+#> ✓ dgapaq 0.6.1
+#> 
 ```
 
 ## Overview

@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![GitHub tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest tag&include_prereleases)](https://github.com/omicsr/CARoT)
+[![R build status](https://github.com/omicsr/CARoT/workflows/R-CMD-check/badge.svg)](https://github.com/omicsr/CARoT/actions)
 <!-- badges: end -->
 
 ## Installation
