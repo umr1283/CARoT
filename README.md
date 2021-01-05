@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+retired](https://img.shields.io/badge/lifecycle-retired-red.svg)]()
 [![GitHub
 tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
 [![R build
