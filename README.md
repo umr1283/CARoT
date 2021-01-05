@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-retired](https://img.shields.io/badge/lifecycle-retired-red.svg)]()
+[![Lifecycle: retired](https://img.shields.io/badge/lifecycle-retired-red.svg)](https://github.com/omicsr/CARoT)
 [![GitHub
 tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest%20tag&include_prereleases)](https://github.com/omicsr/CARoT)
 [![R build
