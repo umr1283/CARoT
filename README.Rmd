@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 # Centralised and Automated Reporting Tools <img src="man/figures/carot.png" align="right" width="120" />
 
 <!-- badges: start -->
-[![Lifecycle: retired](https://img.shields.io/badge/lifecycle-retired-red.svg)](https://github.com/omicsr/CARoT)
-[![GitHub tag](https://img.shields.io/github/tag/omicsr/CARoT.svg?label=latest tag&include_prereleases)](https://github.com/omicsr/CARoT)
-[![R build status](https://github.com/omicsr/CARoT/workflows/R-CMD-check/badge.svg)](https://github.com/omicsr/CARoT/actions)
+[![Lifecycle: retired](https://img.shields.io/badge/lifecycle-retired-red.svg)](https://github.com/umr1283/CARoT)
+[![GitHub tag](https://img.shields.io/github/tag/umr1283/CARoT.svg?label=latest tag&include_prereleases)](https://github.com/umr1283/CARoT)
+[![R build status](https://github.com/umr1283/CARoT/workflows/R-CMD-check/badge.svg)](https://github.com/umr1283/CARoT/actions)
 <!-- badges: end -->
 
 ## Installation
@@ -27,7 +27,7 @@ install.packages("CARoT")
 
 # Or the the development version from GitHub:
 # install.packages("remotes")
-remotes::install_github("omicsr/CARoT")
+remotes::install_github("umr1283/CARoT")
 ```
 ```{r}
 library(CARoT)
@@ -39,7 +39,7 @@ library(CARoT)
 
 Currently *CARoT* includes the following functions from other packages:
 
-* [`rain`](https://github.com/mcanouil/rain)
+* [`rain`](https://github.com/umr1283/rain)
     - `rain::estimate_ethnicity()` allows to format VCF files 
         and compute the genomic components (and some figures) for ethnicity 
         using [flashpca](https://github.com/gabraham/flashpca) software
@@ -52,13 +52,13 @@ Currently *CARoT* includes the following functions from other packages:
     a set of SNPS/genes and continuous or binary outcomes by including variant 
     characteristic information and using (weighted) score statistics.
 
-* [`dgapaq`](https://github.com/omicsr/dgapaq)
+* [`dgapaq`](https://github.com/umr1283/dgapaq)
     - `dgapaq::qc_plink()` allows to compute quality-control of genotyping array (PLINK format) 
         using a Rmarkdown template.
     - `dgapaq::qc_vcf()` allows to compute post-imputation quality-control report 
         using a default Rmarkdown template.
 
-* [`dmapaq`](https://github.com/omicsr/dmapaq)
+* [`dmapaq`](https://github.com/umr1283/dmapaq)
     - `dmapaq::ggheatmap()` allows to compute heatmap with dendrogram on x-axis and y-axis 
         using [ggplot2](https://ggplot2.tidyverse.org/).
     - `dmapaq::read_idats()` allows to efficiently import idats files mostly 
@@ -68,7 +68,7 @@ Currently *CARoT* includes the following functions from other packages:
 
 ## Getting help
 
-If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/omicsr/CARoT/issues).  
+If you encounter a clear bug, please file a minimal reproducible example on [github](https://github.com/umr1283/CARoT/issues).  
 For questions and other discussion, please contact the package maintainer.
 
 ---
